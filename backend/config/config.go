@@ -1,14 +1,15 @@
 package config
 
 import (
-	"log"
+	"portfolify/pkg/logger"
 
 	"github.com/joho/godotenv"
+	"go.uber.org/zap"
 )
 
 func LoadEnv() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Log.Fatal("Error loading .env file", zap.Error(err))
 	}
 }
