@@ -18,7 +18,6 @@ func (s *ProjectService) CreateProject(project *Project) (*Project, error) {
 	if project.Name == "" {
 		return nil, errors.New("project name is required")
 	}
-
 	return s.Repo.CreateProject(project)
 }
 

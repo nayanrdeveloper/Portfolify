@@ -4,12 +4,16 @@ import (
 	"net/http"
 	"portfolify/api" // Update if your routes are in a different package
 	"portfolify/config"
+	"portfolify/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	config.LoadEnv()
+
+	logger.InitLogger()
+	defer logger.Log.Sync()
 
 	config.ConnectDB()
 

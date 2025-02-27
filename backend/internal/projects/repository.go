@@ -3,12 +3,15 @@ package projects
 import (
 	"context"
 	"errors"
-	"portfolify/config"
 	"time"
+
+	"portfolify/config"
+	"portfolify/pkg/logger"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.uber.org/zap"
 )
 
 type ProjectRepository struct {
@@ -31,9 +34,11 @@ func (r *ProjectRepository) CreateProject(project *Project) (*Project, error) {
 
 	_, err := r.Collection.InsertOne(ctx, project)
 	if err != nil {
+		logger.Log.Error("Failed to insert project", zap.Error(err))
 		return nil, err
 	}
 
+	logger.Log.Info("Project created", zap.String("id", project.ID.Hex()))
 	return project, nil
 }
 
@@ -43,15 +48,18 @@ func (r *ProjectRepository) GetProjectByID(id string) (*Project, error) {
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
+		logger.Log.Warn("Invalid project ID format", zap.String("id", id))
 		return nil, errors.New("invalid project ID format")
 	}
 
 	var project Project
 	err = r.Collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&project)
 	if err != nil {
+		logger.Log.Warn("Project not found", zap.String("id", id))
 		return nil, err
 	}
 
+	logger.Log.Info("Project retrieved", zap.String("id", id))
 	return &project, nil
 }
 
@@ -61,6 +69,7 @@ func (r *ProjectRepository) UpdateProject(id string, updateData bson.M) (*Projec
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
+		logger.Log.Warn("Invalid project ID format", zap.String("id", id))
 		return nil, errors.New("invalid project ID format")
 	}
 
@@ -69,9 +78,11 @@ func (r *ProjectRepository) UpdateProject(id string, updateData bson.M) (*Projec
 
 	_, err = r.Collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
 	if err != nil {
+		logger.Log.Error("Failed to update project", zap.String("id", id), zap.Error(err))
 		return nil, err
 	}
 
+	logger.Log.Info("Project updated", zap.String("id", id))
 	return r.GetProjectByID(id)
 }
 
@@ -81,13 +92,16 @@ func (r *ProjectRepository) DeleteProject(id string) error {
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
+		logger.Log.Warn("Invalid project ID format", zap.String("id", id))
 		return errors.New("invalid project ID format")
 	}
 
 	_, err = r.Collection.DeleteOne(ctx, bson.M{"_id": objID})
 	if err != nil {
+		logger.Log.Error("Failed to delete project", zap.String("id", id), zap.Error(err))
 		return err
 	}
 
+	logger.Log.Info("Project deleted", zap.String("id", id))
 	return nil
 }
