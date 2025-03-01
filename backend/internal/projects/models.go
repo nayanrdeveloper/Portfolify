@@ -8,6 +8,7 @@ import (
 
 type Project struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	UserID      primitive.ObjectID `bson:"user_id" json:"user_id"`
 	Name        string             `bson:"name" json:"name" validate:"required"`
 	Description string             `bson:"description" json:"description"`
 	DemoLink    string             `bson:"demo_link" json:"demo_link"`

@@ -20,7 +20,7 @@ type ProjectRepository struct {
 
 func NewProjectRepository() *ProjectRepository {
 	return &ProjectRepository{
-		Collection: config.GetCollection("projects"),
+		Collection: config.GetCollection("projects"), // reuse config.GetCollection
 	}
 }
 
@@ -38,8 +38,7 @@ func (r *ProjectRepository) CreateProject(project *Project) (*Project, error) {
 		logger.Log.Error("Failed to create project", zap.Error(wrappedErr))
 		return nil, wrappedErr
 	}
-
-	logger.Log.Info("Project successfully created", zap.String("id", project.ID.Hex()))
+	logger.Log.Info("Project created", zap.String("id", project.ID.Hex()))
 	return project, nil
 }
 
@@ -49,21 +48,35 @@ func (r *ProjectRepository) GetProjectByID(id string) (*Project, error) {
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		wrappedErr := fmt.Errorf("invalid project ID format: %w", err)
-		logger.Log.Warn("Invalid project ID format", zap.String("id", id))
-		return nil, wrappedErr
+		return nil, fmt.Errorf("invalid project ID format: %w", err)
 	}
 
 	var project Project
-	err = r.Collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&project)
-	if err != nil {
-		wrappedErr := fmt.Errorf("project not found: %w", err)
-		logger.Log.Warn("Project not found", zap.String("id", id))
-		return nil, wrappedErr
+	if err := r.Collection.FindOne(ctx, bson.M{"_id": objID}).Decode(&project); err != nil {
+		return nil, fmt.Errorf("project not found: %w", err)
 	}
-
-	logger.Log.Info("Project successfully retrieved", zap.String("id", id))
 	return &project, nil
+}
+
+func (r *ProjectRepository) GetProjectsByUserID(userID primitive.ObjectID) ([]*Project, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	cursor, err := r.Collection.Find(ctx, bson.M{"user_id": userID})
+	if err != nil {
+		return nil, fmt.Errorf("failed to find projects: %w", err)
+	}
+	defer cursor.Close(ctx)
+
+	var projects []*Project
+	for cursor.Next(ctx) {
+		var p Project
+		if err := cursor.Decode(&p); err != nil {
+			return nil, fmt.Errorf("failed to decode project: %w", err)
+		}
+		projects = append(projects, &p)
+	}
+	return projects, nil
 }
 
 func (r *ProjectRepository) UpdateProject(id string, updateData bson.M) (*Project, error) {
@@ -72,9 +85,7 @@ func (r *ProjectRepository) UpdateProject(id string, updateData bson.M) (*Projec
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		wrappedErr := fmt.Errorf("invalid project ID format: %w", err)
-		logger.Log.Warn("Invalid project ID format", zap.String("id", id))
-		return nil, wrappedErr
+		return nil, fmt.Errorf("invalid project ID format: %w", err)
 	}
 
 	updateData["updated_at"] = time.Now()
@@ -82,12 +93,9 @@ func (r *ProjectRepository) UpdateProject(id string, updateData bson.M) (*Projec
 
 	_, err = r.Collection.UpdateOne(ctx, bson.M{"_id": objID}, update)
 	if err != nil {
-		wrappedErr := fmt.Errorf("failed to update project: %w", err)
-		logger.Log.Error("Failed to update project", zap.String("id", id), zap.Error(wrappedErr))
-		return nil, wrappedErr
+		return nil, fmt.Errorf("failed to update project: %w", err)
 	}
-
-	logger.Log.Info("Project successfully updated", zap.String("id", id))
+	// Return the updated project
 	return r.GetProjectByID(id)
 }
 
@@ -97,18 +105,12 @@ func (r *ProjectRepository) DeleteProject(id string) error {
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		wrappedErr := fmt.Errorf("invalid project ID format: %w", err)
-		logger.Log.Warn("Invalid project ID format", zap.String("id", id))
-		return wrappedErr
+		return fmt.Errorf("invalid project ID: %w", err)
 	}
 
 	_, err = r.Collection.DeleteOne(ctx, bson.M{"_id": objID})
 	if err != nil {
-		wrappedErr := fmt.Errorf("failed to delete project: %w", err)
-		logger.Log.Error("Failed to delete project", zap.String("id", id), zap.Error(wrappedErr))
-		return wrappedErr
+		return fmt.Errorf("failed to delete project: %w", err)
 	}
-
-	logger.Log.Info("Project successfully deleted", zap.String("id", id))
 	return nil
 }
