@@ -1,6 +1,7 @@
 package api
 
 import (
+	"portfolify/internal/education"
 	"portfolify/internal/experience"
 	"portfolify/internal/projects"
 	"portfolify/internal/uploads"
@@ -37,4 +38,9 @@ func RegisterRoutes(router *gin.Engine, cm *cloudinary.CloudinaryManager) {
 	expService := experience.NewExperienceService(expRepo)
 	expHandler := experience.NewExperienceHandler(expService, userService)
 	experience.RegisterExperienceRoutes(apiGroup, expHandler)
+
+	eduRepo := education.NewEducationRepository()
+	eduService := education.NewEducationService(eduRepo)
+	eduHandler := education.NewEducationHandler(eduService, userService)
+	education.RegisterEducationRoutes(apiGroup, eduHandler)
 }
