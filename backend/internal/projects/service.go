@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type ProjectService struct {
@@ -31,4 +32,8 @@ func (s *ProjectService) UpdateProject(id string, updateData bson.M) (*Project, 
 
 func (s *ProjectService) DeleteProject(id string) error {
 	return s.Repo.DeleteProject(id)
+}
+
+func (s *ProjectService) GetProjectsByUserID(userID primitive.ObjectID) ([]*Project, error) {
+	return s.Repo.GetProjectsByUserID(userID)
 }
