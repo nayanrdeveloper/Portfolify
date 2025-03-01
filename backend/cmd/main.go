@@ -5,6 +5,7 @@ import (
 
 	"portfolify/api"
 	"portfolify/config"
+	"portfolify/pkg/cloudinary"
 	"portfolify/pkg/logger"
 	"portfolify/pkg/responses"
 
@@ -23,11 +24,17 @@ func main() {
 	// Connect to MongoDB.
 	config.ConnectDB()
 
+	// Initialize Cloudinary manager.
+	cm, err := cloudinary.NewCloudinaryManager()
+	if err != nil {
+		logger.Log.Fatal("Failed to initialize Cloudinary", zap.Error(err))
+	}
+
 	// Initialize Gin router.
 	router := gin.Default()
 
 	// Register API routes.
-	api.RegisterRoutes(router)
+	api.RegisterRoutes(router, cm)
 
 	// Handle unmatched routes with a standardized error response.
 	router.NoRoute(func(c *gin.Context) {
