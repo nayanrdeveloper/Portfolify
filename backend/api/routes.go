@@ -5,6 +5,8 @@ import (
 	"portfolify/internal/education"
 	"portfolify/internal/experience"
 	"portfolify/internal/projects"
+	categories "portfolify/internal/skillcategories"
+	"portfolify/internal/skills"
 	"portfolify/internal/uploads"
 	"portfolify/internal/userdetails"
 	"portfolify/internal/users"
@@ -49,4 +51,14 @@ func RegisterRoutes(router *gin.Engine, cm *cloudinary.CloudinaryManager) {
 	achService := achievements.NewAchievementService(achRepo)
 	achHandler := achievements.NewAchievementHandler(achService, userService)
 	achievements.RegisterAchievementRoutes(apiGroup, achHandler)
+
+	catRepo := categories.NewCategoryRepository()
+	catService := categories.NewCategoryService(catRepo)
+	catHandler := categories.NewCategoryHandler(catService)
+	categories.RegisterCategoryRoutes(apiGroup, catHandler)
+
+	skillRepo := skills.NewSkillRepository()
+	skillService := skills.NewSkillService(skillRepo)
+	skillHandler := skills.NewSkillHandler(skillService, userService, catService)
+	skills.RegisterSkillRoutes(apiGroup, skillHandler)
 }
