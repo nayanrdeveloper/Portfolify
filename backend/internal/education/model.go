@@ -2,23 +2,22 @@
 package education
 
 import (
+	"portfolify/pkg/common"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type Education struct {
-	ID           primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	UserID       primitive.ObjectID `bson:"user_id" json:"user_id"`         // Link to the user
-	Institution  string             `bson:"institution" json:"institution"` // e.g. 'Stanford University'
-	Degree       string             `bson:"degree" json:"degree"`           // e.g. 'Bachelor of Science'
-	FieldOfStudy string             `bson:"field_of_study" json:"field_of_study"`
-	StartDate    time.Time          `bson:"start_date" json:"start_date"` // e.g. 2020-09-01
-	EndDate      *time.Time         `bson:"end_date,omitempty" json:"end_date,omitempty"`
-	IsCurrent    bool               `bson:"is_current" json:"is_current"`
-	Description  string             `bson:"description" json:"description"`
-	CreatedAt    time.Time          `bson:"created_at" json:"created_at"`
-	UpdatedAt    time.Time          `bson:"updated_at" json:"updated_at"`
+	common.BaseModel `bson:",inline"`
+	UserID           primitive.ObjectID `bson:"user_id" json:"user_id"`         // Link to the user
+	Institution      string             `bson:"institution" json:"institution"` // e.g. 'Stanford University'
+	Degree           string             `bson:"degree" json:"degree"`           // e.g. 'Bachelor of Science'
+	FieldOfStudy     string             `bson:"field_of_study" json:"field_of_study"`
+	StartDate        time.Time          `bson:"start_date" json:"start_date"` // e.g. 2020-09-01
+	EndDate          *time.Time         `bson:"end_date,omitempty" json:"end_date,omitempty"`
+	IsCurrent        bool               `bson:"is_current" json:"is_current"`
+	Description      string             `bson:"description" json:"description"`
 }
 
 // EducationInput is used to bind request data for create/update

@@ -1,17 +1,13 @@
 package categories
 
 import (
-	"time"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"portfolify/pkg/common"
 )
 
 // Category is global to the system, no user ownership
 type Category struct {
-	ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
-	Name      string             `bson:"name" json:"name"` // e.g. "Programming", "Database", "Communication"
-	CreatedAt time.Time          `bson:"created_at" json:"created_at"`
-	UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
+	common.BaseModel `bson:",inline"`
+	Name             string `bson:"name" json:"name"` // e.g. "Programming", "Database", "Communication"
 }
 
 // CategoryInput is used for creating/updating categories
