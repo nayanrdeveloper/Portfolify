@@ -1,0 +1,10 @@
+# Ignore built files
+.next/
+dist/
+build/
+
+# Ignore node_modules
+node_modules/
+
+# Ignore coverage outputs
+coverage/
