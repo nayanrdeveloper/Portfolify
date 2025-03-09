@@ -7,6 +7,7 @@ import (
 	"portfolify/config"
 	"portfolify/pkg/cloudinary"
 	"portfolify/pkg/logger"
+	"portfolify/pkg/middleware"
 	"portfolify/pkg/responses"
 
 	"github.com/gin-gonic/gin"
@@ -32,6 +33,9 @@ func main() {
 
 	// Initialize Gin router.
 	router := gin.Default()
+
+	allowedOrigins := []string{"http://localhost:3000"}
+	router.Use(middleware.CORSMiddleware(allowedOrigins))
 
 	// Register API routes.
 	api.RegisterRoutes(router, cm)

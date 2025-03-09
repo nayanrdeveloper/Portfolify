@@ -1,0 +1,9 @@
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { baseQueryWithInterceptor } from './customBaseQuery';
+
+export const apiSlice = createApi({
+    reducerPath: 'api',
+    baseQuery: baseQueryWithInterceptor,
+    tagTypes: [],
+    endpoints: () => ({}),
+});
