@@ -4,11 +4,21 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface AuthState {
     token: string | null;
     isAuthenticated: boolean;
+    userProfile: {
+        email: string;
+        userId: string;
+        slug: string;
+    };
 }
 
 const initialState: AuthState = {
     token: null,
     isAuthenticated: false,
+    userProfile: {
+        email: '',
+        slug: '',
+        userId: '',
+    },
 };
 
 const authSlice = createSlice({
@@ -19,6 +29,16 @@ const authSlice = createSlice({
             state.token = action.payload;
             state.isAuthenticated = true;
         },
+        setUserProfile(
+            state,
+            action: PayloadAction<{
+                email: string;
+                userId: string;
+                slug: string;
+            }>,
+        ) {
+            state.userProfile = action.payload;
+        },
         clearAuthToken(state) {
             state.token = null;
             state.isAuthenticated = false;
@@ -26,5 +46,6 @@ const authSlice = createSlice({
     },
 });
 
-export const { setAuthToken, clearAuthToken } = authSlice.actions;
+export const { setAuthToken, setUserProfile, clearAuthToken } =
+    authSlice.actions;
 export default authSlice.reducer;

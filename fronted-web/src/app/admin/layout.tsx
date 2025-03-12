@@ -2,11 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // note: import jwtDecode (not destructured)
+import LayoutWrapper from '@/components/layouts/Sidebar/LayoutWrapper';
+import { useAppDispatch } from '@/redux/hooks'; // your typed redux hooks
+import { setUserProfile } from '@/redux/auth/authSlice'; // action to store user details
 
 interface JWTPayload {
+    userId: string;
+    email: string;
+    slug: string;
     exp: number;
-    // Add additional properties if needed
+    iat: number;
+    // add additional fields if needed
 }
 
 export default function AdminLayout({
@@ -15,6 +22,7 @@ export default function AdminLayout({
     children: React.ReactNode;
 }) {
     const router = useRouter();
+    const dispatch = useAppDispatch();
     const [isAuthorized, setIsAuthorized] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -26,14 +34,19 @@ export default function AdminLayout({
         }
 
         try {
-            // Decode the token
             const decoded = jwtDecode<JWTPayload>(token);
-            // Check expiration (exp is usually in seconds)
             if (decoded.exp * 1000 < Date.now()) {
                 localStorage.removeItem('authToken');
                 router.replace('/auth');
             } else {
                 setIsAuthorized(true);
+                dispatch(
+                    setUserProfile({
+                        userId: decoded.userId,
+                        email: decoded.email,
+                        slug: decoded.slug,
+                    }),
+                );
             }
         } catch (error) {
             console.error('Invalid token:', error);
@@ -42,16 +55,15 @@ export default function AdminLayout({
         } finally {
             setLoading(false);
         }
-    }, [router]);
+    }, [router, dispatch]);
 
     if (loading) {
-        // Optionally show a spinner or loading state while checking
         return <div>Loading...</div>;
     }
 
     if (!isAuthorized) {
-        return null; // Redirect is triggered, so nothing to render here.
+        return null;
     }
 
-    return <>{children}</>;
+    return <LayoutWrapper>{children}</LayoutWrapper>;
 }

@@ -1,78 +1,93 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { useLoginMutation } from '@/redux/auth/authApi';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert } from '@/components/ui/alert'; // optional: ensure you have an Alert component
+import { useLoginMutation } from '@/redux/auth/authApi';
 
 export function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [localError, setLocalError] = useState<string | null>(null);
     const router = useRouter();
-    const [login, { isLoading, isError, error, isSuccess }] =
-        useLoginMutation();
+    const [login, { isLoading, isError, isSuccess }] = useLoginMutation();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setLocalError(null);
+
         try {
-            // RTK Query auto-handles success/failure
             const response = await login({ email, password }).unwrap();
             console.log('Logged in:', response);
-            // Optionally store the token in localStorage if not already set
             localStorage.setItem('authToken', response.data.token);
-            // Redirect to /admin after successful login
             router.push('/admin');
-        } catch (err) {
+        } catch (err: unknown) {
             console.error('Login failed:', err);
+            if (err instanceof Error) {
+                setLocalError(err.message);
+            } else {
+                setLocalError('An unknown error occurred.');
+            }
         }
     };
 
     return (
-        <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-                <label
-                    htmlFor="loginEmail"
-                    className="block text-sm font-semibold mb-1"
-                >
-                    Email
-                </label>
-                <input
-                    id="loginEmail"
-                    type="email"
-                    className="w-full px-3 py-2 border rounded"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-            </div>
+        <div className="max-w-md mx-auto p-6 bg-white rounded shadow">
+            <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
 
-            <div>
-                <label
-                    htmlFor="loginPassword"
-                    className="block text-sm font-semibold mb-1"
-                >
-                    Password
-                </label>
-                <input
-                    id="loginPassword"
-                    type="password"
-                    className="w-full px-3 py-2 border rounded"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </div>
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? 'Logging in...' : 'Login'}
-            </Button>
-            {isError && (
-                <p>
-                    Login error:{' '}
-                    {(error as { data?: { message?: string } })?.data?.message}
-                </p>
+            {isError && localError && (
+                <Alert variant="destructive" className="mb-4">
+                    {localError}
+                </Alert>
             )}
-            {isSuccess && <p>Login successful!</p>}
-        </form>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+                <div>
+                    <Label
+                        htmlFor="loginEmail"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        Email
+                    </Label>
+                    <Input
+                        id="loginEmail"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="you@example.com"
+                        required
+                        className="mt-1"
+                    />
+                </div>
+                <div>
+                    <Label
+                        htmlFor="loginPassword"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                        Password
+                    </Label>
+                    <Input
+                        id="loginPassword"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter your password"
+                        required
+                        className="mt-1"
+                    />
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Logging in...' : 'Login'}
+                </Button>
+                {isSuccess && (
+                    <p className="text-green-600 text-center mt-2">
+                        Login successful!
+                    </p>
+                )}
+            </form>
+        </div>
     );
 }
