@@ -10,6 +10,7 @@ import {
 } from '@/redux/experience/experienceApi';
 import type { Experience } from '@/redux/experience/experienceTypes';
 import ExperienceTable from '@/components/projects/ExperienceTable';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 export default function ExperienceListPage() {
     const { slug } = useAppSelector((state) => state.auth.userProfile);
@@ -29,7 +30,7 @@ export default function ExperienceListPage() {
         }
     };
 
-    if (isLoading) return <div>Loading experience records...</div>;
+    if (isLoading) return <TableSkeleton columns={8} rows={4} />;
     if (isError || !data) return <div>Error loading experience records</div>;
 
     const experiences: Experience[] = Array.isArray(data.data) ? data.data : [];

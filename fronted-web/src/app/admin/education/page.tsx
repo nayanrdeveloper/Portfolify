@@ -11,6 +11,7 @@ import {
 import type { Education } from '@/redux/education/educationTypes';
 import { useAppSelector } from '@/redux/hooks';
 import { formatDate } from '@/lib/dateUtils';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 export default function EducationListPage() {
     const { slug } = useAppSelector((state) => state.auth.userProfile);
@@ -32,7 +33,7 @@ export default function EducationListPage() {
         }
     };
 
-    if (isLoading) return <div>Loading education records...</div>;
+    if (isLoading) return <TableSkeleton columns={8} rows={4} />;
     if (isError || !data) return <div>Error loading education records</div>;
 
     const educations: Education[] = Array.isArray(data.data) ? data.data : [];
