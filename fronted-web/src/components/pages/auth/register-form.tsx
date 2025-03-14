@@ -2,56 +2,53 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-// Optional: use an alert component from shadcn/ui if available
+import { Button } from '@/components/ui/button';
 import { Alert } from '@/components/ui/alert';
+import { useRegisterMutation } from '@/redux/auth/authApi';
 
 export function RegisterForm() {
     const router = useRouter();
     const [fullName, setFullName] = useState('');
+    const [slug, setSlug] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [register, { isLoading }] = useRegisterMutation();
 
     async function handleRegisterSubmit(e: React.FormEvent) {
         e.preventDefault();
         setError(null);
 
-        // Client-side validation: check if passwords match
+        // Validate that all fields are provided
+        if (!fullName || !slug || !email || !password) {
+            setError('Please fill in all required fields.');
+            return;
+        }
+
+        // Validate that password and confirm password match
         if (password !== confirmPassword) {
             setError('Passwords do not match.');
             return;
         }
 
-        setIsLoading(true);
-
         try {
-            // TODO: Replace with an API call to your registration endpoint
-            // Example:
-            // const res = await fetch("/api/auth/register", {
-            //   method: "POST",
-            //   headers: { "Content-Type": "application/json" },
-            //   body: JSON.stringify({ fullName, email, password }),
-            // });
-            // if (!res.ok) throw new Error("Registration failed");
-            // const data = await res.json();
-
-            // For demonstration, we use an alert:
-            alert('Registered successfully (placeholder)!');
-            // Optionally, redirect the user after successful registration
+            await register({
+                name: fullName,
+                email,
+                password,
+                slug,
+            }).unwrap();
+            // On successful registration, redirect user (e.g. to login page)
             router.push('/auth');
         } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError('An unknown error occurred');
-            }
-        } finally {
-            setIsLoading(false);
+            console.error('Registration failed:', err);
+            setError(
+                (err as { data?: { message?: string } })?.data?.message ||
+                    'Registration failed.',
+            );
         }
     }
 
@@ -79,6 +76,24 @@ export function RegisterForm() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="John Doe"
+                    className="mt-1"
+                    required
+                />
+            </div>
+
+            <div>
+                <Label
+                    htmlFor="slug"
+                    className="block text-sm font-medium text-gray-700"
+                >
+                    Slug
+                </Label>
+                <Input
+                    id="slug"
+                    type="text"
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                    placeholder="unique-slug"
                     className="mt-1"
                     required
                 />
