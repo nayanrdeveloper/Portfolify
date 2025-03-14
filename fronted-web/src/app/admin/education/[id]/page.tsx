@@ -1,15 +1,27 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { useCreateEducationMutation } from '@/redux/education/educationApi';
-import { formatDateForAPI } from '@/lib/dateUtils';
+import {
+    useGetEducationByIDQuery,
+    useUpdateEducationMutation,
+} from '@/redux/education/educationApi';
+import type { Education } from '@/redux/education/educationTypes';
 
-export default function NewEducationPage() {
+export default function EditEducationPage() {
     const router = useRouter();
+    const params = useParams();
+    const educationId = params.id as string;
+
+    const { data, isLoading, isError } = useGetEducationByIDQuery(educationId);
+    const [
+        updateEducation,
+        { isLoading: isUpdating, isError: isUpdateError, error: updateError },
+    ] = useUpdateEducationMutation();
+
     const [institution, setInstitution] = useState('');
     const [degree, setDegree] = useState('');
     const [fieldOfStudy, setFieldOfStudy] = useState('');
@@ -18,30 +30,44 @@ export default function NewEducationPage() {
     const [isCurrent, setIsCurrent] = useState(false);
     const [description, setDescription] = useState('');
 
-    const [createEducation, { isLoading, isError, error }] =
-        useCreateEducationMutation();
+    useEffect(() => {
+        if (data && data.data) {
+            const edu = data.data as Education;
+            setInstitution(edu.institution);
+            setDegree(edu.degree || '');
+            setFieldOfStudy(edu.field_of_study || '');
+            setStartDate(edu.start_date);
+            setEndDate(edu.end_date || '');
+            setIsCurrent(edu.is_current);
+            setDescription(edu.description || '');
+        }
+    }, [data]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await createEducation({
+            await updateEducation({
+                id: educationId,
                 institution,
                 degree,
                 field_of_study: fieldOfStudy,
-                start_date: formatDateForAPI(startDate),
-                end_date: endDate ? formatDateForAPI(endDate) : '',
+                start_date: startDate,
+                end_date: endDate || '',
                 is_current: isCurrent,
                 description,
             }).unwrap();
-            router.push('/admin/education');
+            router.push('/education');
         } catch (err) {
-            console.error('Failed to create education:', err);
+            console.error('Update failed:', err);
         }
     };
 
+    if (isLoading) return <div>Loading education record...</div>;
+    if (isError) return <div>Error loading education record.</div>;
+
     return (
         <div className="max-w-xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Add New Education</h1>
+            <h1 className="text-2xl font-bold mb-6">Edit Education</h1>
             <form
                 onSubmit={handleSubmit}
                 className="space-y-4 bg-white p-6 rounded shadow"
@@ -122,16 +148,16 @@ export default function NewEducationPage() {
                     type="submit"
                     variant="default"
                     className="w-full"
-                    disabled={isLoading}
+                    disabled={isUpdating}
                 >
-                    {isLoading ? 'Saving...' : 'Save Education'}
+                    {isUpdating ? 'Updating...' : 'Update Education'}
                 </Button>
-                {isError && (
+                {isUpdateError && (
                     <p className="text-red-500">
                         Error:{' '}
                         {
-                            (error as { data?: { message?: string } })?.data
-                                ?.message
+                            (updateError as { data?: { message?: string } })
+                                ?.data?.message
                         }
                     </p>
                 )}

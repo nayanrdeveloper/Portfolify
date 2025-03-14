@@ -1,5 +1,6 @@
 import { fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { BaseQueryFn } from '@reduxjs/toolkit/query';
+import toast from 'react-hot-toast';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface CommonResponse<DataType = any> {
@@ -48,7 +49,7 @@ const rawBaseQuery = fetchBaseQuery({
 });
 
 /**
- * A custom base query that intercepts and shows alert messages
+ * A custom base query that intercepts and shows toast messages
  * for success/error based on the "status" field in the server response.
  */
 export const baseQueryWithInterceptor: BaseQueryFn<
@@ -69,9 +70,8 @@ export const baseQueryWithInterceptor: BaseQueryFn<
         };
         const serverData = fetchError?.data;
 
-        // Show an error alert unless skipErrorToast is true
         if (!meta?.skipErrorToast) {
-            alert(
+            toast.error(
                 meta?.errorMessage ||
                     serverData?.message ||
                     'An unexpected error occurred.',
@@ -85,9 +85,8 @@ export const baseQueryWithInterceptor: BaseQueryFn<
     // Check if the response body's status field equals "success"
     const data = result.data as CommonResponse;
     if (data.status !== 'success') {
-        // The server responded with status "error"
         if (!meta?.skipErrorToast) {
-            alert(
+            toast.error(
                 meta?.errorMessage ||
                     data.message ||
                     'An unexpected error occurred.',
@@ -102,11 +101,11 @@ export const baseQueryWithInterceptor: BaseQueryFn<
         };
     }
 
-    // If success=true, optionally show a success alert
+    // If success=true, optionally show a success toast
     if (!meta?.skipSuccessToast) {
         const successMsg = meta?.successMessage || data.message;
         if (successMsg) {
-            alert(successMsg);
+            toast.success(successMsg);
         }
     }
 

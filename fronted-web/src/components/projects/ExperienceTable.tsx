@@ -1,23 +1,21 @@
 'use client';
 
 import React from 'react';
-
-export interface Experience {
-    id: number;
-    title: string;
-    company: string;
-    location: string;
-    startDate: string; // ISO date string (YYYY-MM-DD)
-    endDate: string; // ISO date string or empty string if currently active
-    isCurrent: boolean;
-    description: string;
-}
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Trash2, Edit } from 'lucide-react';
+import type { Experience } from '@/redux/experience/experienceTypes';
+import { formatDate } from '@/lib/dateUtils';
 
 interface ExperienceTableProps {
     experiences: Experience[];
+    onDelete: (id: string) => void;
 }
 
-const ExperienceTable: React.FC<ExperienceTableProps> = ({ experiences }) => {
+const ExperienceTable: React.FC<ExperienceTableProps> = ({
+    experiences,
+    onDelete,
+}) => {
     return (
         <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
@@ -34,6 +32,7 @@ const ExperienceTable: React.FC<ExperienceTableProps> = ({ experiences }) => {
                         <th className="border px-4 py-2 text-left">
                             Description
                         </th>
+                        <th className="border px-4 py-2 text-left">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,16 +42,39 @@ const ExperienceTable: React.FC<ExperienceTableProps> = ({ experiences }) => {
                             <td className="border px-4 py-2">{exp.company}</td>
                             <td className="border px-4 py-2">{exp.location}</td>
                             <td className="border px-4 py-2">
-                                {exp.startDate}
+                                {formatDate(exp.start_date)}
                             </td>
                             <td className="border px-4 py-2">
-                                {exp.endDate ? exp.endDate : 'Present'}
+                                {exp.end_date
+                                    ? formatDate(exp.end_date)
+                                    : 'Present'}
                             </td>
                             <td className="border px-4 py-2">
-                                {exp.isCurrent ? 'Yes' : 'No'}
+                                {exp.is_current ? 'Yes' : 'No'}
                             </td>
                             <td className="border px-4 py-2">
                                 {exp.description}
+                            </td>
+                            <td className="border px-4 py-2 flex space-x-2">
+                                <Link href={`/admin/experience/${exp.id}`}>
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        className="flex items-center gap-1"
+                                    >
+                                        <Edit className="w-4 h-4" />
+                                        Edit
+                                    </Button>
+                                </Link>
+                                <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => onDelete(String(exp.id))}
+                                    className="flex items-center gap-1"
+                                >
+                                    <Trash2 className="w-4 h-4" />
+                                    Delete
+                                </Button>
                             </td>
                         </tr>
                     ))}
