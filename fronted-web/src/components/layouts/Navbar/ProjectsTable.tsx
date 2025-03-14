@@ -8,6 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react'; // Trash icon from lucide-react
 import { Project } from '@/redux/projects/projectsTypes';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 // import type { Project } from "@/redux/projects/projectType";
 
 interface ProjectsTableProps {
@@ -36,7 +37,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({
     };
 
     if (isLoading) {
-        return <div>Loading projects...</div>;
+        return <TableSkeleton columns={8} rows={4} />;
     }
 
     if (isError || !data) {

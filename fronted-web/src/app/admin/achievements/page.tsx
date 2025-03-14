@@ -3,13 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import {
-    useDeleteAchievementMutation,
-    useGetAchievementsBySlugQuery,
-} from '@/redux/achievements/achievementApi';
+import { useGetAchievementsBySlugQuery } from '@/redux/achievements/achievementApi';
 import { useAppSelector } from '@/redux/hooks';
 import type { Achievement } from '@/redux/achievements/achievementTypes';
 import AchievementsTable from '@/components/projects/AchievementsTable';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 export default function AchievementsListPage() {
     const { slug } = useAppSelector((state) => state.auth.userProfile);
@@ -17,21 +15,17 @@ export default function AchievementsListPage() {
         slug as string,
     );
 
-    const [deleteAchievement] = useDeleteAchievementMutation();
-
     const handleDelete = async (id: string) => {
         if (confirm('Are you sure you want to delete this record?')) {
             try {
-                await deleteAchievement(id).unwrap();
-                alert('Education deleted successfully');
+                console.log('Delete achievement with id:', id);
             } catch (error) {
                 console.error('Delete failed:', error);
-                alert('Failed to delete education');
             }
         }
     };
 
-    if (isLoading) return <div>Loading achievements...</div>;
+    if (isLoading) return <TableSkeleton columns={8} rows={4} />;
     if (isError || !data) return <div>Error loading achievements.</div>;
 
     const achievements: Achievement[] = Array.isArray(data.data)
