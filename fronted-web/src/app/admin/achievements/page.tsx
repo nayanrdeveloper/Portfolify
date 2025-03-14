@@ -1,38 +1,42 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import AchievementsTable, {
-    Achievement,
-} from '@/components/projects/AchievementsTable';
+import {
+    useDeleteAchievementMutation,
+    useGetAchievementsBySlugQuery,
+} from '@/redux/achievements/achievementApi';
+import { useAppSelector } from '@/redux/hooks';
+import type { Achievement } from '@/redux/achievements/achievementTypes';
+import AchievementsTable from '@/components/projects/AchievementsTable';
 
 export default function AchievementsListPage() {
-    // Sample data for demonstration. Replace with API data in production.
-    const [achievements] = useState<Achievement[]>([
-        {
-            id: 1,
-            name: 'AWS Certified Solutions Architect',
-            issuer: 'Amazon Web Services',
-            issueDate: '2022-01-01',
-            expirationDate: '2025-01-01',
-            credentialId: 'ABC123',
-            credentialURL: 'https://aws.amazon.com/certification/',
-            description:
-                'Certified to design and deploy scalable systems on AWS.',
-        },
-        {
-            id: 2,
-            name: 'Google Cloud Certified',
-            issuer: 'Google Cloud',
-            issueDate: '2021-05-01',
-            expirationDate: '',
-            credentialId: 'XYZ456',
-            credentialURL: 'https://cloud.google.com/certification/',
-            description:
-                'Demonstrates proficiency with Google Cloud technologies.',
-        },
-    ]);
+    const { slug } = useAppSelector((state) => state.auth.userProfile);
+    const { data, isLoading, isError } = useGetAchievementsBySlugQuery(
+        slug as string,
+    );
+
+    const [deleteAchievement] = useDeleteAchievementMutation();
+
+    const handleDelete = async (id: string) => {
+        if (confirm('Are you sure you want to delete this record?')) {
+            try {
+                await deleteAchievement(id).unwrap();
+                alert('Education deleted successfully');
+            } catch (error) {
+                console.error('Delete failed:', error);
+                alert('Failed to delete education');
+            }
+        }
+    };
+
+    if (isLoading) return <div>Loading achievements...</div>;
+    if (isError || !data) return <div>Error loading achievements.</div>;
+
+    const achievements: Achievement[] = Array.isArray(data.data)
+        ? data.data
+        : [];
 
     return (
         <div className="w-full p-4">
@@ -42,7 +46,10 @@ export default function AchievementsListPage() {
                     <Button variant="default">Add New Achievement</Button>
                 </Link>
             </div>
-            <AchievementsTable achievements={achievements} />
+            <AchievementsTable
+                achievements={achievements}
+                onDelete={handleDelete}
+            />
         </div>
     );
 }

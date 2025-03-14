@@ -3,6 +3,7 @@
 
 import { store } from '@/redux/store';
 import React, { FC, ReactNode } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 // Redux
 import { Provider as ReduxProvider } from 'react-redux';
@@ -12,5 +13,10 @@ interface AppProvidersProps {
 }
 
 export const AppProviders: FC<AppProvidersProps> = ({ children }) => {
-    return <ReduxProvider store={store}>{children}</ReduxProvider>;
+    return (
+        <ReduxProvider store={store}>
+            {children}
+            <Toaster position="top-right" />
+        </ReduxProvider>
+    );
 };

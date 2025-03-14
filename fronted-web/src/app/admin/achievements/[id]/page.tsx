@@ -1,15 +1,29 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { useCreateAchievementMutation } from '@/redux/achievements/achievementApi';
+import {
+    useGetAchievementByIDQuery,
+    useUpdateAchievementMutation,
+} from '@/redux/achievements/achievementApi';
+import type { Achievement } from '@/redux/achievements/achievementTypes';
 import { formatDateForAPI } from '@/lib/dateUtils';
 
-export default function NewAchievementPage() {
+export default function EditAchievementPage() {
     const router = useRouter();
+    const params = useParams();
+    const achievementId = params.id as string;
+
+    const { data, isLoading, isError } =
+        useGetAchievementByIDQuery(achievementId);
+    const [
+        updateAchievement,
+        { isLoading: isUpdating, isError: isUpdateError, error: updateError },
+    ] = useUpdateAchievementMutation();
+
     const [name, setName] = useState('');
     const [issuer, setIssuer] = useState('');
     const [issueDate, setIssueDate] = useState('');
@@ -18,13 +32,26 @@ export default function NewAchievementPage() {
     const [credentialURL, setCredentialURL] = useState('');
     const [description, setDescription] = useState('');
 
-    const [createAchievement, { isLoading, isError, error }] =
-        useCreateAchievementMutation();
+    useEffect(() => {
+        if (data && data.data) {
+            const ach = data.data as Achievement;
+            setName(ach.name);
+            setIssuer(ach.issuer);
+            setIssueDate(ach.issue_date.substring(0, 10)); // Extract "YYYY-MM-DD"
+            setExpirationDate(
+                ach.expiration_date ? ach.expiration_date.substring(0, 10) : '',
+            );
+            setCredentialId(ach.credential_id || '');
+            setCredentialURL(ach.credential_url || '');
+            setDescription(ach.description || '');
+        }
+    }, [data]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await createAchievement({
+            await updateAchievement({
+                id: achievementId,
                 name,
                 issuer,
                 issue_date: formatDateForAPI(issueDate),
@@ -37,13 +64,16 @@ export default function NewAchievementPage() {
             }).unwrap();
             router.push('/admin/achievements');
         } catch (err) {
-            console.error('Failed to create achievement:', err);
+            console.error('Update failed:', err);
         }
     };
 
+    if (isLoading) return <div>Loading achievement...</div>;
+    if (isError) return <div>Error loading achievement.</div>;
+
     return (
         <div className="max-w-xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Add New Achievement</h1>
+            <h1 className="text-2xl font-bold mb-6">Edit Achievement</h1>
             <form
                 onSubmit={handleSubmit}
                 className="space-y-4 bg-white p-6 rounded shadow"
@@ -126,16 +156,16 @@ export default function NewAchievementPage() {
                     type="submit"
                     variant="default"
                     className="w-full"
-                    disabled={isLoading}
+                    disabled={isUpdating}
                 >
-                    {isLoading ? 'Saving...' : 'Save Achievement'}
+                    {isUpdating ? 'Updating...' : 'Update Achievement'}
                 </Button>
-                {isError && (
+                {isUpdateError && (
                     <p className="text-red-500">
                         Error:{' '}
                         {
-                            (error as { data?: { message?: string } })?.data
-                                ?.message
+                            (updateError as { data?: { message?: string } })
+                                ?.data?.message
                         }
                     </p>
                 )}

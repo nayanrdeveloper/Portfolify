@@ -4,6 +4,6 @@ import { baseQueryWithInterceptor } from './customBaseQuery';
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: baseQueryWithInterceptor,
-    tagTypes: ['Project'],
+    tagTypes: ['Project', 'Education', 'Experience', 'Achievement'],
     endpoints: () => ({}),
 });

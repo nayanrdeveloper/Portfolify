@@ -1,35 +1,38 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import ExperienceTable, {
-    Experience,
-} from '@/components/projects/ExperienceTable';
+import { useAppSelector } from '@/redux/hooks';
+import {
+    useGetExperiencesBySlugQuery,
+    useDeleteExperienceMutation,
+} from '@/redux/experience/experienceApi';
+import type { Experience } from '@/redux/experience/experienceTypes';
+import ExperienceTable from '@/components/projects/ExperienceTable';
 
 export default function ExperienceListPage() {
-    const [experiences] = useState<Experience[]>([
-        {
-            id: 1,
-            title: 'Senior Developer',
-            company: 'Google',
-            location: 'Mountain View, CA',
-            startDate: '2020-01-01',
-            endDate: '2023-01-01',
-            isCurrent: false,
-            description: 'Worked on various high-impact projects at Google.',
-        },
-        {
-            id: 2,
-            title: 'Junior Developer',
-            company: 'Facebook',
-            location: 'Menlo Park, CA',
-            startDate: '2018-05-01',
-            endDate: '',
-            isCurrent: true,
-            description: 'Currently working on cutting-edge social features.',
-        },
-    ]);
+    const { slug } = useAppSelector((state) => state.auth.userProfile);
+
+    const { data, isLoading, isError } = useGetExperiencesBySlugQuery(
+        slug as string,
+    );
+    const [deleteExperience] = useDeleteExperienceMutation();
+
+    const handleDelete = async (id: string) => {
+        if (confirm('Are you sure you want to delete this record?')) {
+            try {
+                await deleteExperience(id).unwrap();
+            } catch (error) {
+                console.error('Delete failed:', error);
+            }
+        }
+    };
+
+    if (isLoading) return <div>Loading experience records...</div>;
+    if (isError || !data) return <div>Error loading experience records</div>;
+
+    const experiences: Experience[] = Array.isArray(data.data) ? data.data : [];
 
     return (
         <div className="w-full p-4">
@@ -39,7 +42,10 @@ export default function ExperienceListPage() {
                     <Button variant="default">Add New Experience</Button>
                 </Link>
             </div>
-            <ExperienceTable experiences={experiences} />
+            <ExperienceTable
+                experiences={experiences}
+                onDelete={handleDelete}
+            />
         </div>
     );
 }

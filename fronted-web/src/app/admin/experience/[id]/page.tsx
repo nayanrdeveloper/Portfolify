@@ -1,15 +1,31 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { useCreateExperienceMutation } from '@/redux/experience/experienceApi';
+import {
+    useGetExperienceByIDQuery,
+    useUpdateExperienceMutation,
+} from '@/redux/experience/experienceApi';
+import type { Experience } from '@/redux/experience/experienceTypes';
 import { formatDateForAPI } from '@/lib/dateUtils';
 
-export default function NewExperiencePage() {
+export default function EditExperiencePage() {
     const router = useRouter();
+    const params = useParams();
+    const experienceId = params.id as string;
+
+    // Fetch the experience record using RTK Query
+    const { data, isLoading, isError } =
+        useGetExperienceByIDQuery(experienceId);
+    const [
+        updateExperience,
+        { isLoading: isUpdating, isError: isUpdateError, error: updateError },
+    ] = useUpdateExperienceMutation();
+
+    // Local state for form fields
     const [title, setTitle] = useState('');
     const [company, setCompany] = useState('');
     const [location, setLocation] = useState('');
@@ -18,16 +34,31 @@ export default function NewExperiencePage() {
     const [isCurrent, setIsCurrent] = useState(false);
     const [description, setDescription] = useState('');
 
-    const [createExperience, { isLoading, isError, error }] =
-        useCreateExperienceMutation();
+    // Pre-fill form fields when data is available
+    useEffect(() => {
+        if (data && data.data) {
+            const exp = data.data as Experience;
+            setTitle(exp.title);
+            setCompany(exp.company);
+            setLocation(exp.location);
+            // Assuming the backend sends dates as ISO strings,
+            // you may need to convert them to "YYYY-MM-DD" for the date input.
+            setStartDate(exp.start_date.substring(0, 10));
+            setEndDate(exp.end_date ? exp.end_date.substring(0, 10) : '');
+            setIsCurrent(exp.is_current);
+            setDescription(exp.description);
+        }
+    }, [data]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await createExperience({
+            await updateExperience({
+                id: experienceId,
                 title,
                 company,
                 location,
+                // Format date values to full ISO strings before sending to API.
                 start_date: formatDateForAPI(startDate),
                 end_date: endDate ? formatDateForAPI(endDate) : '',
                 is_current: isCurrent,
@@ -35,13 +66,16 @@ export default function NewExperiencePage() {
             }).unwrap();
             router.push('/admin/experience');
         } catch (err) {
-            console.error('Failed to create experience:', err);
+            console.error('Update failed:', err);
         }
     };
 
+    if (isLoading) return <div>Loading experience record...</div>;
+    if (isError) return <div>Error loading experience record.</div>;
+
     return (
         <div className="max-w-xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Add New Experience</h1>
+            <h1 className="text-2xl font-bold mb-6">Edit Experience</h1>
             <form
                 onSubmit={handleSubmit}
                 className="space-y-4 bg-white p-6 rounded shadow"
@@ -123,16 +157,16 @@ export default function NewExperiencePage() {
                     type="submit"
                     variant="default"
                     className="w-full"
-                    disabled={isLoading}
+                    disabled={isUpdating}
                 >
-                    {isLoading ? 'Saving...' : 'Save Experience'}
+                    {isUpdating ? 'Updating...' : 'Update Experience'}
                 </Button>
-                {isError && (
+                {isUpdateError && (
                     <p className="text-red-500">
                         Error:{' '}
                         {
-                            (error as { data?: { message?: string } })?.data
-                                ?.message
+                            (updateError as { data?: { message?: string } })
+                                ?.data?.message
                         }
                     </p>
                 )}
