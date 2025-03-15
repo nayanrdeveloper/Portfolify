@@ -15,12 +15,12 @@ import (
 )
 
 func main() {
-	// Load environment variables.
-	config.LoadEnv()
-
-	// Initialize production logger.
+	// Initialize production logger first
 	logger.InitLogger()
 	defer logger.Log.Sync()
+
+	// Now load environment variables
+	config.LoadEnv()
 
 	// Connect to MongoDB.
 	config.ConnectDB()

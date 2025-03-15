@@ -5,7 +5,7 @@ import (
 	"portfolify/internal/education"
 	"portfolify/internal/experience"
 	"portfolify/internal/projects"
-	categories "portfolify/internal/skillcategories"
+	"portfolify/internal/categories"
 	"portfolify/internal/skills"
 	"portfolify/internal/uploads"
 	"portfolify/internal/userdetails"

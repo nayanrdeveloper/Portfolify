@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/zap"
 
-	categories "portfolify/internal/skillcategories"
+	"portfolify/internal/categories"
 	"portfolify/internal/users"
 	"portfolify/pkg/logger"
 	"portfolify/pkg/responses"
