@@ -2,10 +2,11 @@ package api
 
 import (
 	"portfolify/internal/achievements"
+	"portfolify/internal/categories"
 	"portfolify/internal/education"
 	"portfolify/internal/experience"
 	"portfolify/internal/projects"
-	"portfolify/internal/categories"
+	"portfolify/internal/settings"
 	"portfolify/internal/skills"
 	"portfolify/internal/uploads"
 	"portfolify/internal/userdetails"
@@ -31,6 +32,11 @@ func RegisterRoutes(router *gin.Engine, cm *cloudinary.CloudinaryManager) {
 	userDetailsService := userdetails.NewUserDetailsService(userDetailsRepo, userService)
 	userDetailsHandler := userdetails.NewUserDetailsHandler(userDetailsService)
 	userdetails.RegisterUserDetailsRoutes(apiGroup, userDetailsHandler)
+
+	settingsRepo := settings.NewSettingsRepository()
+	settingsService := settings.NewSettingsService(settingsRepo)
+	settingsHandler := settings.NewSettingsHandler(settingsService, userService)
+	settings.RegisterSettingsRoutes(apiGroup, settingsHandler)
 
 	projectRepo := projects.NewProjectRepository()
 	projectService := projects.NewProjectService(projectRepo)
