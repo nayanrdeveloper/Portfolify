@@ -11,6 +11,7 @@ export const apiSlice = createApi({
         'Achievement',
         'Skill',
         'Category',
+        'Settings',
     ],
     endpoints: () => ({}),
 });
