@@ -12,6 +12,7 @@ export const apiSlice = createApi({
         'Skill',
         'Category',
         'Settings',
+        'UserDetails',
     ],
     endpoints: () => ({}),
 });

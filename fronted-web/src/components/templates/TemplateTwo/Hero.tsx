@@ -1,9 +1,10 @@
-import Hero from './Hero';
-
-export default function TemplateTwo() {
+export default function Hero() {
     return (
-        <div className="min-h-screen bg-blue-500 text-white">
-            <Hero />
-        </div>
+        <section className="bg-gray-800 text-white py-20 text-center">
+            <h1 className="text-4xl font-bold">
+                Welcome to My Portfolio (Template 3)
+            </h1>
+            <p className="mt-4 text-lg">Showcasing my skills and experience</p>
+        </section>
     );
 }

@@ -2,7 +2,11 @@ import { apiSlice } from '../apiSlice';
 
 // Types for Settings API
 export interface ISettingsResponse {
-    template: string;
+    status: string; // "success" or "error"
+    message: string;
+    data: {
+        template: string;
+    };
 }
 
 export interface UpdateSettingsPayload {
@@ -30,13 +34,12 @@ export const settingsApi = apiSlice.injectEndpoints({
             providesTags: ['Settings'],
         }),
 
-        // ✅ Update user settings (PRIVATE, requires auth)
         updateUserSettings: builder.mutation<
             ISettingsResponse,
             UpdateSettingsPayload
         >({
-            query: ({ id, ...payload }) => ({
-                url: `/settings/${id}`,
+            query: ({ ...payload }) => ({
+                url: `/settings/`,
                 method: 'PUT',
                 body: payload,
             }),
