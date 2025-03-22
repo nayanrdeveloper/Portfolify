@@ -17,7 +17,7 @@ interface ProjectsTableProps {
 }
 
 const ProjectsTable: React.FC<ProjectsTableProps> = ({
-    userSlug = 'nayanrdeveloper',
+    userSlug = 'nayanr-developer',
 }) => {
     // Fetch projects using RTK Query
     const { data, isLoading, isError } = useGetProjectsBySlugQuery(userSlug);

@@ -11,13 +11,12 @@ export default function Home() {
                 <nav className="max-w-6xl mx-auto flex items-center justify-between px-4">
                     <div className="text-xl font-bold">Portfolify</div>
                     <div className="space-x-4">
-                        <Link href="/login" className="hover:underline">
+                        <Link href="/auth" className="hover:underline">
                             Login
                         </Link>
-                        <Link href="/signup" className="hover:underline">
+                        <Link href="/auth" className="hover:underline">
                             Sign Up
                         </Link>
-                        {/* Admin link for demonstration - remove if not needed */}
                         <Link href="/admin" className="hover:underline">
                             Admin
                         </Link>
