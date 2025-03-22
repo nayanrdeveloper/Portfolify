@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react'; // Trash icon from lucide-react
 import { Project } from '@/redux/projects/projectsTypes';
 import TableSkeleton from '@/components/ui/TableSkeleton';
+import { useAppSelector } from '@/redux/hooks';
 // import type { Project } from "@/redux/projects/projectType";
 
 interface ProjectsTableProps {
@@ -16,11 +17,9 @@ interface ProjectsTableProps {
     userSlug?: string;
 }
 
-const ProjectsTable: React.FC<ProjectsTableProps> = ({
-    userSlug = 'nayanr-developer',
-}) => {
-    // Fetch projects using RTK Query
-    const { data, isLoading, isError } = useGetProjectsBySlugQuery(userSlug);
+const ProjectsTable: React.FC<ProjectsTableProps> = ({}) => {
+    const { slug } = useAppSelector((state) => state.auth.userProfile);
+    const { data, isLoading, isError } = useGetProjectsBySlugQuery(slug);
     const [deleteProject, { isLoading: isDeleting }] =
         useDeleteProjectMutation();
 

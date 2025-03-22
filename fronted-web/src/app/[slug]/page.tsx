@@ -17,5 +17,7 @@ export default async function PortfolioPage({
         return notFound();
     }
 
-    return <PortfolioClient initialSettings={settings} slug={params.slug} />;
+    return (
+        <PortfolioClient initialSettings={settings.data} slug={params.slug} />
+    );
 }
