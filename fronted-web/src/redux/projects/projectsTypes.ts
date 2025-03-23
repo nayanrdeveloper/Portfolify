@@ -5,6 +5,7 @@ export interface Project {
     description: string;
     demo_link: string;
     github_link: string;
+    media_urls: string[];
     created_at?: string; // ISO date string
     updated_at?: string; // ISO date string
 }
@@ -20,6 +21,7 @@ export interface CreateProjectPayload {
     description: string;
     demo_link: string;
     github_link: string;
+    media_urls: string[];
 }
 
 export interface UpdateProjectPayload extends Partial<CreateProjectPayload> {

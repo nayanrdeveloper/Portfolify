@@ -13,4 +13,5 @@ type Project struct {
 	Description      string             `bson:"description" json:"description"`
 	DemoLink         string             `bson:"demo_link" json:"demo_link"`
 	GithubLink       string             `bson:"github_link" json:"github_link"`
+	MediaURLs        []string           `bson:"media_urls,omitempty" json:"media_urls,omitempty"`
 }
