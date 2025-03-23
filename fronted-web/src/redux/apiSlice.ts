@@ -13,6 +13,7 @@ export const apiSlice = createApi({
         'Category',
         'Settings',
         'UserDetails',
+        'Upload',
     ],
     endpoints: () => ({}),
 });

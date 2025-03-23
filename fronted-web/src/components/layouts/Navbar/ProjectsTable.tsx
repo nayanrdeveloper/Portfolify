@@ -1,19 +1,18 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import {
     useGetProjectsBySlugQuery,
     useDeleteProjectMutation,
 } from '@/redux/projects/projectApi';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react'; // Trash icon from lucide-react
+import { Trash2, Edit } from 'lucide-react';
 import { Project } from '@/redux/projects/projectsTypes';
 import TableSkeleton from '@/components/ui/TableSkeleton';
 import { useAppSelector } from '@/redux/hooks';
-// import type { Project } from "@/redux/projects/projectType";
 
 interface ProjectsTableProps {
-    // Optionally pass a user slug; default provided for demo.
     userSlug?: string;
 }
 
@@ -87,7 +86,17 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({}) => {
                                     GitHub
                                 </a>
                             </td>
-                            <td className="border px-4 py-2">
+                            <td className="border px-4 py-2 flex gap-2">
+                                <Link href={`/admin/projects/${project.id}`}>
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        className="flex items-center gap-1"
+                                    >
+                                        <Edit className="w-4 h-4" />
+                                        Edit
+                                    </Button>
+                                </Link>
                                 <Button
                                     variant="destructive"
                                     size="sm"

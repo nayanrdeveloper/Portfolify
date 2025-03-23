@@ -6,27 +6,62 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useCreateProjectMutation } from '@/redux/projects/projectApi';
+import { useUploadMultipleMutation } from '@/redux/uploads/uploadsApi';
 
 export default function NewProjectPage() {
     const router = useRouter();
+
+    // Project fields
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [githubLink, setGithubLink] = useState('');
     const [demoLink, setDemoLink] = useState('');
 
-    const [createProject, { isLoading, isError, error }] =
+    // Media upload state
+    const [mediaFiles, setMediaFiles] = useState<File[]>([]);
+    const [mediaPreviews, setMediaPreviews] = useState<string[]>([]);
+
+    // RTK Query hooks
+    const [createProject, { isLoading: isProjectLoading, isError, error }] =
         useCreateProjectMutation();
+    const [uploadMultiple] = useUploadMultipleMutation();
+
+    // Handle file selection and generate preview URLs
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const filesArray = Array.from(e.target.files);
+            setMediaFiles(filesArray);
+            const previews = filesArray.map((file) =>
+                URL.createObjectURL(file),
+            );
+            setMediaPreviews(previews);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        let uploadedMediaUrls: string[] = [];
+        if (mediaFiles.length > 0) {
+            try {
+                const response = await uploadMultiple({
+                    files: mediaFiles,
+                    folder: 'project_media',
+                }).unwrap();
+                uploadedMediaUrls = response.data.secure_urls;
+            } catch (err) {
+                console.error('Failed to upload media:', err);
+            }
+        }
+
         try {
             await createProject({
                 name,
                 description,
                 github_link: githubLink,
                 demo_link: demoLink,
+                media_urls: uploadedMediaUrls,
             }).unwrap();
-            // Redirect to projects list after creation.
             router.push('/admin/projects');
         } catch (err) {
             console.error('Failed to create project:', err);
@@ -82,13 +117,37 @@ export default function NewProjectPage() {
                         className="mt-1"
                     />
                 </div>
+                <div>
+                    <Label htmlFor="mediaFiles">
+                        Upload Project Media (Optional)
+                    </Label>
+                    <Input
+                        id="mediaFiles"
+                        type="file"
+                        multiple
+                        onChange={handleFileChange}
+                        className="mt-1"
+                    />
+                    {mediaPreviews.length > 0 && (
+                        <div className="flex flex-wrap gap-4 mt-2">
+                            {mediaPreviews.map((url, index) => (
+                                <img
+                                    key={index}
+                                    src={url}
+                                    alt={`Preview ${index + 1}`}
+                                    className="w-24 h-24 object-cover rounded border"
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
                 <Button
                     type="submit"
                     variant="default"
                     className="w-full"
-                    disabled={isLoading}
+                    disabled={isProjectLoading}
                 >
-                    {isLoading ? 'Creating...' : 'Save Project'}
+                    {isProjectLoading ? 'Creating...' : 'Save Project'}
                 </Button>
                 {isError && (
                     <p className="text-red-500">
