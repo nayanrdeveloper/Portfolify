@@ -9,9 +9,12 @@ import (
 // UserDetails stores extended info for a user's portfolio/profile
 type UserDetails struct {
 	ID                primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
-	UserID            primitive.ObjectID `bson:"user_id" json:"user_id"` // References the user in 'users' collection
+	UserID            primitive.ObjectID `bson:"user_id" json:"user_id"`
+	FullName          string             `bson:"full_name" json:"full_name"`
 	Title             string             `bson:"title" json:"title"`
 	Bio               string             `bson:"bio" json:"bio"`
+	SubTitle          string             `bson:"sub_title" json:"sub_title"`
+	About             string             `bson:"about" json:"about"`
 	Location          string             `bson:"location" json:"location"`
 	ProfilePictureURL string             `bson:"profile_picture_url" json:"profile_picture_url"`
 
@@ -26,6 +29,9 @@ type UserDetails struct {
 
 // Input struct for creating/updating user details
 type UserDetailsInput struct {
+	FullName          *string `json:"full_name,omitempty"`
+	SubTitle          *string `json:"sub_title,omitempty"`
+	About             *string `json:"about,omitempty"`
 	Title             *string `json:"title,omitempty"`
 	Bio               *string `json:"bio,omitempty"`
 	Location          *string `json:"location,omitempty"`

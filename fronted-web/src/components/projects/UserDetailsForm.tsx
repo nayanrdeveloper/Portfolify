@@ -28,6 +28,7 @@ export default function UserDetailsForm() {
     const [githubURL, setGithubURL] = useState('');
     const [linkedinURL, setLinkedinURL] = useState('');
     const [twitterURL, setTwitterURL] = useState('');
+    const [fullName, setFullname] = useState('');
 
     // Populate fields when data is loaded
     useEffect(() => {
@@ -39,6 +40,7 @@ export default function UserDetailsForm() {
             setGithubURL(details.github_url);
             setLinkedinURL(details.linkedin_url);
             setTwitterURL(details.twitter_url);
+            setFullname(details.full_name);
             if (details.profile_picture_url) {
                 setProfilePicPreview(details.profile_picture_url);
             }
@@ -77,6 +79,7 @@ export default function UserDetailsForm() {
                 title,
                 bio,
                 location,
+                full_name: fullName,
                 profile_picture_url: secureURL,
                 github_url: githubURL,
                 linkedin_url: linkedinURL,
@@ -97,6 +100,16 @@ export default function UserDetailsForm() {
             onSubmit={handleSubmit}
             className="space-y-6 bg-white p-6 rounded shadow"
         >
+            <div>
+                <Label htmlFor="title">Name</Label>
+                <Input
+                    id="Name"
+                    value={fullName}
+                    onChange={(e) => setFullname(e.target.value)}
+                    placeholder="Your name..."
+                    className="mt-1"
+                />
+            </div>
             <div>
                 <Label htmlFor="title">Title</Label>
                 <Input

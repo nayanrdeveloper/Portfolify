@@ -54,6 +54,15 @@ func (s *UserDetailsService) CreateOrUpdate(userID primitive.ObjectID, input *Us
 	if input.Title != nil {
 		details.Title = *input.Title
 	}
+	if input.FullName != nil {
+		details.FullName = *input.FullName
+	}
+	if input.SubTitle != nil {
+		details.SubTitle = *input.SubTitle
+	}
+	if input.About != nil {
+		details.About = *input.About
+	}
 	if input.Bio != nil {
 		details.Bio = *input.Bio
 	}

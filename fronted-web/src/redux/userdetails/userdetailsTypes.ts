@@ -4,6 +4,7 @@ export interface UserDetails {
     title: string;
     bio: string;
     location: string;
+    full_name: string;
     profile_picture_url: string;
     github_url: string;
     linkedin_url: string;
@@ -23,6 +24,7 @@ export interface IUserDetailsResponse {
 export interface UserDetailsInput {
     title?: string;
     bio?: string;
+    full_name?: string;
     location?: string;
     profile_picture_url?: string;
     github_url?: string;
