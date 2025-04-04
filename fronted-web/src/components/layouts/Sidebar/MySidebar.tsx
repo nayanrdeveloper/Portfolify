@@ -65,6 +65,11 @@ const SidebarList = [
         icon: Award,
         route: '/admin/achievements',
     },
+    {
+        title: 'Contact Messages',
+        icon: Inbox,
+        route: '/admin/contact-messages',
+    },
 ];
 
 export default function MySIdebar({ isOpen }: SidebarProps) {

@@ -3,6 +3,7 @@ package api
 import (
 	"portfolify/internal/achievements"
 	"portfolify/internal/categories"
+	"portfolify/internal/contactus"
 	"portfolify/internal/education"
 	"portfolify/internal/experience"
 	"portfolify/internal/projects"
@@ -67,4 +68,10 @@ func RegisterRoutes(router *gin.Engine, cm *cloudinary.CloudinaryManager) {
 	skillService := skills.NewSkillService(skillRepo)
 	skillHandler := skills.NewSkillHandler(skillService, userService, catService)
 	skills.RegisterSkillRoutes(apiGroup, skillHandler)
+
+
+	contactRepo := contactus.NewContactUsRepository()
+    contactService := contactus.NewContactUsService(contactRepo)
+    contactHandler := contactus.NewContactUsHandler(contactService, userService)
+    contactus.RegisterContactUsRoutes(apiGroup, contactHandler)
 }

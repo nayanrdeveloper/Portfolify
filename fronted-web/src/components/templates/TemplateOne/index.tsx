@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useGetUserDetailsBySlugQuery } from '@/redux/userdetails/userdetailsApi';
 import { useGetSkillsBySlugQuery } from '@/redux/skills/skillApi';
 import { useGetProjectsBySlugQuery } from '@/redux/projects/projectApi';
+import ContactFormTemplate1 from './ContactFormTemplate1';
 
 // Helper function to get a fallback value if undefined
 const getValue = (value: string | undefined, fallback: string) =>
@@ -124,53 +125,7 @@ export default function TemplateOne() {
                         Please leave a message or any query here. I will respond
                         to your message promptly.
                     </p>
-                    <form className="space-y-4 max-w-xl">
-                        <div>
-                            <label
-                                className="block text-gray-300 mb-2"
-                                htmlFor="name"
-                            >
-                                Name
-                            </label>
-                            <input
-                                id="name"
-                                type="text"
-                                className="w-full px-4 py-2 rounded bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                className="block text-gray-300 mb-2"
-                                htmlFor="email"
-                            >
-                                Email
-                            </label>
-                            <input
-                                id="email"
-                                type="email"
-                                className="w-full px-4 py-2 rounded bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-                        <div>
-                            <label
-                                className="block text-gray-300 mb-2"
-                                htmlFor="message"
-                            >
-                                Message
-                            </label>
-                            <textarea
-                                id="message"
-                                rows={4}
-                                className="w-full px-4 py-2 rounded bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-full"
-                        >
-                            Submit
-                        </button>
-                    </form>
+                    <ContactFormTemplate1 slug={slug as string} />
                 </div>
             </section>
 
