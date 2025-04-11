@@ -6,6 +6,7 @@ import { useGetUserDetailsBySlugQuery } from '@/redux/userdetails/userdetailsApi
 import { useGetSkillsBySlugQuery } from '@/redux/skills/skillApi';
 import { useGetProjectsBySlugQuery } from '@/redux/projects/projectApi';
 import ContactFormTemplate1 from './ContactFormTemplate1';
+import NavBarTemplate1 from './NavBarTemplate1';
 
 // Helper function to get a fallback value if undefined
 const getValue = (value: string | undefined, fallback: string) =>
@@ -26,17 +27,22 @@ export default function TemplateOne() {
     const defaultBio =
         'Short introduction about me. Passionate about technology.';
     const defaultAbout =
-        'Here you can talk about your experience, background, and goals. Share your journey with your audience.';
+        'Here you can talk about your experience, background, and goals. Share your journey with your audience.Here you can talk about your experience, background, and goals. Share your journey with your audience.Here you can talk about your experience, background, and goals. Share your journey with your audience.';
     const fullName = getValue(userDetails?.data?.full_name, defaultName);
     const title = getValue(userDetails?.data?.title, defaultTitle);
     const bio = getValue(userDetails?.data?.bio, defaultBio);
     const about = defaultAbout;
 
     return (
-        <div className="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
-            <header className="bg-gray-900 py-20 px-6 text-center">
+        <div className="bg-[#18181B] text-gray-100 min-h-screen flex flex-col">
+            <NavBarTemplate1 />
+            <header className="bg-[#18181B] py-20 px-6 text-center">
                 <h1 className="text-3xl md:text-5xl font-bold mb-4">
-                    HEY, I aM {fullName.toUpperCase()}
+                    HEY, I aM{' '}
+                    <span className="text-[#2563EB]">
+                        {' '}
+                        {fullName.toUpperCase()}
+                    </span>
                 </h1>
                 <p className="text-xl md:text-2xl text-blue-400 font-semibold">
                     {title}
@@ -52,14 +58,16 @@ export default function TemplateOne() {
                 </div>
             </header>
 
-            <section id="about" className="py-16 px-6 bg-gray-800">
+            <section id="about" className="py-16 px-6 bg-[#18181B]">
+                <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center uppercase">
+                    About Me
+                </h2>
                 <div className="max-w-5xl mx-auto">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-6">
-                        About Me
-                    </h2>
                     <div className="md:flex md:space-x-10">
                         <div className="md:w-1/2">
-                            <p className="mb-4 text-gray-300">{about}</p>
+                            <p className="mb-4 text-gray-300 text-md">
+                                {about}
+                            </p>
                             <p className="mb-4 text-gray-300">{bio}</p>
                         </div>
                         <div className="md:w-1/2 mt-6 md:mt-0">
@@ -71,9 +79,11 @@ export default function TemplateOne() {
                                     skills?.data.map((skill) => (
                                         <li
                                             key={skill.id}
-                                            className="inline-block bg-gray-700 rounded-full px-4 py-2 mr-2 mb-2"
+                                            className="inline-block bg-[#1F2937] rounded-xl px-6 py-4 mr-2 mb-2"
                                         >
-                                            {skill.name}
+                                            <span className="text-[#D1D5DB]">
+                                                {skill.name}
+                                            </span>
                                         </li>
                                     ))}
                             </ul>
@@ -82,9 +92,9 @@ export default function TemplateOne() {
                 </div>
             </section>
 
-            <section id="projects" className="py-16 px-6 bg-gray-900">
+            <section id="projects" className="py-16 px-6 bg-[#18181B]">
                 <div className="max-w-5xl mx-auto">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-8">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
                         Projects
                     </h2>
                     <div className="grid md:grid-cols-2 gap-8">
@@ -92,7 +102,7 @@ export default function TemplateOne() {
                             projects.data.map((project) => (
                                 <div
                                     key={project.id}
-                                    className="bg-gray-800 p-4 rounded-lg"
+                                    className="bg-[#10100D] p-4 rounded-lg"
                                 >
                                     <h3 className="text-xl font-semibold mb-2">
                                         {project.name}
@@ -116,7 +126,7 @@ export default function TemplateOne() {
                 </div>
             </section>
 
-            <section id="contact" className="py-16 px-6 bg-gray-800 flex-1">
+            <section id="contact" className="py-16 px-6 bg-[#10100D] flex-1">
                 <div className="max-w-5xl mx-auto">
                     <h2 className="text-2xl md:text-3xl font-bold mb-6">
                         Contact Me
