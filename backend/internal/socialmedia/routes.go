@@ -7,12 +7,10 @@ import (
 )
 
 func RegisterSocialMediaRoutes(rg *gin.RouterGroup, handler *SocialMediaHandler) {
-	rg.GET("/socialmedia/user/:slug", handler.GetSocialMedia)
+	rg.GET("/socialmedia/user/:slug", handler.GetSocialMediaBySlug)
 
 	smGroup := rg.Group("/socialmedia").Use(middleware.AuthRequired())
 	{
-		smGroup.POST("/", handler.CreateSocialMedia)
 		smGroup.PUT("/", handler.UpdateSocialMedia)
-		smGroup.DELETE("/", handler.DeleteSocialMedia)
 	}
 }

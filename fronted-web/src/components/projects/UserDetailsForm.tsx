@@ -1,55 +1,41 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
     useGetMyUserDetailsQuery,
     useUpdateMyUserDetailsMutation,
 } from '@/redux/userdetails/userdetailsApi';
 import { useUploadSingleMutation } from '@/redux/uploads/uploadsApi';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { InputWithLabel } from '../common/InputWithLabel';
+import { USER_DETAIL_CONSTANT } from '@/constants/userDetailsConstant';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+    setUserDetails,
+    updateUserField,
+} from '@/redux/userdetails/userDetailsSlice';
 
 export default function UserDetailsForm() {
+    const dispatch = useAppDispatch();
+    const form = useAppSelector((state) => state.userDetails.userDetails);
+    const { formFields, sections } = USER_DETAIL_CONSTANT;
+
     const { data: detailsData, isLoading, error } = useGetMyUserDetailsQuery();
     const [updateMyUserDetails, { isLoading: isUpdating }] =
         useUpdateMyUserDetailsMutation();
     const [uploadSingle] = useUploadSingleMutation();
-
-    // Local state for fields
-    const [title, setTitle] = useState('');
-    const [bio, setBio] = useState('');
-    const [location, setLocation] = useState('');
-    // Instead of a text input for profile picture URL,
-    // we'll use a file input and manage the preview URL.
     const [profilePicFile, setProfilePicFile] = useState<File | null>(null);
     const [profilePicPreview, setProfilePicPreview] = useState<string>('');
-    // Other social links
-    const [githubURL, setGithubURL] = useState('');
-    const [linkedinURL, setLinkedinURL] = useState('');
-    const [twitterURL, setTwitterURL] = useState('');
-    const [fullName, setFullname] = useState('');
 
-    // Populate fields when data is loaded
-    useEffect(() => {
-        if (detailsData && detailsData.data) {
-            const details = detailsData.data;
-            setTitle(details.title);
-            setBio(details.bio);
-            setLocation(details.location);
-            setGithubURL(details.github_url);
-            setLinkedinURL(details.linkedin_url);
-            setTwitterURL(details.twitter_url);
-            setFullname(details.full_name);
-            if (details.profile_picture_url) {
-                setProfilePicPreview(details.profile_picture_url);
-            }
-        }
-    }, [detailsData]);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        dispatch(updateUserField({ field: id as keyof typeof form, value }));
+    };
 
-    // Handle file input change for profile picture
     const handleProfilePicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
+        if (e.target.files?.[0]) {
             const file = e.target.files[0];
             setProfilePicFile(file);
             setProfilePicPreview(URL.createObjectURL(file));
@@ -58,146 +44,273 @@ export default function UserDetailsForm() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        let secureURL = profilePicPreview;
 
-        let secureURL = profilePicPreview; // default: if no new file, use existing URL
-        // If a new file is selected, upload it first
         if (profilePicFile) {
             try {
-                const response = await uploadSingle({
+                const res = await uploadSingle({
                     file: profilePicFile,
-                    folder: 'profile_pics', // adjust folder name if needed
+                    folder: 'profile_pics',
                 }).unwrap();
-                secureURL = response.data.secure_url;
-            } catch (uploadError) {
-                console.error('Failed to upload profile picture:', uploadError);
-                // Optionally, you can abort the update if the image upload fails.
+                secureURL = res.data.secure_url;
+            } catch (err) {
+                console.error('Image upload failed:', err);
             }
         }
 
         try {
             await updateMyUserDetails({
-                title,
-                bio,
-                location,
-                full_name: fullName,
+                ...form,
                 profile_picture_url: secureURL,
-                github_url: githubURL,
-                linkedin_url: linkedinURL,
-                twitter_url: twitterURL,
+                years_of_experience: Number(form.years_of_experience),
             }).unwrap();
-            // Optionally, show a success toast/message here
         } catch (err) {
-            console.error('Failed to update user details:', err);
-            // Optionally, show an error toast/message here
+            console.error('Update failed:', err);
         }
     };
 
-    if (isLoading) return <p>Loading your details...</p>;
-    if (error) return <p>Error loading your details</p>;
+    useEffect(() => {
+        if (detailsData?.data) {
+            dispatch(setUserDetails(detailsData.data));
+            if (detailsData.data.profile_picture_url) {
+                setProfilePicPreview(detailsData.data.profile_picture_url);
+            }
+        }
+    }, [detailsData, dispatch]);
+
+    if (isLoading) return <p className="text-center mt-10">Loading...</p>;
+    if (error) return <p className="text-center mt-10">Error loading data.</p>;
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="space-y-6 bg-white p-6 rounded shadow"
-        >
-            <div>
-                <Label htmlFor="title">Name</Label>
-                <Input
-                    id="Name"
-                    value={fullName}
-                    onChange={(e) => setFullname(e.target.value)}
-                    placeholder="Your name..."
-                    className="mt-1"
-                />
+        <div className="w-full min-h-screen bg-gray-50">
+            <div className="container mx-auto px-6 py-8">
+                <h1 className="text-2xl font-bold mb-8">
+                    {USER_DETAIL_CONSTANT.pageTitle}
+                </h1>
+
+                <form onSubmit={handleSubmit} className="space-y-10">
+                    <section className="bg-white rounded-xl shadow p-6">
+                        <h2 className="text-xl font-semibold mb-6">
+                            {sections.personal}
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <InputWithLabel
+                                label={formFields.fullName.label}
+                                id={formFields.fullName.id}
+                                value={form.full_name}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder={formFields.fullName.placeholder}
+                                required
+                                tooltip={formFields.fullName.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.email.label}
+                                id={formFields.email.id}
+                                value={form.email}
+                                onChange={handleChange}
+                                type="email"
+                                placeholder={formFields.email.placeholder}
+                                required
+                            />
+                            <InputWithLabel
+                                label={formFields.phoneNumber.label}
+                                id={formFields.phoneNumber.id}
+                                value={form.phone_number}
+                                onChange={handleChange}
+                                type="tel"
+                                placeholder={formFields.phoneNumber.placeholder}
+                                tooltip={formFields.phoneNumber.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.location.label}
+                                id={formFields.location.id}
+                                value={form.location}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder={formFields.location.placeholder}
+                                required
+                                tooltip={formFields.location.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.dateOfBirth.label}
+                                id={formFields.dateOfBirth.id}
+                                value={form.date_of_birth}
+                                onChange={handleChange}
+                                type="date"
+                                placeholder={formFields.dateOfBirth.placeholder}
+                                tooltip={formFields.dateOfBirth.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.websiteUrl.label}
+                                id={formFields.websiteUrl.id}
+                                value={form.website_url}
+                                onChange={handleChange}
+                                type="url"
+                                placeholder={formFields.websiteUrl.placeholder}
+                                tooltip={formFields.websiteUrl.tooltip}
+                            />
+                        </div>
+
+                        {/* Profile Pic Upload */}
+                        <div className="mt-6">
+                            <Label htmlFor="profile_picture">
+                                Profile Picture
+                            </Label>
+                            <Input
+                                type="file"
+                                id="profile_picture"
+                                accept="image/*"
+                                onChange={handleProfilePicChange}
+                            />
+                            {profilePicPreview && (
+                                <img
+                                    src={profilePicPreview}
+                                    className="mt-3 w-24 h-24 rounded object-cover border"
+                                    alt="Profile Preview"
+                                />
+                            )}
+                        </div>
+                    </section>
+
+                    {/* PROFESSIONAL INFO SECTION */}
+                    <section className="bg-white rounded-xl shadow p-6">
+                        <h2 className="text-xl font-semibold mb-6">
+                            Professional Info
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <InputWithLabel
+                                label={formFields.title.label}
+                                id={formFields.title.id}
+                                value={form.title}
+                                onChange={handleChange}
+                                type="text"
+                                required
+                                placeholder={formFields.title.placeholder}
+                                tooltip={formFields.title.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.subTitle.label}
+                                id={formFields.subTitle.id}
+                                value={form.sub_title}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder={formFields.subTitle.placeholder}
+                                tooltip={formFields.subTitle.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.currentCompany.label}
+                                id={formFields.currentCompany.id}
+                                value={form.current_company}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder={
+                                    formFields.currentCompany.placeholder
+                                }
+                                tooltip={formFields.currentCompany.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.yearsOfExperience.label}
+                                id={formFields.yearsOfExperience.id}
+                                value={form.years_of_experience || 0}
+                                onChange={handleChange}
+                                type="number"
+                                placeholder={
+                                    formFields.yearsOfExperience.placeholder
+                                }
+                                tooltip={formFields.yearsOfExperience.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.resumeUrl.label}
+                                id={formFields.resumeUrl.id}
+                                value={form.resume_url}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder={formFields.resumeUrl.placeholder}
+                                tooltip={formFields.resumeUrl.tooltip}
+                            />
+                        </div>
+                    </section>
+
+                    {/* HERO SECTION */}
+                    <section className="bg-white rounded-xl shadow p-6">
+                        <h2 className="text-xl font-semibold mb-6">
+                            {sections.hero}
+                        </h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <InputWithLabel
+                                label={formFields.about.label}
+                                id={formFields.about.id}
+                                value={form.about}
+                                onChange={handleChange}
+                                type="text"
+                                required
+                                placeholder={formFields.about.placeholder}
+                                tooltip={formFields.about.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.greetingText.label}
+                                id={formFields.greetingText.id}
+                                value={form.greeting_text}
+                                onChange={handleChange}
+                                required
+                                type="text"
+                                placeholder={
+                                    formFields.greetingText.placeholder
+                                }
+                                tooltip={formFields.greetingText.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.headLine.label}
+                                id={formFields.headLine.id}
+                                value={form.head_line}
+                                onChange={handleChange}
+                                type="text"
+                                required
+                                placeholder={formFields.headLine.placeholder}
+                                tooltip={formFields.headLine.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.callToAction.label}
+                                id={formFields.callToAction.id}
+                                value={form.call_to_action}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder={
+                                    formFields.callToAction.placeholder
+                                }
+                                tooltip={formFields.callToAction.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.quote.label}
+                                id={formFields.quote.id}
+                                value={form.quote}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder={formFields.quote.placeholder}
+                                tooltip={formFields.quote.tooltip}
+                            />
+                            <InputWithLabel
+                                label={formFields.funFact.label}
+                                id={formFields.funFact.id}
+                                value={form.fun_fact}
+                                onChange={handleChange}
+                                type="text"
+                                placeholder={formFields.funFact.placeholder}
+                                tooltip={formFields.funFact.tooltip}
+                            />
+                        </div>
+                    </section>
+
+                    <Button
+                        type="submit"
+                        className="w-full"
+                        disabled={isUpdating}
+                    >
+                        {isUpdating ? 'Saving...' : 'Save Details'}
+                    </Button>
+                </form>
             </div>
-            <div>
-                <Label htmlFor="title">Title</Label>
-                <Input
-                    id="title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Your title..."
-                    className="mt-1"
-                />
-            </div>
-            <div>
-                <Label htmlFor="bio">Bio</Label>
-                <Input
-                    id="bio"
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    placeholder="Your bio..."
-                    className="mt-1"
-                />
-            </div>
-            <div>
-                <Label htmlFor="location">Location</Label>
-                <Input
-                    id="location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Your location..."
-                    className="mt-1"
-                />
-            </div>
-            <div>
-                <Label htmlFor="profilePic">Profile Picture</Label>
-                <Input
-                    id="profilePic"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleProfilePicChange}
-                    className="mt-1"
-                />
-                {profilePicPreview && (
-                    <div className="mt-2">
-                        <p className="text-sm text-gray-600">Preview:</p>
-                        <img
-                            src={profilePicPreview}
-                            alt="Profile Preview"
-                            className="w-32 h-32 object-cover rounded border"
-                        />
-                    </div>
-                )}
-            </div>
-            <div>
-                <Label htmlFor="githubURL">GitHub URL</Label>
-                <Input
-                    id="githubURL"
-                    value={githubURL}
-                    onChange={(e) => setGithubURL(e.target.value)}
-                    placeholder="https://github.com/yourusername"
-                    className="mt-1"
-                />
-            </div>
-            <div>
-                <Label htmlFor="linkedinURL">LinkedIn URL</Label>
-                <Input
-                    id="linkedinURL"
-                    value={linkedinURL}
-                    onChange={(e) => setLinkedinURL(e.target.value)}
-                    placeholder="https://linkedin.com/in/yourusername"
-                    className="mt-1"
-                />
-            </div>
-            <div>
-                <Label htmlFor="twitterURL">Twitter URL</Label>
-                <Input
-                    id="twitterURL"
-                    value={twitterURL}
-                    onChange={(e) => setTwitterURL(e.target.value)}
-                    placeholder="https://twitter.com/yourusername"
-                    className="mt-1"
-                />
-            </div>
-            <Button
-                type="submit"
-                variant="default"
-                className="w-full"
-                disabled={isUpdating}
-            >
-                {isUpdating ? 'Saving...' : 'Save Details'}
-            </Button>
-        </form>
+        </div>
     );
 }

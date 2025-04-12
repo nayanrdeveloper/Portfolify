@@ -3,7 +3,6 @@
 import { cn } from '@/lib/utils';
 import {
     Calendar,
-    Home,
     Inbox,
     LucideDownloadCloud,
     Settings,
@@ -11,6 +10,7 @@ import {
     Award,
     Projector,
     User,
+    RadioTowerIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -21,8 +21,8 @@ interface SidebarProps {
 
 const SidebarList = [
     {
-        title: 'Dashboard',
-        icon: Home,
+        title: 'User Details',
+        icon: User,
         route: '/admin',
     },
     {
@@ -31,14 +31,14 @@ const SidebarList = [
         route: '/admin/projects',
     },
     {
+        title: 'Social Media',
+        icon: RadioTowerIcon,
+        route: '/admin/social-media',
+    },
+    {
         title: 'Experience',
         icon: Inbox,
         route: '/admin/experience',
-    },
-    {
-        title: 'User Details',
-        icon: User,
-        route: '/admin/userDetails',
     },
     {
         title: 'Settings',

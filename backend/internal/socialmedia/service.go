@@ -15,40 +15,38 @@ func NewSocialMediaService(r *SocialMediaRepository) *SocialMediaService {
 	return &SocialMediaService{repo: r}
 }
 
-// Create a new doc if it doesn't exist yet for that user
-func (s *SocialMediaService) Create(userID primitive.ObjectID, input *SocialMediaInput) (*SocialMedia, error) {
-	// Check if doc already exists
-	existing, err := s.repo.GetByUserID(userID)
-	if err != nil {
-		return nil, err
-	}
-	if existing != nil {
-		return nil, fmt.Errorf("social media doc already exists for this user – use update instead")
-	}
-
-	doc := &SocialMedia{
-		UserID:    userID,
-		LinkedIn:  input.LinkedIn,
-		Twitter:   input.Twitter,
-		Facebook:  input.Facebook,
-		Instagram: input.Instagram,
-		GitHub:    input.GitHub,
-		YouTube:   input.YouTube,
-	}
-	return s.repo.Create(doc)
-}
-
-// Get doc by user ID
+// GetByUserID fetches the doc for that user (nil if none)
 func (s *SocialMediaService) GetByUserID(userID primitive.ObjectID) (*SocialMedia, error) {
 	return s.repo.GetByUserID(userID)
 }
 
-// Update fields by userID
-func (s *SocialMediaService) Update(userID primitive.ObjectID, updateData bson.M) (*SocialMedia, error) {
-	return s.repo.UpdateByUserID(userID, updateData)
-}
+// Upsert for user: merges the partial fields from SocialMediaUpdate
+func (s *SocialMediaService) Upsert(userID primitive.ObjectID, input *SocialMediaUpdate) (*SocialMedia, error) {
+	// Convert pointer fields to a bson.M
+	updateFields := bson.M{}
+	if input.LinkedIn != nil {
+		updateFields["linkedin"] = *input.LinkedIn
+	}
+	if input.Twitter != nil {
+		updateFields["twitter"] = *input.Twitter
+	}
+	if input.Facebook != nil {
+		updateFields["facebook"] = *input.Facebook
+	}
+	if input.Instagram != nil {
+		updateFields["instagram"] = *input.Instagram
+	}
+	if input.GitHub != nil {
+		updateFields["github"] = *input.GitHub
+	}
+	if input.YouTube != nil {
+		updateFields["youtube"] = *input.YouTube
+	}
 
-// Delete doc by userID
-func (s *SocialMediaService) Delete(userID primitive.ObjectID) error {
-	return s.repo.DeleteByUserID(userID)
+	if len(updateFields) == 0 {
+		return nil, fmt.Errorf("no fields to update")
+	}
+
+	// Upsert in repository
+	return s.repo.UpsertByUserID(userID, updateFields)
 }
