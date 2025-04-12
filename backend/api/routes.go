@@ -9,6 +9,7 @@ import (
 	"portfolify/internal/projects"
 	"portfolify/internal/settings"
 	"portfolify/internal/skills"
+	"portfolify/internal/socialmedia"
 	"portfolify/internal/uploads"
 	"portfolify/internal/userdetails"
 	"portfolify/internal/users"
@@ -69,9 +70,13 @@ func RegisterRoutes(router *gin.Engine, cm *cloudinary.CloudinaryManager) {
 	skillHandler := skills.NewSkillHandler(skillService, userService, catService)
 	skills.RegisterSkillRoutes(apiGroup, skillHandler)
 
+	smRepo := socialmedia.NewSocialMediaRepository()
+	smService := socialmedia.NewSocialMediaService(smRepo)
+	smHandler := socialmedia.NewSocialMediaHandler(smService, userService)
+	socialmedia.RegisterSocialMediaRoutes(apiGroup, smHandler)
 
 	contactRepo := contactus.NewContactUsRepository()
-    contactService := contactus.NewContactUsService(contactRepo)
-    contactHandler := contactus.NewContactUsHandler(contactService, userService)
-    contactus.RegisterContactUsRoutes(apiGroup, contactHandler)
+	contactService := contactus.NewContactUsService(contactRepo)
+	contactHandler := contactus.NewContactUsHandler(contactService, userService)
+	contactus.RegisterContactUsRoutes(apiGroup, contactHandler)
 }

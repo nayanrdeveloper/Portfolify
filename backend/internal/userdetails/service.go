@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	"portfolify/internal/users" // to lookup user by slug or ID if needed
+	"portfolify/internal/users"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserDetailsService struct {
 	repo        *UserDetailsRepository
-	userService *users.UserService // We'll need this for slug -> user
+	userService *users.UserService
 }
 
 func NewUserDetailsService(r *UserDetailsRepository, u *users.UserService) *UserDetailsService {
@@ -21,7 +21,6 @@ func NewUserDetailsService(r *UserDetailsRepository, u *users.UserService) *User
 	}
 }
 
-// GetOrCreate fetches the user details doc for a userID. If none, create a new empty one.
 func (s *UserDetailsService) GetOrCreate(userID primitive.ObjectID) (*UserDetails, error) {
 	existing, err := s.repo.GetByUserID(userID)
 	if err != nil {
@@ -43,14 +42,12 @@ func (s *UserDetailsService) GetOrCreate(userID primitive.ObjectID) (*UserDetail
 	return details, nil
 }
 
-// CreateOrUpdate used when user sets or updates fields
 func (s *UserDetailsService) CreateOrUpdate(userID primitive.ObjectID, input *UserDetailsInput) (*UserDetails, error) {
 	details, err := s.GetOrCreate(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	// Only update if the input field is non-nil
 	if input.Title != nil {
 		details.Title = *input.Title
 	}
@@ -63,23 +60,47 @@ func (s *UserDetailsService) CreateOrUpdate(userID primitive.ObjectID, input *Us
 	if input.About != nil {
 		details.About = *input.About
 	}
-	if input.Bio != nil {
-		details.Bio = *input.Bio
-	}
 	if input.Location != nil {
 		details.Location = *input.Location
 	}
 	if input.ProfilePictureURL != nil {
 		details.ProfilePictureURL = *input.ProfilePictureURL
 	}
-	if input.GitHubURL != nil {
-		details.GitHubURL = *input.GitHubURL
+	if input.Email != nil {
+		details.Email = *input.Email
 	}
-	if input.LinkedInURL != nil {
-		details.LinkedInURL = *input.LinkedInURL
+	if input.CurrentCompany != nil {
+		details.CurrentCompany = *input.CurrentCompany
 	}
-	if input.TwitterURL != nil {
-		details.TwitterURL = *input.TwitterURL
+	if input.YearsOfExperience != nil {
+		details.YearsOfExperience = *input.YearsOfExperience
+	}
+	if input.PhoneNumber != nil {
+		details.PhoneNumber = *input.PhoneNumber
+	}
+	if input.ResumeURL != nil {
+		details.ResumeURL = *input.ResumeURL
+	}
+	if input.DateOfBirth != nil {
+		details.DateOfBirth = *input.DateOfBirth
+	}
+	if input.WebsiteURL != nil {
+		details.WebsiteURL = *input.WebsiteURL
+	}
+	if input.GreetingText != nil {
+		details.GreetingText = *input.GreetingText
+	}
+	if input.HeadLine != nil {
+		details.HeadLine = *input.HeadLine
+	}
+	if input.CallToActionMessage != nil {
+		details.CallToActionMessage = *input.CallToActionMessage
+	}
+	if input.Quote != nil {
+		details.Quote = *input.Quote
+	}
+	if input.FunFact != nil {
+		details.FunFact = *input.FunFact
 	}
 
 	details.UpdatedAt = time.Now()
