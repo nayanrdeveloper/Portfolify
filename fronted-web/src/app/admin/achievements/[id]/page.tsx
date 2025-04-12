@@ -11,6 +11,7 @@ import {
 } from '@/redux/achievements/achievementApi';
 import type { Achievement } from '@/redux/achievements/achievementTypes';
 import { formatDateForAPI } from '@/lib/dateUtils';
+import FormSkeleton from '@/components/common/FormSkeleton';
 
 export default function EditAchievementPage() {
     const router = useRouter();
@@ -68,7 +69,7 @@ export default function EditAchievementPage() {
         }
     };
 
-    if (isLoading) return <div>Loading achievement...</div>;
+    if (isLoading) return <FormSkeleton fields={7} variant="centered" />;
     if (isError) return <div>Error loading achievement.</div>;
 
     return (

@@ -16,6 +16,7 @@ import {
     setUserDetails,
     updateUserField,
 } from '@/redux/userdetails/userDetailsSlice';
+import FormSkeleton from '../common/FormSkeleton';
 
 export default function UserDetailsForm() {
     const dispatch = useAppDispatch();
@@ -78,7 +79,7 @@ export default function UserDetailsForm() {
         }
     }, [detailsData, dispatch]);
 
-    if (isLoading) return <p className="text-center mt-10">Loading...</p>;
+    if (isLoading) return <FormSkeleton fields={12} columns={3} />;
     if (error) return <p className="text-center mt-10">Error loading data.</p>;
 
     return (

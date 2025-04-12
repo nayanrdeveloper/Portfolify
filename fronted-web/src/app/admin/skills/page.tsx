@@ -10,6 +10,7 @@ import {
 } from '@/redux/skills/skillApi';
 import type { Skill } from '@/redux/skills/skillTypes';
 import SkillsTable from '@/components/projects/SkillsTable';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 export default function SkillsListPage() {
     // Get logged-in user's slug from Redux store
@@ -30,7 +31,7 @@ export default function SkillsListPage() {
         }
     };
 
-    if (isLoading) return <div>Loading skills...</div>;
+    if (isLoading) return <TableSkeleton columns={8} rows={5} />;
     if (isError || !data) return <div>Error loading skills.</div>;
 
     const skills: Skill[] = Array.isArray(data.data) ? data.data : [];

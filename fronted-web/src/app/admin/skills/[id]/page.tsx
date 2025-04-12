@@ -10,6 +10,7 @@ import {
     useUpdateSkillMutation,
 } from '@/redux/skills/skillApi';
 import type { Skill } from '@/redux/skills/skillTypes';
+import FormSkeleton from '@/components/common/FormSkeleton';
 
 export default function EditSkillPage() {
     const router = useRouter();
@@ -71,7 +72,7 @@ export default function EditSkillPage() {
         }
     };
 
-    if (isLoading) return <div>Loading skill record...</div>;
+    if (isLoading) return <FormSkeleton fields={7} variant="centered" />;
     if (isError) return <div>Error loading skill record.</div>;
 
     return (
