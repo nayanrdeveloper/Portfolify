@@ -3,25 +3,28 @@ import { IUserDetailsResponse, UserDetailsInput } from './userdetailsTypes';
 
 export const userDetailsApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        // Public: Fetch user details by slug
         getUserDetailsBySlug: builder.query<IUserDetailsResponse, string>({
             query: (slug) => ({
                 url: `/user-details/slug/${slug}`,
                 method: 'GET',
+                meta: {
+                    skipSuccessToast: true,
+                },
             }),
             providesTags: ['UserDetails'],
         }),
 
-        // Protected: Fetch your own details (requires auth)
         getMyUserDetails: builder.query<IUserDetailsResponse, void>({
             query: () => ({
                 url: `/user-details/me`,
                 method: 'GET',
+                meta: {
+                    skipSuccessToast: true,
+                },
             }),
             providesTags: ['UserDetails'],
         }),
 
-        // Protected: Update your details (requires auth)
         updateMyUserDetails: builder.mutation<
             IUserDetailsResponse,
             UserDetailsInput

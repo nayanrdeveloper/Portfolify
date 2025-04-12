@@ -1,5 +1,3 @@
-// internal/socialmedia/repository.go
-
 package socialmedia
 
 import (
@@ -7,88 +5,75 @@ import (
 	"fmt"
 	"time"
 
-	"portfolify/config"
-	"portfolify/pkg/logger"
-
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.uber.org/zap"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"portfolify/config"
 )
 
 type SocialMediaRepository struct {
-	Collection *mongo.Collection
+	collection *mongo.Collection
 }
 
 func NewSocialMediaRepository() *SocialMediaRepository {
 	return &SocialMediaRepository{
-		Collection: config.GetCollection("social_medias"),
+		collection: config.GetCollection("social_media"),
 	}
 }
 
-// Create a social media doc
-func (r *SocialMediaRepository) Create(doc *SocialMedia) (*SocialMedia, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	doc.ID = primitive.NewObjectID()
-	doc.CreatedAt = time.Now()
-	doc.UpdatedAt = time.Now()
-
-	_, err := r.Collection.InsertOne(ctx, doc)
-	if err != nil {
-		logger.Log.Error("Failed to create social media doc", zap.Error(err))
-		return nil, fmt.Errorf("failed to create social media doc: %w", err)
-	}
-	return doc, nil
-}
-
-// Because each user might have only one SocialMedia doc, we can fetch it by userID
+// GetByUserID retrieves the doc for a user (or nil if not found).
 func (r *SocialMediaRepository) GetByUserID(userID primitive.ObjectID) (*SocialMedia, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
+	filter := bson.M{"user_id": userID}
 	var sm SocialMedia
-	err := r.Collection.FindOne(ctx, bson.M{"user_id": userID}).Decode(&sm)
+	err := r.collection.FindOne(ctx, filter).Decode(&sm)
+	if err == mongo.ErrNoDocuments {
+		return nil, nil // doc doesn't exist
+	}
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, nil // No doc found
-		}
-		return nil, fmt.Errorf("failed to find social media doc: %w", err)
+		return nil, fmt.Errorf("failed to fetch social media doc: %w", err)
 	}
 	return &sm, nil
 }
 
-// Update fields by userID (since we store exactly one doc per user, we can identify it by userID)
-func (r *SocialMediaRepository) UpdateByUserID(userID primitive.ObjectID, updateData bson.M) (*SocialMedia, error) {
+// UpsertByUserID either updates or creates the doc in one step.
+func (r *SocialMediaRepository) UpsertByUserID(
+	userID primitive.ObjectID,
+	updateFields bson.M,
+) (*SocialMedia, error) {
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	updateData["updated_at"] = time.Now()
-	update := bson.M{"$set": updateData}
+	// We want to ensure we set updated_at
+	now := time.Now()
+	updateFields["updated_at"] = now
 
-	result := r.Collection.FindOneAndUpdate(ctx, bson.M{"user_id": userID}, update)
-	if result.Err() != nil {
-		return nil, fmt.Errorf("failed to update social media doc: %w", result.Err())
+	// Upsert with $setOnInsert to set created_at, user_id if doc doesn't exist
+	update := bson.M{
+		"$set": updateFields,
+		"$setOnInsert": bson.M{
+			"created_at": now,
+			"user_id":    userID,
+		},
 	}
 
-	// Return the updated doc
-	var updated SocialMedia
-	if err := result.Decode(&updated); err != nil {
-		return nil, fmt.Errorf("failed to decode updated social media doc: %w", err)
-	}
-	return &updated, nil
-}
+	opts := options.FindOneAndUpdate().
+		SetUpsert(true).                 // create if not found
+		SetReturnDocument(options.After) // return the updated doc
 
-// DeleteByUserID if you want to remove the doc
-func (r *SocialMediaRepository) DeleteByUserID(userID primitive.ObjectID) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	_, err := r.Collection.DeleteOne(ctx, bson.M{"user_id": userID})
-	if err != nil {
-		logger.Log.Error("Failed to delete social media doc", zap.Error(err))
-		return fmt.Errorf("failed to delete social media doc: %w", err)
+	filter := bson.M{"user_id": userID}
+	result := r.collection.FindOneAndUpdate(ctx, filter, update, opts)
+	if err := result.Err(); err != nil {
+		return nil, fmt.Errorf("failed to upsert social media doc: %w", err)
 	}
-	return nil
+
+	var sm SocialMedia
+	if err := result.Decode(&sm); err != nil {
+		return nil, fmt.Errorf("failed to decode upserted doc: %w", err)
+	}
+	return &sm, nil
 }
