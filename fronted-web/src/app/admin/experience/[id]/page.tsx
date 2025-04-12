@@ -11,6 +11,7 @@ import {
 } from '@/redux/experience/experienceApi';
 import type { Experience } from '@/redux/experience/experienceTypes';
 import { formatDateForAPI } from '@/lib/dateUtils';
+import FormSkeleton from '@/components/common/FormSkeleton';
 
 export default function EditExperiencePage() {
     const router = useRouter();
@@ -70,7 +71,7 @@ export default function EditExperiencePage() {
         }
     };
 
-    if (isLoading) return <div>Loading experience record...</div>;
+    if (isLoading) return <FormSkeleton fields={7} variant="centered" />;
     if (isError) return <div>Error loading experience record.</div>;
 
     return (

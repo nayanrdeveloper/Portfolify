@@ -10,6 +10,7 @@ import {
     useUpdateEducationMutation,
 } from '@/redux/education/educationApi';
 import type { Education } from '@/redux/education/educationTypes';
+import FormSkeleton from '@/components/common/FormSkeleton';
 
 export default function EditEducationPage() {
     const router = useRouter();
@@ -62,7 +63,7 @@ export default function EditEducationPage() {
         }
     };
 
-    if (isLoading) return <div>Loading education record...</div>;
+    if (isLoading) return <FormSkeleton fields={6} variant="centered" />;
     if (isError) return <div>Error loading education record.</div>;
 
     return (

@@ -3,6 +3,7 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import { useGetContactMessageByIDQuery } from '@/redux/contactus/contactusApi';
+import FormSkeleton from '@/components/common/FormSkeleton';
 
 export default function ContactMessageDetailPage() {
     const { id } = useParams();
@@ -10,7 +11,7 @@ export default function ContactMessageDetailPage() {
         id as string,
     );
 
-    if (isLoading) return <div>Loading message details...</div>;
+    if (isLoading) return <FormSkeleton fields={2} variant="centered" />;
     if (isError || !data) return <div>Error loading message details.</div>;
 
     const messageData = data.data;

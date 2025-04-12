@@ -11,6 +11,7 @@ import {
 } from '@/redux/projects/projectApi';
 import { useUploadMultipleMutation } from '@/redux/uploads/uploadsApi';
 import type { Project } from '@/redux/projects/projectsTypes';
+import FormSkeleton from '@/components/common/FormSkeleton';
 
 export default function EditProjectPage() {
     const router = useRouter();
@@ -103,7 +104,7 @@ export default function EditProjectPage() {
         }
     };
 
-    if (isLoading) return <div>Loading project...</div>;
+    if (isLoading) return <FormSkeleton fields={7} variant="centered" />;
     if (isError) return <div>Error loading project details.</div>;
 
     return (

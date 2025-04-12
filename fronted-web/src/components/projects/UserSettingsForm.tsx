@@ -8,6 +8,7 @@ import {
     useUpdateUserSettingsMutation,
 } from '@/redux/settings/settingsApi';
 import { useAppSelector } from '@/redux/hooks';
+import FormSkeleton from '../common/FormSkeleton';
 
 export default function UserSettingsForm() {
     // Fetch settings using user slug (public endpoint)
@@ -46,7 +47,7 @@ export default function UserSettingsForm() {
         }
     };
 
-    if (isLoading) return <p>Loading settings...</p>;
+    if (isLoading) return <FormSkeleton fields={2} variant="centered" />;
     if (error) return <p>Error loading settings</p>;
 
     return (

@@ -13,6 +13,7 @@ import {
     setSocialMedia,
     updateSocialMediaField,
 } from '@/redux/socialMedia/socialMediaSlice';
+import FormSkeleton from '../common/FormSkeleton';
 
 export default function SocialMediaLinksForm() {
     const { formFields } = SOCIAL_MEDIA_CONSTANT;
@@ -50,7 +51,8 @@ export default function SocialMediaLinksForm() {
         }
     }, [data, dispatch]);
 
-    if (isLoading) return <p className="text-center">Loading...</p>;
+    if (isLoading)
+        return <FormSkeleton fields={3} columns={2} variant="default" />;
 
     return (
         <div className="w-full min-h-screen bg-gray-50">

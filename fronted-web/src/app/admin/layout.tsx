@@ -6,6 +6,7 @@ import { jwtDecode } from 'jwt-decode'; // note: import jwtDecode (not destructu
 import LayoutWrapper from '@/components/layouts/Sidebar/LayoutWrapper';
 import { useAppDispatch } from '@/redux/hooks'; // your typed redux hooks
 import { setUserProfile } from '@/redux/auth/authSlice'; // action to store user details
+import AppLoader from '@/components/common/AppLoader';
 
 interface JWTPayload {
     userId: string;
@@ -58,7 +59,7 @@ export default function AdminLayout({
     }, [router, dispatch]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <AppLoader />;
     }
 
     if (!isAuthorized) {
