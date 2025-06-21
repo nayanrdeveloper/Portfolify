@@ -1,8 +1,8 @@
 import express from 'express';
 // import morgan from 'morgan';
 // import { errorHandler } from './core/middlewares/errorHandler';
-import userRoutes from './features/user/user.route';
 import educationRoutes from './features/education/education.route';
+import userRoutes from './features/user/user.route';
 
 export const app = express();
 app.use(express.json());

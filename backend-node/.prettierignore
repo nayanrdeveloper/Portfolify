@@ -1,0 +1,9 @@
+# Builds & deps
+dist/
+node_modules/
+.pnpm-store/
+
+# Reports / dumps
+coverage/
+logs/
+*.log
