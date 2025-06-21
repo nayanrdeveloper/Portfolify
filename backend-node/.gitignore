@@ -1,0 +1,33 @@
+# ───── Runtime / package managers ─────
+node_modules/
+.pnpm-store/            # pnpm local store
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ───── Build output ─────
+dist/                   # tsc output
+coverage/               # test coverage
+*.tsbuildinfo           # incremental TS cache
+
+# ───── Env & secrets ─────
+.env*
+!.env.example           # keep template
+
+# ───── Logs & dumps ─────
+*.log
+logs/
+dump/                   # mongodump exports
+
+# ───── Tooling caches ─────
+.cache/
+.eslintcache
+.turbo/
+.next/                  # if you ever add Next.js
+
+# ───── Editors / OS files ─────
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
