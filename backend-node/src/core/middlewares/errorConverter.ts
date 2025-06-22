@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { ZodError } from 'zod';
 import { ApiError, BadRequest, ConflictError } from '../errors/ApiError';
+import { MSG } from '../messages';
 
 export const errorConverter = (err: unknown, _req: Request, _res: Response, next: NextFunction) => {
     if (err instanceof ApiError) return next(err);
@@ -17,7 +18,7 @@ export const errorConverter = (err: unknown, _req: Request, _res: Response, next
     if (err instanceof mongoose.mongo.MongoServerError && err.code === 11000) {
         const field = Object.keys(err.keyPattern ?? {})[0] ?? 'value';
         const value = Object.values(err.keyValue ?? {})[0];
-        return next(new ConflictError(`${field} '${value}' already exists`, { details: err }));
+        return next(new ConflictError(MSG.EMAIL_TAKEN(value as string), { details: err }));
     }
 
     // Fallback → 500 unexpected

@@ -1,11 +1,12 @@
-// src/core/middlewares/notFound.ts
 import { RequestHandler } from 'express';
-import { NotFound } from '../errors/ApiError';
+import { env } from '../../config/env';
+import { NotFoundError } from '../errors/ApiError';
+import { MSG } from '../messages';
 
-/**
- * Catches any request that didn’t match a route.
- * Must be registered *after* all other routes.
- */
 export const notFound: RequestHandler = (req, _res, next) => {
-    next(NotFound(`Cannot ${req.method} ${req.originalUrl}`)); // forwards to errorConverter → errorHandler
+    const message = env.isProd
+        ? MSG.NOT_FOUND()
+        : `${MSG.NOT_FOUND()} — Cannot ${req.method} ${req.originalUrl}`;
+
+    next(new NotFoundError(message));
 };
