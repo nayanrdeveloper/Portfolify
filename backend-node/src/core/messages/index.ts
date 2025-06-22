@@ -9,10 +9,13 @@ export const MSG = {
     /* ---------- Business-specific ---------- */
     EMAIL_TAKEN: (email: string) => `Email '${email}' already exists`,
     UNAUTH: () => `You need to log in to access this resource`,
+    PASSWORD_MIN: () => 'Password must be at least 6 characters',
+    INVALID_CRED: () => 'Invalid credentials',
 
     /* ── Generic HTTP statuses ── */
     BAD_REQUEST: () => 'Bad request',
     UNAUTHORIZED: () => 'Authentication required',
+    INVALID_TOKEN: () => 'Invalid or expired token',
     FORBIDDEN: () => 'You do not have permission to perform this action',
     NOT_FOUND: () => 'Resource not found',
     CONFLICT: () => 'Resource already exists',

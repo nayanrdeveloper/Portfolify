@@ -18,5 +18,6 @@ export const env = {
     NODE_ENV,
     PORT: Number(process.env.PORT ?? 4000),
     MONGO_URI: requireEnv('MONGO_URI'),
+    JWT_SECRET: requireEnv('JWT_SECRET'),
     isProd,
 } as const;

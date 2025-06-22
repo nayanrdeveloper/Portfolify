@@ -1,3 +1,5 @@
+import { MSG } from '../messages';
+
 export class ApiError extends Error {
     public readonly statusCode: number;
     public readonly isOperational: boolean; // vs. programming bug
@@ -42,6 +44,12 @@ export class ConflictError extends ApiError {
     }
 }
 
+export class UnauthorizedError extends ApiError {
+    constructor(msg = MSG.UNAUTHORIZED()) {
+        super(401, msg);
+    }
+}
+
 export const BadRequest = (msg = 'Invalid request', opts?: { details?: unknown }) =>
     new ApiError(400, msg, { ...opts });
 
@@ -52,3 +60,5 @@ export const Forbidden = (msg = 'Forbidden', opts?: { details?: unknown }) =>
     new ApiError(403, msg, { ...opts });
 
 export const Conflict = (msg?: string, opts?: any) => new ConflictError(msg, opts);
+
+export const Unauthorized = (msg?: string) => new UnauthorizedError(msg);
