@@ -2,8 +2,10 @@ import { Router } from 'express';
 
 import achievementRoutes from '../features/achievement/achievement.route';
 import authRoutes from '../features/auth/auth.route';
+import contactRoutes from '../features/contact/contact.route';
 import educationRoutes from '../features/education/education.route';
 import experienceRoutes from '../features/experience/experience.route';
+import projectRoutes from '../features/project/project.route';
 import uploadRoutes from '../features/upload/upload.route';
 import userRoutes from '../features/user/user.route';
 
@@ -15,5 +17,7 @@ apiRouter.use('/uploads', uploadRoutes);
 apiRouter.use('/educations', educationRoutes);
 apiRouter.use('/experiences', experienceRoutes);
 apiRouter.use('/achievements', achievementRoutes);
+apiRouter.use('/projects', projectRoutes);
+apiRouter.use('/contact', contactRoutes);
 
 export default apiRouter;
