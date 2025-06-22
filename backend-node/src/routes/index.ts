@@ -8,8 +8,10 @@ import educationRoutes from '../features/education/education.route';
 import experienceRoutes from '../features/experience/experience.route';
 import projectRoutes from '../features/project/project.route';
 import skillRoutes from '../features/skill/skill.route';
+import socialRoutes from '../features/social/social.route';
 import uploadRoutes from '../features/upload/upload.route';
 import userRoutes from '../features/user/user.route';
+import userDetailsRoutes from '../features/userDetails/userDetails.route';
 
 const apiRouter = Router();
 
@@ -23,5 +25,7 @@ apiRouter.use('/projects', projectRoutes);
 apiRouter.use('/contact', contactRoutes);
 apiRouter.use('/categories', categoryRoutes);
 apiRouter.use('/skills', skillRoutes);
+apiRouter.use('/socialmedia', socialRoutes);
+apiRouter.use('/user-details', userDetailsRoutes);
 
 export default apiRouter;
