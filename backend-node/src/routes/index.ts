@@ -12,6 +12,7 @@ import socialRoutes from '../features/social/social.route';
 import uploadRoutes from '../features/upload/upload.route';
 import userRoutes from '../features/user/user.route';
 import userDetailsRoutes from '../features/userDetails/userDetails.route';
+import settingsRoutes from '../features/userSettings/settings.route';
 
 const apiRouter = Router();
 
@@ -27,5 +28,6 @@ apiRouter.use('/categories', categoryRoutes);
 apiRouter.use('/skills', skillRoutes);
 apiRouter.use('/socialmedia', socialRoutes);
 apiRouter.use('/user-details', userDetailsRoutes);
+apiRouter.use('/settings', settingsRoutes);
 
 export default apiRouter;
