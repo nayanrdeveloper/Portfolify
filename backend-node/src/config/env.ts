@@ -19,5 +19,8 @@ export const env = {
     PORT: Number(process.env.PORT ?? 4000),
     MONGO_URI: requireEnv('MONGO_URI'),
     JWT_SECRET: requireEnv('JWT_SECRET'),
+    CLOUDINARY_CLOUD_NAME: requireEnv('CLOUDINARY_CLOUD_NAME'),
+    CLOUDINARY_API_KEY: requireEnv('CLOUDINARY_API_KEY'),
+    CLOUDINARY_API_SECRET: requireEnv('CLOUDINARY_API_SECRET'),
     isProd,
 } as const;

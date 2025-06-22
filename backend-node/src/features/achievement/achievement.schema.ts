@@ -24,9 +24,7 @@ export const createAchievementSchema = baseObject.refine(dateRule, {
 });
 
 /* 3️⃣  update-schema = partial(object) + same refine */
-export const updateAchievementSchema = baseObject
-    .partial()
-    .refine(dateRule, {
-        path: ['expirationDate'],
-        message: 'expirationDate cannot be before issueDate',
-    });
+export const updateAchievementSchema = baseObject.partial().refine(dateRule, {
+    path: ['expirationDate'],
+    message: 'expirationDate cannot be before issueDate',
+});
