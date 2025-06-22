@@ -3,12 +3,14 @@ import { Education } from './education.interface';
 
 const educationSchema = new Schema<Education>(
     {
-        user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-        institute: { type: String, required: true },
-        degree: { type: String, required: true },
-        fieldOfStudy: String,
-        startYear: { type: Number, required: true },
-        endYear: Number,
+        user: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+        institution: { type: String, required: true },
+        degree: { type: String },
+        fieldOfStudy: { type: String },
+        startDate: { type: Date, required: true },
+        endDate: { type: Date },
+        isCurrent: { type: Boolean, default: false },
+        description: { type: String },
     },
     { timestamps: true },
 );

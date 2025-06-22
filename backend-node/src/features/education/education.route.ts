@@ -1,11 +1,24 @@
 import { Router } from 'express';
-import { validate } from '../../core/middlewares/validateRequest';
-import { addEducation, listEducation } from './education.controller';
-import { addEducationSchema } from './education.schema';
+import { requireAuth } from '../../core/middlewares/requireAuth';
+import {
+    createEducation,
+    deleteEducation,
+    getEducation,
+    listBySlug,
+    updateEducation,
+} from './education.controller';
 
-const router = Router({ mergeParams: true }); // merge :userId param
+const router = Router();
 
-router.post('/:userId', validate(addEducationSchema), addEducation);
-router.get('/:userId', listEducation);
+/* Public */
+router.get('/user/:slug', listBySlug);
+router.get('/:id', getEducation);
+
+/* Protected */
+router.use(requireAuth);
+
+router.post('/', createEducation);
+router.put('/:id', updateEducation);
+router.delete('/:id', deleteEducation);
 
 export default router;
