@@ -1,27 +1,59 @@
 import express from 'express';
-// import morgan from 'morgan';
-// import { errorHandler } from './core/middlewares/errorHandler';
+// import cors from 'cors';
+
 import { errorConverter } from './core/middlewares/errorConverter';
 import { errorHandler } from './core/middlewares/errorHandler';
+import { httpLogger } from './core/middlewares/httpLogger';
 import { notFound } from './core/middlewares/notFound';
+
+import { httpCounter, metricsMiddleware, serviceHealth } from './core/metrics';
+
 import educationRoutes from './features/education/education.route';
 import userRoutes from './features/user/user.route';
 
 export const app = express();
 
-/* ─── Global middlewares ─── */
+/* ────────────────────────────────────────────────
+   Global middlewares
+   ──────────────────────────────────────────────── */
 app.use(express.json());
-// app.use(cors());
+// app.use(cors());                 // customise origins if needed
+app.use(httpLogger); // pino-http logging
 
-// if (!env.isProd) app.use(morgan('dev'));  //// verbose logs only in dev
+/* Count every completed response for Prometheus */
+app.use((req, res, next) => {
+    res.on('finish', () => {
+        httpCounter.inc({
+            method: req.method,
+            route: req.route?.path ?? req.originalUrl,
+            status: res.statusCode,
+        });
+    });
+    next();
+});
 
-/* ─── Feature routes ─── */
+/* ────────────────────────────────────────────────
+   Observability endpoints
+   ──────────────────────────────────────────────── */
+app.get('/healthz', (_req, res) => {
+    res.json(serviceHealth());
+});
+app.get('/metrics', metricsMiddleware);
+
+/* ────────────────────────────────────────────────
+   Feature routes
+   ──────────────────────────────────────────────── */
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/educations', educationRoutes);
 
-/* ─── 404 fallback ─── */
-app.use(notFound);
-
-/* ─── Centralised error pipeline ─── */
+/* ────────────────────────────────────────────────
+   404 + error pipeline
+   ──────────────────────────────────────────────── */
+app.use(notFound); // after all routes
 app.use(errorConverter); // normalise → ApiError
 app.use(errorHandler); // send JSON response
+
+/* ────────────────────────────────────────────────
+   Startup banner (called in server.ts)
+   ──────────────────────────────────────────────── */
+// export const app so server.ts can import & start it
