@@ -8,8 +8,7 @@ import { notFound } from './core/middlewares/notFound';
 
 import { httpCounter, metricsMiddleware, serviceHealth } from './core/metrics';
 
-import educationRoutes from './features/education/education.route';
-import userRoutes from './features/user/user.route';
+import apiRouter from './routes';
 
 export const app = express();
 
@@ -43,9 +42,7 @@ app.get('/metrics', metricsMiddleware);
 /* ────────────────────────────────────────────────
    Feature routes
    ──────────────────────────────────────────────── */
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/educations', educationRoutes);
-
+app.use('/api/v1', apiRouter);
 /* ────────────────────────────────────────────────
    404 + error pipeline
    ──────────────────────────────────────────────── */
