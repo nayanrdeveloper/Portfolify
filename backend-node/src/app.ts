@@ -8,6 +8,7 @@ import { notFound } from './core/middlewares/notFound';
 
 import { httpCounter, metricsMiddleware, serviceHealth } from './core/metrics';
 
+import { corsMiddleware } from './core/middlewares/cors';
 import apiRouter from './routes';
 
 export const app = express();
@@ -15,6 +16,7 @@ export const app = express();
 /* ────────────────────────────────────────────────
    Global middlewares
    ──────────────────────────────────────────────── */
+app.use(corsMiddleware);
 app.use(express.json());
 // app.use(cors());                 // customise origins if needed
 app.use(httpLogger); // pino-http logging

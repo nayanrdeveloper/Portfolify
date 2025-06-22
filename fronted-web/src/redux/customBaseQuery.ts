@@ -33,7 +33,7 @@ type CustomBaseQueryArgs = {
 
 // Configure fetchBaseQuery with a base URL and reading token from localStorage
 const rawBaseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:8080/api',
+    baseUrl: 'http://localhost:4000/api/v1',
     // Remove credentials since we use localStorage for the token
     // credentials: "include",
     prepareHeaders: (headers) => {

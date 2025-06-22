@@ -40,7 +40,7 @@ export const authApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         login: builder.mutation<LoginResponse, LoginPayload>({
             query: (credentials) => ({
-                url: '/users/login',
+                url: '/auth/login',
                 method: 'POST',
                 body: credentials,
                 meta: { successMessage: 'You have logged in successfully!' },
@@ -61,7 +61,7 @@ export const authApi = apiSlice.injectEndpoints({
         }),
         register: builder.mutation({
             query: (userData) => ({
-                url: '/users/register',
+                url: '/auth/register',
                 method: 'POST',
                 body: userData,
                 meta: { successMessage: 'You have registered successfully!' },
