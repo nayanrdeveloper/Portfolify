@@ -43,8 +43,8 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({}) => {
     }
 
     // Assume API returns: { status: "success", message: string, data: Project[] }
-    const projects: Project[] = Array.isArray(data.data) ? data.data : [];
-
+    const projects: Project[] = Array.isArray(data) ? data : [];
+    console.log(projects);
     return (
         <div className="overflow-x-auto w-full">
             <table className="min-w-full border-collapse">
@@ -61,14 +61,14 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({}) => {
                 </thead>
                 <tbody>
                     {projects.map((project: Project) => (
-                        <tr key={project.id} className="hover:bg-gray-50">
+                        <tr key={project._id} className="hover:bg-gray-50">
                             <td className="border px-4 py-2">{project.name}</td>
                             <td className="border px-4 py-2">
                                 {project.description}
                             </td>
                             <td className="border px-4 py-2">
                                 <a
-                                    href={project.demo_link}
+                                    href={project.demoLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-500 underline"
@@ -78,7 +78,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({}) => {
                             </td>
                             <td className="border px-4 py-2">
                                 <a
-                                    href={project.github_link}
+                                    href={project.githubLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-500 underline"
@@ -87,7 +87,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({}) => {
                                 </a>
                             </td>
                             <td className="border px-4 py-2 flex gap-2">
-                                <Link href={`/admin/projects/${project.id}`}>
+                                <Link href={`/admin/projects/${project._id}`}>
                                     <Button
                                         variant="secondary"
                                         size="sm"
@@ -101,7 +101,7 @@ const ProjectsTable: React.FC<ProjectsTableProps> = ({}) => {
                                     variant="destructive"
                                     size="sm"
                                     onClick={() =>
-                                        handleDelete(String(project.id))
+                                        handleDelete(String(project._id))
                                     }
                                     disabled={isDeleting}
                                     className="flex items-center gap-1"

@@ -37,13 +37,14 @@ export default function EditProjectPage() {
     const [newMediaPreviews, setNewMediaPreviews] = useState<string[]>([]);
 
     useEffect(() => {
-        if (data && data.data) {
-            const project = data.data as Project;
+        console.log('data', data);
+        if (data) {
+            const project = data as Project;
             setName(project.name);
             setDescription(project.description);
-            setGithubLink(project.github_link);
-            setDemoLink(project.demo_link);
-            setExistingMedia(project.media_urls || []);
+            setGithubLink(project.githubLink);
+            setDemoLink(project.demoLink);
+            setExistingMedia(project.mediaUrls || []);
         }
     }, [data]);
 
@@ -94,9 +95,9 @@ export default function EditProjectPage() {
                 id: projectId,
                 name,
                 description,
-                github_link: githubLink,
-                demo_link: demoLink,
-                media_urls: combinedMediaUrls,
+                githubLink: githubLink,
+                demoLink: demoLink,
+                mediaUrls: combinedMediaUrls,
             }).unwrap();
             router.push('/admin/projects');
         } catch (err) {

@@ -36,7 +36,7 @@ export function RegisterForm() {
 
         try {
             await register({
-                name: fullName,
+                fullName: fullName,
                 email,
                 password,
                 slug,

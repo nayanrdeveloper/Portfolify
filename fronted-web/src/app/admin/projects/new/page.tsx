@@ -58,9 +58,9 @@ export default function NewProjectPage() {
             await createProject({
                 name,
                 description,
-                github_link: githubLink,
-                demo_link: demoLink,
-                media_urls: uploadedMediaUrls,
+                githubLink: githubLink,
+                demoLink: demoLink,
+                mediaUrls: uploadedMediaUrls,
             }).unwrap();
             router.push('/admin/projects');
         } catch (err) {

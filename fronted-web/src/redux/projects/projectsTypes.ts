@@ -1,32 +1,39 @@
+/* ---------- generic API envelope (matches Node backend) ---------- */
+export interface ApiResponse<Data = unknown> {
+    message?: string; // optional; backend sends when it has something to say
+    data?: Data; // the actual payload (may be undefined on DELETE etc.)
+}
+
+/* ---------- project models -------------------------------------- */
 export interface Project {
-    id?: string; // MongoDB ObjectID as hex string; optional on creation
-    user_id?: string; // user's ObjectID as hex string
+    _id?: string;
+    user?: string;
     name: string;
     description: string;
-    demo_link: string;
-    github_link: string;
-    media_urls: string[];
-    created_at?: string; // ISO date string
-    updated_at?: string; // ISO date string
+    demoLink: string;
+    githubLink: string;
+    mediaUrls: string[];
+    createdAt?: string;
+    updatedAt?: string;
 }
 
-export interface IProjectResponse {
-    status: string; // "success" or "error"
-    message: string;
-    data: Project | Project[];
-}
+/* SINGLE project response */
+export type ProjectResponse = ApiResponse<Project>;
 
-export interface CreateProjectPayload {
-    name: string;
-    description: string;
-    demo_link: string;
-    github_link: string;
-    media_urls: string[];
-}
+/* ARRAY of projects response */
+export type ProjectsResponse = ApiResponse<Project[]>;
 
-export interface UpdateProjectPayload extends Partial<CreateProjectPayload> {
+/* ---------- payloads for mutations ------------------------------ */
+export type CreateProjectPayload = Omit<
+    Project,
+    '_id' | 'user' | 'createdAt' | 'updatedAt'
+>;
+
+export type UpdateProjectPayload = Partial<CreateProjectPayload> & {
     id: string;
-}
+};
+
+/* ---------- Redux slice state ----------------------------------- */
 export interface ProjectsState {
     items: Project[];
 }

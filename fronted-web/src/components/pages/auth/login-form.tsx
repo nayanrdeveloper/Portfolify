@@ -20,17 +20,14 @@ export function LoginForm() {
         setLocalError(null);
 
         try {
-            const response = await login({ email, password }).unwrap();
-            console.log('Logged in:', response);
-            localStorage.setItem('authToken', response.data.token);
+            await login({ email, password }).unwrap(); // returns string token
             router.push('/admin');
-        } catch (err: unknown) {
-            console.error('Login failed:', err);
-            if (err instanceof Error) {
-                setLocalError(err.message);
-            } else {
-                setLocalError('An unknown error occurred.');
-            }
+        } catch (err) {
+            setLocalError(
+                typeof err === 'object' && err !== null && 'message' in err
+                    ? (err as Error).message
+                    : 'An unknown error occurred.',
+            );
         }
     };
 

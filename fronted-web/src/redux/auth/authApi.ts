@@ -1,71 +1,68 @@
 import { apiSlice } from '../apiSlice';
 
-// ---- TYPES ----
+/* ---------- shared envelope ---------- */
+interface ApiEnvelope<Data = unknown> {
+    message?: string;
+    data: Data; // always present on success
+}
+
+/* ---------- payload models ---------- */
 export interface LoginPayload {
     email: string;
     password: string;
 }
 
-export interface LoginResponse {
-    status: string;
-    message: string;
-    success: boolean;
-    data: {
-        token: string;
-    };
-}
-
 export interface RegisterPayload {
     email: string;
     password: string;
-    name: string;
+    fullName: string;
     slug: string;
 }
 
-export interface RegisterResponse {
-    status: string;
-    message: string;
-    data: {
-        id: string;
-        created_at: string;
-        updated_at: string;
-        name: string;
-        email: string;
-        slug: string;
-    };
-}
+/* ---------- responses ---------- */
+type RegisterSuccess = ApiEnvelope<{
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    fullName: string;
+    email: string;
+    slug: string;
+}>;
 
-// ---- RTK QUERY ----
+/* ---------- RTK Query endpoints ---------- */
 export const authApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        login: builder.mutation<LoginResponse, LoginPayload>({
-            query: (credentials) => ({
+        /* LOGIN — returns bare token string to the caller */
+        login: builder.mutation<string, LoginPayload>({
+            query: (body) => ({
                 url: '/auth/login',
                 method: 'POST',
-                body: credentials,
+                body,
                 meta: { successMessage: 'You have logged in successfully!' },
             }),
-            async onQueryStarted(args, { queryFulfilled }) {
+
+            // baseQuery returns { token }  →  expose the string
+            transformResponse: (resp: { token: string }) => resp.token,
+
+            async onQueryStarted(_arg, { queryFulfilled }) {
                 try {
-                    const { data } = await queryFulfilled;
-                    if (data?.success) {
-                        await localStorage.setItem(
-                            'authToken',
-                            data.data.token,
-                        );
-                    }
-                } catch (error) {
-                    console.error('Login failed:', error);
+                    const { data: token } = await queryFulfilled;
+                    localStorage.setItem('authToken', token);
+                } catch {
+                    /* toast already handled */
                 }
             },
         }),
-        register: builder.mutation({
-            query: (userData) => ({
+
+        /* REGISTER — returns created user object */
+        register: builder.mutation<RegisterSuccess['data'], RegisterPayload>({
+            query: (body) => ({
                 url: '/auth/register',
                 method: 'POST',
-                body: userData,
+                body,
                 meta: { successMessage: 'You have registered successfully!' },
             }),
+            transformResponse: (resp: RegisterSuccess) => resp.data,
         }),
     }),
 });

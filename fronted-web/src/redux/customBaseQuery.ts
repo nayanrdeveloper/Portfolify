@@ -2,18 +2,16 @@ import { fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { BaseQueryFn } from '@reduxjs/toolkit/query';
 import toast from 'react-hot-toast';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface CommonResponse<DataType = any> {
-    status: string; // "success" or "error"
+/* ---------- response shapes ---------- */
+interface ApiSuccess<Data = unknown> {
     message?: string;
-    data?: DataType;
-    error?: string;
+    data?: Data;
+}
+interface ApiError {
+    message?: string;
 }
 
-/**
- * Optional: We'll allow each endpoint to pass custom "meta" settings.
- * For example, meta: { successMessage: "Overridden success message" }
- */
+/* ---------- per-endpoint meta ---------- */
 interface CustomMeta {
     successMessage?: string;
     errorMessage?: string;
@@ -24,90 +22,61 @@ interface CustomMeta {
 type CustomBaseQueryArgs = {
     url: string;
     method?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    body?: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    params?: Record<string, any>;
+    body?: unknown;
+    params?: Record<string, unknown>;
     meta?: CustomMeta;
 };
 
-// Configure fetchBaseQuery with a base URL and reading token from localStorage
+/* ---------- baseURL for Next ---------- */
+const API_URL =
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
+
 const rawBaseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:4000/api/v1',
-    // Remove credentials since we use localStorage for the token
-    // credentials: "include",
+    baseUrl: API_URL,
+    // credentials: 'include',           // ← enable only if you use cookies
     prepareHeaders: (headers) => {
-        // Check if window is available (client-side only)
         if (typeof window !== 'undefined') {
             const token = localStorage.getItem('authToken');
-            if (token) {
-                headers.set('Authorization', `Bearer ${token}`);
-            }
+            if (token) headers.set('Authorization', `Bearer ${token}`);
         }
         return headers;
     },
 });
 
-/**
- * A custom base query that intercepts and shows toast messages
- * for success/error based on the "status" field in the server response.
- */
+/* ---------- custom baseQuery ---------- */
 export const baseQueryWithInterceptor: BaseQueryFn<
     CustomBaseQueryArgs,
     unknown,
     unknown
 > = async (args, api, extraOptions) => {
-    // Extract optional meta fields
-    const { meta, ...baseQueryArgs } = args;
+    const { meta, ...baseArgs } = args;
 
-    // Execute the base query
-    const result = await rawBaseQuery(baseQueryArgs, api, extraOptions);
+    const result = await rawBaseQuery(baseArgs, api, extraOptions);
 
-    // If fetchBaseQuery returned an error (network/server error: 4xx, 5xx)
+    /* –– 4xx / 5xx errors –– */
     if (result.error) {
-        const fetchError = result.error as FetchBaseQueryError & {
-            data?: CommonResponse;
-        };
-        const serverData = fetchError?.data;
+        const err = result.error as FetchBaseQueryError & { data?: ApiError };
 
         if (!meta?.skipErrorToast) {
-            toast.error(
+            const msg =
                 meta?.errorMessage ||
-                    serverData?.message ||
-                    'An unexpected error occurred.',
-            );
+                err.data?.message ||
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore — `error` exists on one union branch
+                ('error' in err ? err.error : undefined) ||
+                'Request failed';
+            toast.error(msg);
         }
-
         return { error: result.error };
     }
 
-    // Otherwise, we have a 2xx HTTP status.
-    // Check if the response body's status field equals "success"
-    const data = result.data as CommonResponse;
-    if (data.status !== 'success') {
-        if (!meta?.skipErrorToast) {
-            toast.error(
-                meta?.errorMessage ||
-                    data.message ||
-                    'An unexpected error occurred.',
-            );
-        }
+    /* –– 2xx success –– */
+    const payload = result.data as ApiSuccess;
 
-        return {
-            error: {
-                status: 'CUSTOM_ERROR',
-                data,
-            },
-        };
+    if (!meta?.skipSuccessToast && payload.message) {
+        toast.success(meta?.successMessage ?? payload.message);
     }
 
-    // If success=true, optionally show a success toast
-    if (!meta?.skipSuccessToast) {
-        const successMsg = meta?.successMessage || data.message;
-        if (successMsg) {
-            toast.success(successMsg);
-        }
-    }
-
-    return { data };
+    /* return `data` if present, otherwise whole payload */
+    return { data: payload.data ?? payload };
 };
