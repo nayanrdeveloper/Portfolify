@@ -12,16 +12,16 @@ export interface RegisterPayload {
     slug: string;
 }
 
-export interface ILoginResponse{
-    token: string
+export interface ILoginResponse {
+    token: string;
 }
 
-export interface IRegisterResponse{
-    user: IUser,
-    token: string,
+export interface IRegisterResponse {
+    user: IUser;
+    token: string;
 }
 
-export interface IUser{
+export interface IUser {
     fullName: string;
     email: string;
     slug: string;

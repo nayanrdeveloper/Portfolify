@@ -2,22 +2,19 @@ import { fetchUserSettingsBySlug } from '@/lib/fetchSettings';
 import { notFound } from 'next/navigation';
 import PortfolioClient from './PortfolioClient';
 
-export default async function PortfolioPage({
-    params,
-}: {
+type PageProps = {
     params: { slug: string };
-}) {
-    if (!params || !params.slug) {
-        return notFound();
-    }
+    /* Next automatically passes this; it can stay unused */
+    searchParams?: Record<string, string | string[] | undefined>;
+};
 
-    const settings = await fetchUserSettingsBySlug(params.slug);
+export default async function PortfolioPage({ params }: PageProps) {
+    const { slug } = params;
 
-    if (!settings) {
-        return notFound();
-    }
+    if (!slug) return notFound();
 
-    return (
-        <PortfolioClient initialSettings={settings.data} slug={params.slug} />
-    );
+    const settings = await fetchUserSettingsBySlug(slug);
+    if (!settings) return notFound();
+
+    return <PortfolioClient initialSettings={settings.data} slug={slug} />;
 }
