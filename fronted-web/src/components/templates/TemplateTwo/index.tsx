@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React from 'react';
 
 export default function TemplateTwo() {
@@ -58,10 +59,12 @@ export default function TemplateTwo() {
                 <div className="max-w-4xl mx-auto">
                     <div className="flex flex-col items-center">
                         {/* Avatar */}
-                        <img
+                        <Image
                             src={avatarUrl}
-                            alt="User Avatar"
-                            className="w-24 h-24 rounded-full border-4 border-gray-600 object-cover mb-4"
+                            width={96}
+                            height={96}
+                            alt={`User Avatar`}
+                            className="rounded-full border-4 border-gray-600 object-cover mb-4"
                         />
                         {/* Name */}
                         <h1 className="text-3xl md:text-5xl font-bold mb-2">

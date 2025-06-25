@@ -17,6 +17,7 @@ import {
     updateUserField,
 } from '@/redux/userdetails/userDetailsSlice';
 import FormSkeleton from '../common/FormSkeleton';
+import Image from 'next/image';
 
 export default function UserDetailsForm() {
     const dispatch = useAppDispatch();
@@ -166,10 +167,12 @@ export default function UserDetailsForm() {
                                 onChange={handleProfilePicChange}
                             />
                             {profilePicPreview && (
-                                <img
+                                <Image
                                     src={profilePicPreview}
+                                    width={96}
+                                    height={96}
+                                    alt={`Profile Preview`}
                                     className="mt-3 w-24 h-24 rounded object-cover border"
-                                    alt="Profile Preview"
                                 />
                             )}
                         </div>

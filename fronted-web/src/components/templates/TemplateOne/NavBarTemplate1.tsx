@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useGetUserDetailsBySlugQuery } from '@/redux/userdetails/userdetailsApi';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 
 export default function NavBarTemplate1() {
     const { slug } = useParams();
@@ -11,11 +12,14 @@ export default function NavBarTemplate1() {
     return (
         <nav className="bg-[#18181B] text-gray-100 py-4 px-6 flex items-center justify-between">
             <div className="flex items-center space-x-4">
-                <img
-                    src={detailsData?.profilePictureUrl}
-                    alt={detailsData?.title}
-                    className="w-10 h-10 rounded-full object-cover border border-gray-700"
+                <Image
+                    src={detailsData?.profilePictureUrl || ''}
+                    width={56}
+                    height={56}
+                    alt={detailsData?.title || ''}
+                    className="rounded-full object-cover border border-gray-700"
                 />
+
                 <span className="font-bold text-lg">{'User'}</span>
             </div>
             <div className="flex items-center space-x-6">

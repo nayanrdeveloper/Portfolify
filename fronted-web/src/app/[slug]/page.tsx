@@ -1,10 +1,3 @@
-// src/app/[slug]/page.ts
-// ---------------------------------------------------
-// ✅  Add this as the very first line  ✅
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-/* @ts-nocheck */
-// ---------------------------------------------------
-
 import { notFound } from 'next/navigation';
 import { fetchUserSettingsBySlug } from '@/lib/fetchSettings';
 import PortfolioClient from './PortfolioClient';

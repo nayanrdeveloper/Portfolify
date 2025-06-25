@@ -12,6 +12,7 @@ import {
 import { useUploadMultipleMutation } from '@/redux/uploads/uploadsApi';
 import type { Project } from '@/redux/projects/projectsTypes';
 import FormSkeleton from '@/components/common/FormSkeleton';
+import Image from 'next/image';
 
 export default function EditProjectPage() {
     const router = useRouter();
@@ -170,10 +171,13 @@ export default function EditProjectPage() {
                         <div className="flex flex-wrap gap-4">
                             {existingMedia.map((url, index) => (
                                 <div key={index} className="relative">
-                                    <img
+                                    <Image
+                                        key={index}
                                         src={url}
+                                        width={96}
+                                        height={96}
                                         alt={`Existing media ${index + 1}`}
-                                        className="w-24 h-24 object-cover rounded border"
+                                        className="object-cover rounded border"
                                     />
                                     <button
                                         type="button"
@@ -206,10 +210,14 @@ export default function EditProjectPage() {
                         <div className="flex flex-wrap gap-4 mt-2">
                             {newMediaPreviews.map((url, index) => (
                                 <div key={index} className="relative">
-                                    <img
-                                        src={url}
+                                    <Image
+                                        key={index}
+                                        src={url} // the object-URL or remote URL
                                         alt={`New media preview ${index + 1}`}
-                                        className="w-24 h-24 object-cover rounded border"
+                                        width={96}
+                                        height={96}
+                                        unoptimized // ← skip optimisation; silences the rule
+                                        className="object-cover rounded border"
                                     />
                                     <button
                                         type="button"

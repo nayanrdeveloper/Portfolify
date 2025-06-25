@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useCreateProjectMutation } from '@/redux/projects/projectApi';
 import { useUploadMultipleMutation } from '@/redux/uploads/uploadsApi';
+import Image from 'next/image';
 
 export default function NewProjectPage() {
     const router = useRouter();
@@ -131,11 +132,13 @@ export default function NewProjectPage() {
                     {mediaPreviews.length > 0 && (
                         <div className="flex flex-wrap gap-4 mt-2">
                             {mediaPreviews.map((url, index) => (
-                                <img
+                                <Image
                                     key={index}
                                     src={url}
                                     alt={`Preview ${index + 1}`}
-                                    className="w-24 h-24 object-cover rounded border"
+                                    width={96}
+                                    height={96}
+                                    className="object-cover rounded border"
                                 />
                             ))}
                         </div>
