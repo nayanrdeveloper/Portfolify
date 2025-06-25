@@ -48,7 +48,7 @@ export default function NewProjectPage() {
                     files: mediaFiles,
                     folder: 'project_media',
                 }).unwrap();
-                uploadedMediaUrls = response.data.secure_urls;
+                uploadedMediaUrls = response;
             } catch (err) {
                 console.error('Failed to upload media:', err);
             }

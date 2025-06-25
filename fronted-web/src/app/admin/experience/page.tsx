@@ -33,7 +33,7 @@ export default function ExperienceListPage() {
     if (isLoading) return <TableSkeleton columns={8} rows={4} />;
     if (isError || !data) return <div>Error loading experience records</div>;
 
-    const experiences: Experience[] = Array.isArray(data.data) ? data.data : [];
+    const experiences: Experience[] = Array.isArray(data) ? data : [];
 
     return (
         <div className="w-full p-4">

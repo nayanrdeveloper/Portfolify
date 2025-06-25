@@ -1,39 +1,41 @@
 import { apiSlice } from '../apiSlice';
-import { IUserDetailsResponse, UserDetailsInput } from './userdetailsTypes';
+import {
+    UserDetails,
+    UserDetailsInput,
+    UserDetailsResponse,
+} from './userdetailsTypes';
 
 export const userDetailsApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getUserDetailsBySlug: builder.query<IUserDetailsResponse, string>({
+        /* ---------- public by slug ---------- */
+        getUserDetailsBySlug: builder.query<UserDetails | null, string>({
             query: (slug) => ({
                 url: `/user-details/slug/${slug}`,
                 method: 'GET',
-                meta: {
-                    skipSuccessToast: true,
-                },
+                meta: { skipSuccessToast: true },
             }),
+            transformResponse: (resp: UserDetailsResponse) => resp.data ?? null,
             providesTags: ['UserDetails'],
         }),
 
-        getMyUserDetails: builder.query<IUserDetailsResponse, void>({
+        /* ---------- my details (auth) -------- */
+        getMyUserDetails: builder.query<UserDetails | null, void>({
             query: () => ({
-                url: `/user-details/me`,
+                url: '/user-details/me',
                 method: 'GET',
-                meta: {
-                    skipSuccessToast: true,
-                },
+                meta: { skipSuccessToast: true },
             }),
             providesTags: ['UserDetails'],
         }),
 
-        updateMyUserDetails: builder.mutation<
-            IUserDetailsResponse,
-            UserDetailsInput
-        >({
-            query: (payload) => ({
-                url: `/user-details/`,
+        /* ---------- update / create ---------- */
+        updateMyUserDetails: builder.mutation<UserDetails, UserDetailsInput>({
+            query: (body) => ({
+                url: '/user-details',
                 method: 'POST',
-                body: payload,
+                body,
             }),
+            transformResponse: (resp: UserDetailsResponse) => resp.data,
             invalidatesTags: ['UserDetails'],
         }),
     }),

@@ -1,7 +1,7 @@
 import { apiSlice } from '../apiSlice';
 
 /* ---------- shared envelope ---------- */
-interface ApiEnvelope<Data = unknown> {
+export interface ApiEnvelope<Data = unknown> {
     message?: string;
     data: Data; // always present on success
 }

@@ -9,6 +9,10 @@ export interface ISettingsResponse {
     };
 }
 
+export interface ISettings {
+    template: string;
+}
+
 export interface UpdateSettingsPayload {
     id: string;
     template: string;
@@ -17,7 +21,7 @@ export interface UpdateSettingsPayload {
 export const settingsApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         // ✅ Get user settings by slug (PUBLIC endpoint, no auth required)
-        getUserSettingsBySlug: builder.query<ISettingsResponse, string>({
+        getUserSettingsBySlug: builder.query<ISettings, string>({
             query: (slug) => ({
                 url: `/settings/user/${slug}`,
                 method: 'GET',
@@ -26,7 +30,7 @@ export const settingsApi = apiSlice.injectEndpoints({
         }),
 
         // ✅ Get settings by user ID (PRIVATE, requires auth)
-        getUserSettingsByID: builder.query<ISettingsResponse, string>({
+        getUserSettingsByID: builder.query<ISettings, string>({
             query: (id) => ({
                 url: `/settings/${id}`,
                 method: 'GET',

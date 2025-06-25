@@ -10,7 +10,7 @@ import {
     useUpdateAchievementMutation,
 } from '@/redux/achievements/achievementApi';
 import type { Achievement } from '@/redux/achievements/achievementTypes';
-import { formatDateForAPI } from '@/lib/dateUtils';
+import { formatDate } from '@/lib/dateUtils';
 import FormSkeleton from '@/components/common/FormSkeleton';
 
 export default function EditAchievementPage() {
@@ -34,16 +34,16 @@ export default function EditAchievementPage() {
     const [description, setDescription] = useState('');
 
     useEffect(() => {
-        if (data && data.data) {
-            const ach = data.data as Achievement;
+        if (data) {
+            const ach = data as Achievement;
             setName(ach.name);
             setIssuer(ach.issuer);
-            setIssueDate(ach.issue_date.substring(0, 10)); // Extract "YYYY-MM-DD"
+            setIssueDate(ach.issueDate.substring(0, 10)); // Extract "YYYY-MM-DD"
             setExpirationDate(
-                ach.expiration_date ? ach.expiration_date.substring(0, 10) : '',
+                ach.expirationDate ? ach.expirationDate.substring(0, 10) : '',
             );
-            setCredentialId(ach.credential_id || '');
-            setCredentialURL(ach.credential_url || '');
+            setCredentialId(ach.credentialID || '');
+            setCredentialURL(ach.credentialURL || '');
             setDescription(ach.description || '');
         }
     }, [data]);
@@ -55,12 +55,12 @@ export default function EditAchievementPage() {
                 id: achievementId,
                 name,
                 issuer,
-                issue_date: formatDateForAPI(issueDate),
-                expiration_date: expirationDate
-                    ? formatDateForAPI(expirationDate)
+                issueDate: formatDate(issueDate, 'YYYY-MM-DD'),
+                expirationDate: expirationDate
+                    ? formatDate(expirationDate, 'YYYY-MM-DD')
                     : '',
-                credential_id: credentialId,
-                credential_url: credentialURL,
+                credentialID: credentialId,
+                credentialURL: credentialURL,
                 description,
             }).unwrap();
             router.push('/admin/achievements');

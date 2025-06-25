@@ -26,7 +26,7 @@ export default function UserSettingsForm() {
     useEffect(() => {
         if (settings) {
             console.log('settings', settings);
-            setSelectedTemplate(settings.data.template);
+            setSelectedTemplate(settings.template);
         }
     }, [settings]);
 
@@ -65,8 +65,8 @@ export default function UserSettingsForm() {
                 className="mt-1 block w-full rounded border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring-blue-500"
             >
                 <option value="default">Default</option>
-                <option value="template1">Template 1</option>
-                <option value="template2">Template 2</option>
+                <option value="theme1">Template 1</option>
+                <option value="theme2">Template 2</option>
             </select>
             {isUpdating && (
                 <p className="text-sm text-gray-600">Updating settings...</p>

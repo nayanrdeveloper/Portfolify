@@ -5,18 +5,19 @@ import {
     IAchievementResponse,
     CreateAchievementPayload,
     UpdateAchievementPayload,
+    Achievement,
 } from './achievementTypes';
 
 export const achievementApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getAchievementByID: builder.query<IAchievementResponse, string>({
+        getAchievementByID: builder.query<Achievement, string>({
             query: (id) => ({
                 url: `/achievements/${id}`,
                 method: 'GET',
             }),
             providesTags: ['Achievement'],
         }),
-        getAchievementsBySlug: builder.query<IAchievementResponse, string>({
+        getAchievementsBySlug: builder.query<Achievement[], string>({
             query: (slug) => ({
                 url: `/achievements/user/${slug}`,
                 method: 'GET',

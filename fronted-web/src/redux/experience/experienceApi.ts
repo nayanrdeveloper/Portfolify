@@ -3,18 +3,19 @@ import {
     IExperienceResponse,
     CreateExperiencePayload,
     UpdateExperiencePayload,
+    Experience,
 } from './experienceTypes';
 
 export const experienceApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getExperienceByID: builder.query<IExperienceResponse, string>({
+        getExperienceByID: builder.query<Experience, string>({
             query: (id) => ({
                 url: `/experiences/${id}`,
                 method: 'GET',
             }),
             providesTags: ['Experience'],
         }),
-        getExperiencesBySlug: builder.query<IExperienceResponse, string>({
+        getExperiencesBySlug: builder.query<Experience, string>({
             query: (slug) => ({
                 url: `/experiences/user/${slug}`,
                 method: 'GET',
@@ -32,17 +33,16 @@ export const experienceApi = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Experience'],
         }),
-        updateExperience: builder.mutation<
-            IExperienceResponse,
-            UpdateExperiencePayload
-        >({
-            query: ({ id, ...payload }) => ({
-                url: `/experiences/${id}`,
-                method: 'PUT',
-                body: payload,
-            }),
-            invalidatesTags: ['Experience'],
-        }),
+        updateExperience: builder.mutation<Experience, UpdateExperiencePayload>(
+            {
+                query: ({ id, ...payload }) => ({
+                    url: `/experiences/${id}`,
+                    method: 'PUT',
+                    body: payload,
+                }),
+                invalidatesTags: ['Experience'],
+            },
+        ),
         deleteExperience: builder.mutation<IExperienceResponse, string>({
             query: (id) => ({
                 url: `/experiences/${id}`,

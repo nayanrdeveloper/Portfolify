@@ -36,7 +36,7 @@ export default function EducationListPage() {
     if (isLoading) return <TableSkeleton columns={8} rows={4} />;
     if (isError || !data) return <div>Error loading education records</div>;
 
-    const educations: Education[] = Array.isArray(data.data) ? data.data : [];
+    const educations: Education[] = Array.isArray(data) ? data : [];
 
     return (
         <div className="w-full p-4">
@@ -78,7 +78,7 @@ export default function EducationListPage() {
                     </thead>
                     <tbody>
                         {educations.map((edu) => (
-                            <tr key={edu.id} className="hover:bg-gray-50">
+                            <tr key={edu._id} className="hover:bg-gray-50">
                                 <td className="border px-4 py-2">
                                     {edu.institution}
                                 </td>
@@ -86,24 +86,24 @@ export default function EducationListPage() {
                                     {edu.degree}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {edu.field_of_study}
+                                    {edu.fieldOfStudy}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {formatDate(edu.start_date)}
+                                    {formatDate(edu.startDate)}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {edu.end_date
-                                        ? formatDate(edu.end_date)
+                                    {edu.endDate
+                                        ? formatDate(edu.endDate)
                                         : 'Present'}
                                 </td>
                                 <td className="border px-4 py-2">
-                                    {edu.is_current ? 'Yes' : 'No'}
+                                    {edu.isCurrent ? 'Yes' : 'No'}
                                 </td>
                                 <td className="border px-4 py-2">
                                     {edu.description}
                                 </td>
                                 <td className="border px-4 py-2 flex space-x-2">
-                                    <Link href={`/admin/education/${edu.id}`}>
+                                    <Link href={`/admin/education/${edu._id}`}>
                                         <Button
                                             variant="secondary"
                                             size="sm"
@@ -117,7 +117,7 @@ export default function EducationListPage() {
                                         variant="destructive"
                                         size="sm"
                                         onClick={() =>
-                                            handleDelete(String(edu.id))
+                                            handleDelete(String(edu._id))
                                         }
                                         disabled={isDeleting}
                                         className="flex items-center gap-1"

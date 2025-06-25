@@ -12,8 +12,8 @@ export default function NavBarTemplate1() {
         <nav className="bg-[#18181B] text-gray-100 py-4 px-6 flex items-center justify-between">
             <div className="flex items-center space-x-4">
                 <img
-                    src={detailsData?.data.profile_picture_url}
-                    alt={detailsData?.data.title}
+                    src={detailsData?.profilePictureUrl}
+                    alt={detailsData?.title}
                     className="w-10 h-10 rounded-full object-cover border border-gray-700"
                 />
                 <span className="font-bold text-lg">{'User'}</span>

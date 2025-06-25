@@ -3,18 +3,19 @@ import {
     IEducationResponse,
     CreateEducationPayload,
     UpdateEducationPayload,
+    Education,
 } from './educationTypes';
 
 export const educationApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getEducationByID: builder.query<IEducationResponse, string>({
+        getEducationByID: builder.query<Education, string>({
             query: (id) => ({
                 url: `/educations/${id}`,
                 method: 'GET',
             }),
             providesTags: ['Education'],
         }),
-        getEducationsBySlug: builder.query<IEducationResponse, string>({
+        getEducationsBySlug: builder.query<Education[], string>({
             query: (slug) => ({
                 url: `/educations/user/${slug}`,
                 method: 'GET',

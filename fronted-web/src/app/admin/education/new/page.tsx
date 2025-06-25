@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useCreateEducationMutation } from '@/redux/education/educationApi';
-import { formatDateForAPI } from '@/lib/dateUtils';
+import { formatDate } from '@/lib/dateUtils';
 
 export default function NewEducationPage() {
     const router = useRouter();
@@ -27,10 +27,10 @@ export default function NewEducationPage() {
             await createEducation({
                 institution,
                 degree,
-                field_of_study: fieldOfStudy,
-                start_date: formatDateForAPI(startDate),
-                end_date: endDate ? formatDateForAPI(endDate) : '',
-                is_current: isCurrent,
+                fieldOfStudy: fieldOfStudy,
+                startDate: formatDate(startDate, 'YYYY-MM-DD'),
+                endDate: endDate ? formatDate(endDate, 'YYYY-MM-DD') : '',
+                isCurrent: isCurrent,
                 description,
             }).unwrap();
             router.push('/admin/education');

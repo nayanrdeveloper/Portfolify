@@ -49,11 +49,12 @@ export default function UserDetailsForm() {
 
         if (profilePicFile) {
             try {
-                const res = await uploadSingle({
+                const secureUrl = await uploadSingle({
                     file: profilePicFile,
                     folder: 'profile_pics',
                 }).unwrap();
-                secureURL = res.data.secure_url;
+
+                secureURL = secureUrl;
             } catch (err) {
                 console.error('Image upload failed:', err);
             }
@@ -62,8 +63,8 @@ export default function UserDetailsForm() {
         try {
             await updateMyUserDetails({
                 ...form,
-                profile_picture_url: secureURL,
-                years_of_experience: Number(form.years_of_experience),
+                profilePictureUrl: secureURL,
+                yearsOfExperience: Number(form.yearsOfExperience),
             }).unwrap();
         } catch (err) {
             console.error('Update failed:', err);
@@ -71,10 +72,10 @@ export default function UserDetailsForm() {
     };
 
     useEffect(() => {
-        if (detailsData?.data) {
-            dispatch(setUserDetails(detailsData.data));
-            if (detailsData.data.profile_picture_url) {
-                setProfilePicPreview(detailsData.data.profile_picture_url);
+        if (detailsData) {
+            dispatch(setUserDetails(detailsData));
+            if (detailsData.profilePictureUrl) {
+                setProfilePicPreview(detailsData.profilePictureUrl);
             }
         }
     }, [detailsData, dispatch]);
@@ -98,7 +99,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.fullName.label}
                                 id={formFields.fullName.id}
-                                value={form.full_name}
+                                value={form.fullName}
                                 onChange={handleChange}
                                 type="text"
                                 placeholder={formFields.fullName.placeholder}
@@ -117,7 +118,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.phoneNumber.label}
                                 id={formFields.phoneNumber.id}
-                                value={form.phone_number}
+                                value={form.phoneNumber}
                                 onChange={handleChange}
                                 type="tel"
                                 placeholder={formFields.phoneNumber.placeholder}
@@ -136,7 +137,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.dateOfBirth.label}
                                 id={formFields.dateOfBirth.id}
-                                value={form.date_of_birth}
+                                value={form.dateOfBirth}
                                 onChange={handleChange}
                                 type="date"
                                 placeholder={formFields.dateOfBirth.placeholder}
@@ -145,7 +146,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.websiteUrl.label}
                                 id={formFields.websiteUrl.id}
-                                value={form.website_url}
+                                value={form.websiteUrl}
                                 onChange={handleChange}
                                 type="url"
                                 placeholder={formFields.websiteUrl.placeholder}
@@ -193,7 +194,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.subTitle.label}
                                 id={formFields.subTitle.id}
-                                value={form.sub_title}
+                                value={form.subTitle}
                                 onChange={handleChange}
                                 type="text"
                                 placeholder={formFields.subTitle.placeholder}
@@ -202,7 +203,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.currentCompany.label}
                                 id={formFields.currentCompany.id}
-                                value={form.current_company}
+                                value={form.currentCompany}
                                 onChange={handleChange}
                                 type="text"
                                 placeholder={
@@ -213,7 +214,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.yearsOfExperience.label}
                                 id={formFields.yearsOfExperience.id}
-                                value={form.years_of_experience || 0}
+                                value={form.yearsOfExperience}
                                 onChange={handleChange}
                                 type="number"
                                 placeholder={
@@ -224,7 +225,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.resumeUrl.label}
                                 id={formFields.resumeUrl.id}
-                                value={form.resume_url}
+                                value={form.resumeUrl}
                                 onChange={handleChange}
                                 type="text"
                                 placeholder={formFields.resumeUrl.placeholder}
@@ -252,7 +253,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.greetingText.label}
                                 id={formFields.greetingText.id}
-                                value={form.greeting_text}
+                                value={form.greetingText}
                                 onChange={handleChange}
                                 required
                                 type="text"
@@ -264,7 +265,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.headLine.label}
                                 id={formFields.headLine.id}
-                                value={form.head_line}
+                                value={form.headLine}
                                 onChange={handleChange}
                                 type="text"
                                 required
@@ -274,7 +275,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.callToAction.label}
                                 id={formFields.callToAction.id}
-                                value={form.call_to_action}
+                                value={form.callToActionMessage}
                                 onChange={handleChange}
                                 type="text"
                                 placeholder={
@@ -294,7 +295,7 @@ export default function UserDetailsForm() {
                             <InputWithLabel
                                 label={formFields.funFact.label}
                                 id={formFields.funFact.id}
-                                value={form.fun_fact}
+                                value={form.funFact}
                                 onChange={handleChange}
                                 type="text"
                                 placeholder={formFields.funFact.placeholder}

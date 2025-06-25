@@ -37,16 +37,16 @@ export default function EditExperiencePage() {
 
     // Pre-fill form fields when data is available
     useEffect(() => {
-        if (data && data.data) {
-            const exp = data.data as Experience;
+        if (data) {
+            const exp = data as Experience;
             setTitle(exp.title);
             setCompany(exp.company);
             setLocation(exp.location);
             // Assuming the backend sends dates as ISO strings,
             // you may need to convert them to "YYYY-MM-DD" for the date input.
-            setStartDate(exp.start_date.substring(0, 10));
-            setEndDate(exp.end_date ? exp.end_date.substring(0, 10) : '');
-            setIsCurrent(exp.is_current);
+            setStartDate(exp.startDate.substring(0, 10));
+            setEndDate(exp.endDate ? exp.endDate.substring(0, 10) : '');
+            setIsCurrent(exp.isCurrent);
             setDescription(exp.description);
         }
     }, [data]);
@@ -60,9 +60,9 @@ export default function EditExperiencePage() {
                 company,
                 location,
                 // Format date values to full ISO strings before sending to API.
-                start_date: formatDateForAPI(startDate),
-                end_date: endDate ? formatDateForAPI(endDate) : '',
-                is_current: isCurrent,
+                startDate: formatDateForAPI(startDate),
+                endDate: endDate ? formatDateForAPI(endDate) : '',
+                isCurrent: isCurrent,
                 description,
             }).unwrap();
             router.push('/admin/experience');

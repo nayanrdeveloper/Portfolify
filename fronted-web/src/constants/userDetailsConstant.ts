@@ -13,7 +13,7 @@ export const USER_DETAIL_CONSTANT = {
 
     formFields: {
         fullName: {
-            id: 'full_name',
+            id: 'fullName',
             label: 'Full Name',
             tooltip: 'Your complete name to display on your portfolio.',
             placeholder: 'Nayan Radadiya',
@@ -26,7 +26,7 @@ export const USER_DETAIL_CONSTANT = {
             placeholder: 'Frontend Developer',
         },
         subTitle: {
-            id: 'sub_title',
+            id: 'subTitle',
             label: 'Subtitle',
             tooltip: 'A short tagline that describes you.',
             placeholder: 'I build clean and modern UIs',
@@ -46,7 +46,7 @@ export const USER_DETAIL_CONSTANT = {
             placeholder: 'Bangalore, India',
         },
         profilePicture: {
-            id: 'profile_picture',
+            id: 'profilePictureUrl',
             label: 'Profile Picture',
             tooltip: 'Direct URL to your profile image (JPG, PNG, etc.)',
             placeholder: 'https://example.com/avatar.jpg',
@@ -58,56 +58,56 @@ export const USER_DETAIL_CONSTANT = {
             placeholder: 'nayan@email.com',
         },
         currentCompany: {
-            id: 'current_company',
+            id: 'currentCompany',
             label: 'Current Company',
             tooltip: 'Your current employer or organization.',
             placeholder: 'TCS',
         },
         yearsOfExperience: {
-            id: 'years_of_experience',
+            id: 'yearsOfExperience',
             label: 'Years of Experience',
             tooltip: 'Total number of years you’ve worked professionally.',
             placeholder: '4',
         },
         phoneNumber: {
-            id: 'phone_number',
+            id: 'phoneNumber',
             label: 'Phone Number',
             tooltip: 'Your phone number if you’d like to show it.',
             placeholder: '+91-9876543210',
         },
         resumeUrl: {
-            id: 'resume_url',
+            id: 'resumeUrl',
             label: 'Resume URL',
             tooltip: 'Direct link to download your resume (PDF or hosted).',
             placeholder: 'https://example.com/resume.pdf',
         },
         dateOfBirth: {
-            id: 'date_of_birth',
+            id: 'dateOfBirth',
             label: 'Date of Birth',
             tooltip: 'Your birth date (optional).',
             placeholder: '1995-05-14',
         },
         websiteUrl: {
-            id: 'website_url',
+            id: 'websiteUrl',
             label: 'Website',
             tooltip: 'Your personal blog or website URL.',
             placeholder: 'https://nayan.dev',
         },
         greetingText: {
-            id: 'greeting_text',
+            id: 'greetingText',
             label: 'Greeting Text',
             tooltip: 'Friendly intro line to start your profile.',
             placeholder: "Hi! I'm Nayan 👋",
         },
         headLine: {
-            id: 'head_line',
+            id: 'headLine',
             label: 'Headline',
             tooltip: 'A short line about what you do or specialize in.',
             placeholder:
                 'I craft scalable web applications with React & GoLang.',
         },
         callToAction: {
-            id: 'call_to_action',
+            id: 'callToActionMessage',
             label: 'Call to Action',
             tooltip: 'Encouragement message to get visitors to contact you.',
             placeholder: "Let's connect — feel free to reach out!",
@@ -121,7 +121,7 @@ export const USER_DETAIL_CONSTANT = {
                 'Code is like humor. When you have to explain it, it’s bad.',
         },
         funFact: {
-            id: 'fun_fact',
+            id: 'funFact',
             label: 'Fun Fact',
             tooltip: 'Something interesting or unique about you.',
             placeholder: 'I built my first app in just 2 days 🚀',

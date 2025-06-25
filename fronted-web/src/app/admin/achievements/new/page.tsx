@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useCreateAchievementMutation } from '@/redux/achievements/achievementApi';
-import { formatDateForAPI } from '@/lib/dateUtils';
+import { formatDate } from '@/lib/dateUtils';
 
 export default function NewAchievementPage() {
     const router = useRouter();
@@ -27,12 +27,12 @@ export default function NewAchievementPage() {
             await createAchievement({
                 name,
                 issuer,
-                issue_date: formatDateForAPI(issueDate),
-                expiration_date: expirationDate
-                    ? formatDateForAPI(expirationDate)
+                issueDate: formatDate(issueDate, 'YYYY-MM-DD'),
+                expirationDate: expirationDate
+                    ? formatDate(expirationDate, 'YYYY-MM-DD')
                     : '',
-                credential_id: credentialId,
-                credential_url: credentialURL,
+                credentialID: credentialId,
+                credentialURL: credentialURL,
                 description,
             }).unwrap();
             router.push('/admin/achievements');

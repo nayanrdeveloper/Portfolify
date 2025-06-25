@@ -1,24 +1,24 @@
-export interface SingleUploadResponse {
-    status: string;
-    message: string;
-    data: {
-        secure_url: string;
-    };
+/* shared envelope */
+export interface ApiEnvelope<Data = unknown> {
+    message?: string;
+    data: Data;
 }
 
-export interface MultipleUploadResponse {
-    status: string;
-    message: string;
-    data: {
-        secure_urls: string[];
-    };
-}
+/* ---------- single upload ---------- */
+export type SingleUploadSuccess = ApiEnvelope<{
+    secureUrl: string; // camel-case
+}>;
 
+/* ---------- multiple upload -------- */
+export type MultipleUploadSuccess = ApiEnvelope<{
+    secureUrls: string[]; // camel-case
+}>;
+
+/* ---------- payloads --------------- */
 export interface SingleUploadPayload {
     file: File;
     folder?: string;
 }
-
 export interface MultipleUploadPayload {
     files: File[];
     folder?: string;

@@ -1,12 +1,12 @@
 export interface Experience {
-    id?: string;
+    _id?: string;
     user_id?: string;
     title: string;
     company: string;
     location: string;
-    start_date: string; // ISO string format, e.g. "2020-09-01T00:00:00.000Z"
-    end_date?: string; // ISO string format or empty string if not provided
-    is_current: boolean;
+    startDate: string; // ISO string format, e.g. "2020-09-01T00:00:00.000Z"
+    endDate?: string; // ISO string format or empty string if not provided
+    isCurrent: boolean;
     description: string;
 }
 
@@ -20,9 +20,9 @@ export interface CreateExperiencePayload {
     title: string;
     company: string;
     location: string;
-    start_date: string;
-    end_date?: string;
-    is_current?: boolean;
+    startDate: string;
+    endDate?: string;
+    isCurrent?: boolean;
     description: string;
 }
 

@@ -37,26 +37,26 @@ const ExperienceTable: React.FC<ExperienceTableProps> = ({
                 </thead>
                 <tbody>
                     {experiences.map((exp) => (
-                        <tr key={exp.id} className="hover:bg-gray-50">
+                        <tr key={exp._id} className="hover:bg-gray-50">
                             <td className="border px-4 py-2">{exp.title}</td>
                             <td className="border px-4 py-2">{exp.company}</td>
                             <td className="border px-4 py-2">{exp.location}</td>
                             <td className="border px-4 py-2">
-                                {formatDate(exp.start_date)}
+                                {formatDate(exp.startDate)}
                             </td>
                             <td className="border px-4 py-2">
-                                {exp.end_date
-                                    ? formatDate(exp.end_date)
+                                {exp.endDate
+                                    ? formatDate(exp.endDate)
                                     : 'Present'}
                             </td>
                             <td className="border px-4 py-2">
-                                {exp.is_current ? 'Yes' : 'No'}
+                                {exp.isCurrent ? 'Yes' : 'No'}
                             </td>
                             <td className="border px-4 py-2">
                                 {exp.description}
                             </td>
                             <td className="border px-4 py-2 flex space-x-2">
-                                <Link href={`/admin/experience/${exp.id}`}>
+                                <Link href={`/admin/experience/${exp._id}`}>
                                     <Button
                                         variant="secondary"
                                         size="sm"
@@ -69,7 +69,7 @@ const ExperienceTable: React.FC<ExperienceTableProps> = ({
                                 <Button
                                     variant="destructive"
                                     size="sm"
-                                    onClick={() => onDelete(String(exp.id))}
+                                    onClick={() => onDelete(String(exp._id))}
                                     className="flex items-center gap-1"
                                 >
                                     <Trash2 className="w-4 h-4" />

@@ -1,12 +1,12 @@
 export interface Achievement {
-    id?: string;
+    _id?: string;
     user_id?: string;
     name: string;
     issuer: string;
-    issue_date: string; // ISO date string, e.g., "2025-03-15T00:00:00.000Z"
-    expiration_date?: string; // ISO date string or empty if not provided
-    credential_id?: string;
-    credential_url?: string;
+    issueDate: string; // ISO date string, e.g., "2025-03-15T00:00:00.000Z"
+    expirationDate?: string; // ISO date string or empty if not provided
+    credentialID?: string;
+    credentialURL?: string;
     description?: string;
 }
 
@@ -25,10 +25,10 @@ export interface IAchievementResponse {
 export interface CreateAchievementPayload {
     name: string;
     issuer: string;
-    issue_date: string;
-    expiration_date?: string;
-    credential_id?: string;
-    credential_url?: string;
+    issueDate: string;
+    expirationDate?: string;
+    credentialID?: string;
+    credentialURL?: string;
     description?: string;
 }
 

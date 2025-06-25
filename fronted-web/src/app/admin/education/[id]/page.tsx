@@ -32,14 +32,14 @@ export default function EditEducationPage() {
     const [description, setDescription] = useState('');
 
     useEffect(() => {
-        if (data && data.data) {
-            const edu = data.data as Education;
+        if (data) {
+            const edu = data as Education;
             setInstitution(edu.institution);
             setDegree(edu.degree || '');
-            setFieldOfStudy(edu.field_of_study || '');
-            setStartDate(edu.start_date);
-            setEndDate(edu.end_date || '');
-            setIsCurrent(edu.is_current);
+            setFieldOfStudy(edu.fieldOfStudy || '');
+            setStartDate(edu.startDate);
+            setEndDate(edu.endDate || '');
+            setIsCurrent(edu.isCurrent);
             setDescription(edu.description || '');
         }
     }, [data]);
@@ -51,10 +51,10 @@ export default function EditEducationPage() {
                 id: educationId,
                 institution,
                 degree,
-                field_of_study: fieldOfStudy,
-                start_date: startDate,
-                end_date: endDate || '',
-                is_current: isCurrent,
+                fieldOfStudy: fieldOfStudy,
+                startDate: startDate,
+                endDate: endDate || '',
+                isCurrent: isCurrent,
                 description,
             }).unwrap();
             router.push('/education');

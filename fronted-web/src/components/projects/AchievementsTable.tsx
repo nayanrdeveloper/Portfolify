@@ -42,23 +42,23 @@ const AchievementsTable: React.FC<AchievementsTableProps> = ({
                 </thead>
                 <tbody>
                     {achievements.map((ach) => (
-                        <tr key={ach.id} className="hover:bg-gray-50">
+                        <tr key={ach._id} className="hover:bg-gray-50">
                             <td className="border px-4 py-2">{ach.name}</td>
                             <td className="border px-4 py-2">{ach.issuer}</td>
                             <td className="border px-4 py-2">
-                                {ach.issue_date}
+                                {ach.issueDate}
                             </td>
                             <td className="border px-4 py-2">
-                                {ach.expiration_date
-                                    ? ach.expiration_date
+                                {ach.expirationDate
+                                    ? ach.expirationDate
                                     : 'N/A'}
                             </td>
                             <td className="border px-4 py-2">
-                                {ach.credential_id}
+                                {ach.credentialID}
                             </td>
                             <td className="border px-4 py-2">
                                 <a
-                                    href={ach.credential_url}
+                                    href={ach.credentialURL}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-500 underline"
@@ -70,7 +70,7 @@ const AchievementsTable: React.FC<AchievementsTableProps> = ({
                                 {ach.description}
                             </td>
                             <td className="border px-4 py-2 flex space-x-2">
-                                <Link href={`/admin/achievements/${ach.id}`}>
+                                <Link href={`/admin/achievements/${ach._id}`}>
                                     <Button
                                         variant="secondary"
                                         size="sm"
@@ -83,7 +83,7 @@ const AchievementsTable: React.FC<AchievementsTableProps> = ({
                                 <Button
                                     variant="destructive"
                                     size="sm"
-                                    onClick={() => onDelete(String(ach.id))}
+                                    onClick={() => onDelete(String(ach._id))}
                                     className="flex items-center gap-1"
                                 >
                                     <Trash2 className="w-4 h-4" />
