@@ -45,7 +45,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         });
 
         // 4) consistent envelope
-        res.status(200).json({ message: 'User logged in successfully', data:  token  });   
+        res.status(200).json({ message: 'User logged in successfully', data:  {token}  });   
     } catch (err) {
         next(err);
     }
