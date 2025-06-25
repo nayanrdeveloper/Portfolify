@@ -80,7 +80,7 @@ export default function EditProjectPage() {
                     files: newMediaFiles,
                     folder: 'project_media',
                 }).unwrap();
-                uploadedNewMediaUrls = response.data.secure_urls;
+                uploadedNewMediaUrls = response;
             } catch (err) {
                 console.error('Failed to upload new media:', err);
                 // Optionally, you might want to abort the update if upload fails.

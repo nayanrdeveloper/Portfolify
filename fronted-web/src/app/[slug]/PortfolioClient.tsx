@@ -20,7 +20,7 @@ export default function PortfolioClient({
         skip: !!initialSettings,
     });
 
-    const template = settings?.data.template || initialSettings?.template;
+    const template = settings?.template || initialSettings?.template;
 
     if (isLoading && !template) return <p>Loading...</p>;
 

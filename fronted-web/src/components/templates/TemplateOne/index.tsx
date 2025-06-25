@@ -28,9 +28,9 @@ export default function TemplateOne() {
         'Short introduction about me. Passionate about technology.';
     const defaultAbout =
         'Here you can talk about your experience, background, and goals. Share your journey with your audience.Here you can talk about your experience, background, and goals. Share your journey with your audience.Here you can talk about your experience, background, and goals. Share your journey with your audience.';
-    const fullName = getValue(userDetails?.data?.full_name, defaultName);
-    const title = getValue(userDetails?.data?.title, defaultTitle);
-    const bio = getValue(userDetails?.data?.bio, defaultBio);
+    const fullName = getValue(userDetails?.fullName, defaultName);
+    const title = getValue(userDetails?.title, defaultTitle);
+    const bio = getValue(userDetails?.about, defaultBio);
     const about = defaultAbout;
 
     return (
@@ -98,8 +98,8 @@ export default function TemplateOne() {
                         Projects
                     </h2>
                     <div className="grid md:grid-cols-2 gap-8">
-                        {Array.isArray(projects?.data) &&
-                            projects.data.map((project) => (
+                        {Array.isArray(projects) &&
+                            projects.map((project) => (
                                 <div
                                     key={project.id}
                                     className="bg-[#10100D] p-4 rounded-lg"
