@@ -1,0 +1,9 @@
+[build]
+  # Point Netlify to the Next project
+  base   = "fronted-web"
+  command= "npm ci && npm run build"
+  publish= "fronted-web/.next"     # plugin rewrites this internally
+
+[[plugins]]
+  # Official runtime for SSR / API routes
+  package = "@netlify/next"
