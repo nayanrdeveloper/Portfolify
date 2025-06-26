@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import {
     Calendar,
     Inbox,
-    LucideDownloadCloud,
+    // LucideDownloadCloud,
     Settings,
     Building,
     Award,
@@ -45,11 +45,11 @@ const SidebarList = [
         icon: Settings,
         route: '/admin/settings',
     },
-    {
-        title: 'Skills',
-        icon: LucideDownloadCloud,
-        route: '/admin/skills',
-    },
+    // {
+    //     title: 'Skills',
+    //     icon: LucideDownloadCloud,
+    //     route: '/admin/skills',
+    // },
     {
         title: 'Education',
         icon: Building,
