@@ -8,14 +8,14 @@ export interface UserDetails extends Document {
     subTitle?: string;
     about?: string;
     location?: string;
-    profilePictureURL?: string;
+    profilePictureUrl?: string;
     email?: string;
     currentCompany?: string;
     yearsOfExperience?: number;
     phoneNumber?: string;
-    resumeURL?: string;
+    resumeUrl?: string;
     dateOfBirth?: string;
-    websiteURL?: string;
+    websiteUrl?: string;
     greetingText?: string;
     headLine?: string;
     callToActionMessage?: string;
