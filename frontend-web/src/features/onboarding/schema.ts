@@ -178,3 +178,12 @@ export interface Achievement {
     mediaUrl?: string;
     description?: string;
 }
+
+export const seoSchema = z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    keywords: z.string().optional(),
+    ogImage: z.string().url('Invalid URL').optional().or(z.literal('')),
+});
+
+export type SeoFormData = z.infer<typeof seoSchema>;
