@@ -1,9 +1,21 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import api from '@/lib/api';
 import { useAppSelector } from '@/lib/store/hooks';
-import { Edit, ExternalLink, Eye, Loader2, Plus } from 'lucide-react';
+import {
+    Briefcase,
+    Edit,
+    ExternalLink,
+    Eye,
+    FileText,
+    GraduationCap,
+    Layout,
+    Loader2,
+    Plus,
+    Zap,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -72,12 +84,12 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-8">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            {/* Welcome Section */}
+            <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                     <p className="text-muted-foreground">
-                        Welcome back, {userDetails?.fullName || user?.email?.split('@')[0]}!
+                        Here&apos;s an overview of your portfolio status.
                     </p>
                 </div>
                 <div className="flex gap-2">
@@ -88,127 +100,147 @@ export default function DashboardPage() {
                     </Button>
                     <Button asChild>
                         <Link href="/dashboard/publish">
-                            <ExternalLink className="mr-2 h-4 w-4" /> Publish
+                            <ExternalLink className="mr-2 h-4 w-4" /> Publish Changes
                         </Link>
                     </Button>
                 </div>
             </div>
 
-            {/* Overview Cards */}
+            {/* Stats Grid */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                    <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium">Total Projects</h3>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-muted-foreground"
-                        >
-                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                        </svg>
-                    </div>
-                    <div className="text-2xl font-bold">{stats?.projectsCount}</div>
-                    <p className="text-xs text-muted-foreground">+0 from last month</p>
-                </div>
-                <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                    <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium">Skills Listed</h3>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-muted-foreground"
-                        >
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                    </div>
-                    <div className="text-2xl font-bold">{stats?.skillsCount}</div>
-                    <p className="text-xs text-muted-foreground">Across various categories</p>
-                </div>
-                <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                    <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium">Experience</h3>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-muted-foreground"
-                        >
-                            <rect width="20" height="14" x="2" y="5" rx="2" />
-                            <path d="M2 10h20" />
-                        </svg>
-                    </div>
-                    <div className="text-2xl font-bold">{stats?.experienceCount}</div>
-                    <p className="text-xs text-muted-foreground">Roles added</p>
-                </div>
-                <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                    <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <h3 className="tracking-tight text-sm font-medium">Profile Score</h3>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            className="h-4 w-4 text-muted-foreground"
-                        >
-                            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-                        </svg>
-                    </div>
-                    <div className="text-2xl font-bold">{completionPercentage}%</div>
-                    <p className="text-xs text-muted-foreground">Completion rate</p>
-                </div>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
+                        <Layout className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats?.projectsCount}</div>
+                        <p className="text-xs text-muted-foreground">Showcased in portfolio</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Skills Listed</CardTitle>
+                        <Zap className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats?.skillsCount}</div>
+                        <p className="text-xs text-muted-foreground">Across all categories</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Experience</CardTitle>
+                        <Briefcase className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats?.experienceCount}</div>
+                        <p className="text-xs text-muted-foreground">Roles added</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Profile Score</CardTitle>
+                        <div className="text-muted-foreground">
+                            {completionPercentage >= 100 ? (
+                                <span className="text-green-500">★</span>
+                            ) : (
+                                <span className="text-yellow-500">★</span>
+                            )}
+                        </div>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{completionPercentage}%</div>
+                        <div className="mt-2 h-2 w-full rounded-full bg-secondary">
+                            <div
+                                className="h-full rounded-full bg-primary transition-all"
+                                style={{ width: `${completionPercentage}%` }}
+                            />
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
 
-            {/* Quick Actions */}
-            <div>
-                <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <Link
-                        href="/onboarding/projects"
-                        className="group flex flex-col items-center justify-center p-6 border rounded-xl bg-card hover:bg-muted/50 transition-colors"
-                    >
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
-                            <Plus className="h-5 w-5" />
+            {/* Main Content Grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+                {/* Quick Actions */}
+                <Card className="col-span-4">
+                    <CardHeader>
+                        <CardTitle>Quick Actions</CardTitle>
+                        <CardDescription>Manage your portfolio content efficiently.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="grid gap-4 sm:grid-cols-2">
+                        <Link
+                            href="/onboarding/projects"
+                            className="group flex flex-col items-center justify-center rounded-lg border border-dashed p-6 hover:bg-muted/50 transition-colors"
+                        >
+                            <div className="mb-2 rounded-full bg-primary/10 p-3 text-primary group-hover:scale-110 transition-transform">
+                                <Plus className="h-6 w-6" />
+                            </div>
+                            <span className="font-medium">Add New Project</span>
+                        </Link>
+                        <Link
+                            href="/onboarding/skills"
+                            className="group flex flex-col items-center justify-center rounded-lg border border-dashed p-6 hover:bg-muted/50 transition-colors"
+                        >
+                            <div className="mb-2 rounded-full bg-primary/10 p-3 text-primary group-hover:scale-110 transition-transform">
+                                <Zap className="h-6 w-6" />
+                            </div>
+                            <span className="font-medium">Update Skills</span>
+                        </Link>
+                        <Link
+                            href="/onboarding/experience"
+                            className="group flex flex-col items-center justify-center rounded-lg border border-dashed p-6 hover:bg-muted/50 transition-colors"
+                        >
+                            <div className="mb-2 rounded-full bg-primary/10 p-3 text-primary group-hover:scale-110 transition-transform">
+                                <Briefcase className="h-6 w-6" />
+                            </div>
+                            <span className="font-medium">Add Experience</span>
+                        </Link>
+                        <Link
+                            href="/onboarding/education"
+                            className="group flex flex-col items-center justify-center rounded-lg border border-dashed p-6 hover:bg-muted/50 transition-colors"
+                        >
+                            <div className="mb-2 rounded-full bg-primary/10 p-3 text-primary group-hover:scale-110 transition-transform">
+                                <GraduationCap className="h-6 w-6" />
+                            </div>
+                            <span className="font-medium">Add Education</span>
+                        </Link>
+                    </CardContent>
+                </Card>
+
+                {/* Recent Activity / Tips */}
+                <Card className="col-span-3">
+                    <CardHeader>
+                        <CardTitle>Portfolio Tips</CardTitle>
+                        <CardDescription>
+                            Improve your portfolio to attract more opportunities.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-4 rounded-md border p-4">
+                                <FileText className="mt-1 h-5 w-5 text-primary" />
+                                <div>
+                                    <p className="font-medium">Add a Resume</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        Upload your latest resume to make it easy for recruiters to
+                                        review your qualifications.
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex items-start gap-4 rounded-md border p-4">
+                                <Layout className="mt-1 h-5 w-5 text-primary" />
+                                <div>
+                                    <p className="font-medium">Customize Theme</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        Choose a theme that matches your personal brand and style.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <span className="font-medium">Add Project</span>
-                    </Link>
-                    <Link
-                        href="/onboarding/skills"
-                        className="group flex flex-col items-center justify-center p-6 border rounded-xl bg-card hover:bg-muted/50 transition-colors"
-                    >
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
-                            <Edit className="h-5 w-5" />
-                        </div>
-                        <span className="font-medium">Update Skills</span>
-                    </Link>
-                    <Link
-                        href="/onboarding/basic"
-                        className="group flex flex-col items-center justify-center p-6 border rounded-xl bg-card hover:bg-muted/50 transition-colors"
-                    >
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-3 group-hover:scale-110 transition-transform">
-                            <Edit className="h-5 w-5" />
-                        </div>
-                        <span className="font-medium">Edit Profile</span>
-                    </Link>
-                </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );
