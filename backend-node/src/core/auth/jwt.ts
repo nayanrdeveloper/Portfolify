@@ -5,6 +5,7 @@ export interface JwtPayload {
     userId: string;
     email: string;
     slug: string;
+    isOnboardingCompleted: boolean;
 }
 
 const SECRET = env.JWT_SECRET || 'default_jwt_secret';

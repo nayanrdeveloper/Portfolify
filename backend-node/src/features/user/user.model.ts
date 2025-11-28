@@ -16,6 +16,7 @@ const userSchema = new Schema<User>(
         slug: { type: String, required: true, unique: true },
         password: { type: String, required: true, select: false },
         avatarUrl: { type: String },
+        isOnboardingCompleted: { type: Boolean, default: false },
     },
     { timestamps: true },
 );

@@ -65,4 +65,8 @@ export class UserService {
     static async getBySlug(slug: string) {
         return UserModel.findOne({ slug }).lean();
     }
+
+    static async markOnboardingComplete(userId: string) {
+        return UserModel.findByIdAndUpdate(userId, { isOnboardingCompleted: true }, { new: true });
+    }
 }

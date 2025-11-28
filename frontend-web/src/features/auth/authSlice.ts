@@ -19,6 +19,7 @@ interface DecodedToken {
     userId: string;
     email: string;
     slug: string;
+    isOnboardingCompleted: boolean;
     exp: number;
 }
 
@@ -89,6 +90,7 @@ const authSlice = createSlice({
                             _id: decoded.userId,
                             email: decoded.email,
                             slug: decoded.slug,
+                            isOnboardingCompleted: decoded.isOnboardingCompleted,
                             fullName: '', // Not in token
                             createdAt: '', // Not in token
                         };
@@ -134,6 +136,7 @@ const authSlice = createSlice({
                 _id: decoded.userId,
                 email: decoded.email,
                 slug: decoded.slug,
+                isOnboardingCompleted: decoded.isOnboardingCompleted,
                 fullName: '',
                 createdAt: '',
             };

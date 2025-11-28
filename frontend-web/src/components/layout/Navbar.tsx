@@ -3,8 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { logoutUser } from '@/features/auth/authSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import { LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar() {
     const { isAuthenticated } = useAppSelector(state => state.auth);
@@ -17,9 +17,15 @@ export default function Navbar() {
     return (
         <header className="fixed top-0 left-0 right-0 z-50 border-b bg-background/80 backdrop-blur-md">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <Link href="/" className="flex items-center gap-2 text-xl font-bold text-primary">
-                    <LayoutDashboard className="h-6 w-6" />
-                    <span>Portfolify</span>
+                <Link href="/" className="flex items-center gap-2">
+                    <Image
+                        src="/logo.png"
+                        alt="Portfolify"
+                        width={140}
+                        height={40}
+                        className="h-8 w-auto"
+                        priority
+                    />
                 </Link>
 
                 <nav className="hidden md:flex items-center gap-6">

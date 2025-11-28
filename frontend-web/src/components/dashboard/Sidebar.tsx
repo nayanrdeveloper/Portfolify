@@ -18,6 +18,7 @@ import {
     Zap,
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
 const navItems = [
@@ -47,7 +48,16 @@ export function Sidebar() {
     return (
         <div className="flex h-full w-64 flex-col border-r bg-card">
             <div className="p-6">
-                <h2 className="text-2xl font-bold text-primary">Portfolify</h2>
+                <Link href="/dashboard">
+                    <Image
+                        src="/logo.png"
+                        alt="Portfolify"
+                        width={140}
+                        height={40}
+                        className="h-8 w-auto"
+                        priority
+                    />
+                </Link>
             </div>
             <nav className="flex-1 space-y-1 px-3">
                 {navItems.map(item => {

@@ -4,6 +4,7 @@ export interface User {
     email: string;
     slug: string;
     avatarUrl?: string;
+    isOnboardingCompleted?: boolean;
     createdAt: string;
 }
 

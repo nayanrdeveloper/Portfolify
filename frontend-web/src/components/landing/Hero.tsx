@@ -31,6 +31,15 @@ export default function Hero() {
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.15 }}
+                        className="mt-4 text-xl font-semibold text-foreground/80"
+                    >
+                        Your Career, Your Story, Your Portfolio.
+                    </motion.p>
+
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl"
                     >

@@ -14,11 +14,16 @@ export class UserDetailsService {
     static async upsert(userId: Types.ObjectId, payload: unknown) {
         const data = upsertDetailsSchema.parse(payload);
 
-        return UserDetailsModel.findOneAndUpdate(
+        const details = await UserDetailsModel.findOneAndUpdate(
             { user: userId },
             { ...data },
             { upsert: true, new: true, setDefaultsOnInsert: true },
         );
+
+        // Mark onboarding as complete if details are saved
+        await UserService.markOnboardingComplete(userId.toString());
+
+        return details;
     }
 
     /* ------------- public by slug ------ */

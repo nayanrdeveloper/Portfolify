@@ -18,6 +18,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
             userId: user._id.toString(),
             email: user.email,
             slug: user.slug,
+            isOnboardingCompleted: user.isOnboardingCompleted,
         });
 
         // 4) consistent envelope
@@ -41,6 +42,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             userId: user._id.toString(),
             email: user.email,
             slug: user.slug,
+            isOnboardingCompleted: user.isOnboardingCompleted,
         });
 
         // 4) consistent envelope

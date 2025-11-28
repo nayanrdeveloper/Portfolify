@@ -7,5 +7,6 @@ export interface User extends Document {
     slug: string;
     password: string;
     avatarUrl?: string;
+    isOnboardingCompleted: boolean;
     createdAt: Date;
 }
