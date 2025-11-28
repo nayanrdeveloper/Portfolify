@@ -11,6 +11,12 @@ const settingsSchema = new Schema<UserSettings>(
             backgroundColor: { type: String },
             fontFamily: { type: String },
         },
+        seo: {
+            title: { type: String },
+            description: { type: String },
+            keywords: [{ type: String }],
+            ogImage: { type: String },
+        },
     },
     { timestamps: true },
 );

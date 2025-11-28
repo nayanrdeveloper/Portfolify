@@ -21,4 +21,12 @@ export const updateSettingsSchema = z.object({
             fontFamily: z.string().optional(),
         })
         .optional(),
+    seo: z
+        .object({
+            title: z.string().optional(),
+            description: z.string().optional(),
+            keywords: z.array(z.string()).optional(),
+            ogImage: z.string().url().optional().or(z.literal('')),
+        })
+        .optional(),
 });

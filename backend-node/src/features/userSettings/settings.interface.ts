@@ -10,5 +10,11 @@ export interface UserSettings extends Document {
         backgroundColor?: string;
         fontFamily?: string;
     };
+    seo?: {
+        title?: string;
+        description?: string;
+        keywords?: string[];
+        ogImage?: string;
+    };
     createdAt: Date;
 }

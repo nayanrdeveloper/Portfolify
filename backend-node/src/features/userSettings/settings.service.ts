@@ -18,6 +18,7 @@ export class SettingsService {
             {
                 template: data.template,
                 customization: data.customization,
+                seo: data.seo,
             },
             { upsert: true, new: true, setDefaultsOnInsert: true },
         );
