@@ -5,6 +5,7 @@ import {
     deleteProject,
     getProject,
     listBySlug,
+    listMine,
     updateProject,
 } from './project.controller';
 
@@ -16,6 +17,7 @@ router.get('/user/:slug', listBySlug);
 
 /* Protected */
 router.use(requireAuth);
+router.get('/', listMine);
 router.post('/', createProject);
 router.put('/:id', updateProject);
 router.delete('/:id', deleteProject);

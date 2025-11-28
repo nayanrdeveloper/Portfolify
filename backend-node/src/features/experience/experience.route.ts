@@ -5,6 +5,7 @@ import {
     deleteExperience,
     getExperience,
     listBySlug,
+    listMine,
     updateExperience,
 } from './experience.controller';
 
@@ -16,6 +17,7 @@ router.get('/:id', getExperience);
 
 /* Protected */
 router.use(requireAuth);
+router.get('/', listMine);
 router.post('/', createExperience);
 router.put('/:id', updateExperience);
 router.delete('/:id', deleteExperience);

@@ -59,3 +59,12 @@ export const listBySlug = async (req: Request, res: Response, next: NextFunction
         next(err);
     }
 };
+
+export const listMine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const edus = await EducationService.listByUser(new Types.ObjectId(req.auth!.userId));
+        res.json({ message: 'Educations retrieved', data: edus });
+    } catch (err) {
+        next(err);
+    }
+};

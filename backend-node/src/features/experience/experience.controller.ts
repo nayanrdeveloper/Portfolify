@@ -59,3 +59,12 @@ export const listBySlug = async (req: Request, res: Response, next: NextFunction
         next(err);
     }
 };
+
+export const listMine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const exps = await ExperienceService.listByUser(new Types.ObjectId(req.auth!.userId));
+        res.json({ message: 'Experiences retrieved', data: exps });
+    } catch (err) {
+        next(err);
+    }
+};

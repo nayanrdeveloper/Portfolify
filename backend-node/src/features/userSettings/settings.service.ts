@@ -15,7 +15,10 @@ export class SettingsService {
 
         return SettingsModel.findOneAndUpdate(
             { user: userId },
-            { template: data.template },
+            {
+                template: data.template,
+                customization: data.customization,
+            },
             { upsert: true, new: true, setDefaultsOnInsert: true },
         );
     }
@@ -25,6 +28,6 @@ export class SettingsService {
         const user = await UserService.getBySlug(slug);
         if (!user) throw new NotFoundError('User not found');
         const doc = await this.getByUser(user._id);
-        return doc?.template ?? 'default';
+        return doc || { template: 'default' };
     }
 }

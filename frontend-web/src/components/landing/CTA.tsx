@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function CTA() {
     return (
@@ -13,7 +13,8 @@ export default function CTA() {
                             Ready to showcase your work?
                         </h2>
                         <p className="text-lg text-primary-foreground/80 mb-10">
-                            Join thousands of developers who have built their professional portfolios with Portfolify. Start for free today.
+                            Join thousands of developers who have built their professional
+                            portfolios with Portfolify. Start for free today.
                         </p>
                         <Link
                             href="/signup"

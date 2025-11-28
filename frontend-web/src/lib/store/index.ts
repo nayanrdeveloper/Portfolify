@@ -1,20 +1,15 @@
-// src/lib/store/index.ts
 import { configureStore } from '@reduxjs/toolkit';
-import productsReducer from '../../features/products/productsSlice';
 import authReducer from '../../features/auth/authSlice';
-// import cartReducer from '../features/cart/cartSlice';
+import themeReducer from '../../features/theme/themeSlice';
 
 export const makeStore = () =>
     configureStore({
         reducer: {
-            products: productsReducer,
             auth: authReducer,
-            //   cart: cartReducer,
+            theme: themeReducer,
         },
-        // You can tweak middleware here if needed
-        middleware: (getDefaultMiddleware) =>
+        middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
-                // Example: if you use non-serializable data, turn this off or customize
                 serializableCheck: true,
             }),
         devTools: process.env.NODE_ENV !== 'production',

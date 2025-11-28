@@ -19,3 +19,12 @@ export const upsertLinks = async (req: Request, res: Response, next: NextFunctio
         next(e);
     }
 };
+
+export const getMine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const doc = await SocialService.getByUser(new Types.ObjectId(req.auth!.userId));
+        res.json({ message: 'Links retrieved', data: doc ?? null });
+    } catch (e) {
+        next(e);
+    }
+};

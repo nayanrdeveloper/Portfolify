@@ -4,5 +4,11 @@ export interface UserSettings extends Document {
     _id: Types.ObjectId;
     user: Types.ObjectId;
     template: string; // theme key
+    customization?: {
+        primaryColor?: string;
+        secondaryColor?: string;
+        backgroundColor?: string;
+        fontFamily?: string;
+    };
     createdAt: Date;
 }

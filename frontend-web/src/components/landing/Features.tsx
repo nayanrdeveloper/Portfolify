@@ -7,22 +7,26 @@ const features = [
     {
         icon: UserCircle,
         title: 'Easy Setup',
-        description: 'Create your account and fill in your details in minutes with our user-friendly wizard.',
+        description:
+            'Create your account and fill in your details in minutes with our user-friendly wizard.',
     },
     {
         icon: MonitorPlay,
         title: 'Real-Time Preview',
-        description: 'See changes instantly as you type. No more guessing how your portfolio will look.',
+        description:
+            'See changes instantly as you type. No more guessing how your portfolio will look.',
     },
     {
         icon: Palette,
         title: 'Multiple Themes',
-        description: 'Choose from a variety of professional themes including Glassmorphism, Neumorphism, and more.',
+        description:
+            'Choose from a variety of professional themes including Glassmorphism, Neumorphism, and more.',
     },
     {
         icon: Wand2,
         title: 'AI Powered',
-        description: 'Let AI generate your bio, project descriptions, and optimize your content for SEO.',
+        description:
+            'Let AI generate your bio, project descriptions, and optimize your content for SEO.',
     },
     {
         icon: LayoutTemplate,
@@ -32,7 +36,8 @@ const features = [
     {
         icon: Zap,
         title: 'Fast & Secure',
-        description: 'Optimized for performance and SEO. Your portfolio will load fast and look great on any device.',
+        description:
+            'Optimized for performance and SEO. Your portfolio will load fast and look great on any device.',
     },
 ];
 
@@ -41,9 +46,12 @@ export default function Features() {
         <section id="features" className="py-20 bg-muted/30">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">Everything you need</h2>
+                    <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+                        Everything you need
+                    </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Portfolify comes packed with powerful features to help you build a stunning portfolio without writing a single line of code.
+                        Portfolify comes packed with powerful features to help you build a stunning
+                        portfolio without writing a single line of code.
                     </p>
                 </div>
 

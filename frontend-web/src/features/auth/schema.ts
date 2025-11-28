@@ -7,7 +7,10 @@ export const registerSchema = z.object({
     slug: z
         .string()
         .min(3, 'Username must be at least 3 characters')
-        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Username must be lowercase letters, numbers, and dashes only')
+        .regex(
+            /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+            'Username must be lowercase letters, numbers, and dashes only',
+        )
         .optional()
         .or(z.literal('')),
 });

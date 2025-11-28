@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../lib/api';
-import { AuthState, LoginResponse, RegisterResponse, User } from './types';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
+import api from '../../lib/api';
+import { AuthState, LoginResponse, RegisterResponse } from './types';
 
 interface LoginPayload {
     email: string;
@@ -44,7 +44,7 @@ export const registerUser = createAsyncThunk(
             const err = error as any;
             return rejectWithValue(err.response?.data?.message || 'Registration failed');
         }
-    }
+    },
 );
 
 export const loginUser = createAsyncThunk(
@@ -59,7 +59,7 @@ export const loginUser = createAsyncThunk(
             const err = error as any;
             return rejectWithValue(err.response?.data?.message || 'Login failed');
         }
-    }
+    },
 );
 
 export const logoutUser = createAsyncThunk('auth/logout', async () => {
@@ -70,7 +70,8 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        loadUserFromToken: (state) => {
+        loadUserFromToken: state => {
+            if (typeof window === 'undefined') return;
             const token = localStorage.getItem('token');
             if (token) {
                 try {
@@ -101,9 +102,9 @@ const authSlice = createSlice({
             }
         },
     },
-    extraReducers: (builder) => {
+    extraReducers: builder => {
         // Register
-        builder.addCase(registerUser.pending, (state) => {
+        builder.addCase(registerUser.pending, state => {
             state.isLoading = true;
             state.error = null;
         });
@@ -119,7 +120,7 @@ const authSlice = createSlice({
         });
 
         // Login
-        builder.addCase(loginUser.pending, (state) => {
+        builder.addCase(loginUser.pending, state => {
             state.isLoading = true;
             state.error = null;
         });
@@ -143,7 +144,7 @@ const authSlice = createSlice({
         });
 
         // Logout
-        builder.addCase(logoutUser.fulfilled, (state) => {
+        builder.addCase(logoutUser.fulfilled, state => {
             state.user = null;
             state.token = null;
             state.isAuthenticated = false;

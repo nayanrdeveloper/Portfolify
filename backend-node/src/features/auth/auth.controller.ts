@@ -1,7 +1,6 @@
 // src/features/auth/auth.controller.ts
 import { NextFunction, Request, Response } from 'express';
 import { signToken } from '../../core/auth/jwt';
-import { created, ok } from '../../core/utils/sendResponse'; // ✅ NEW
 import { UserService } from '../user/user.service';
 import { loginSchema, registerSchema } from './auth.schema';
 
@@ -22,7 +21,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
         });
 
         // 4) consistent envelope
-        res.status(201).json({ message: 'Account created successfully', data:  { user, token } });
+        res.status(201).json({ message: 'Account created successfully', data: { user, token } });
     } catch (err) {
         next(err);
     }
@@ -45,7 +44,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         });
 
         // 4) consistent envelope
-        res.status(200).json({ message: 'User logged in successfully', data:  {token}  });   
+        res.status(200).json({ message: 'User logged in successfully', data: { token } });
     } catch (err) {
         next(err);
     }

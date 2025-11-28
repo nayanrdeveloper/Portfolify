@@ -22,8 +22,8 @@ export const updateMine = async (req: Request, res: Response, next: NextFunction
 
 export const getBySlug = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const tpl = await SettingsService.publicBySlug(req.params.slug);
-        res.json({ message: 'Template by slug', data: { template: tpl } });
+        const settings = await SettingsService.publicBySlug(req.params.slug);
+        res.json({ message: 'Settings by slug', data: settings });
     } catch (e) {
         next(e);
     }

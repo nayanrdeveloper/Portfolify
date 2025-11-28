@@ -5,6 +5,7 @@ import {
     deleteEducation,
     getEducation,
     listBySlug,
+    listMine,
     updateEducation,
 } from './education.controller';
 
@@ -17,6 +18,7 @@ router.get('/:id', getEducation);
 /* Protected */
 router.use(requireAuth);
 
+router.get('/', listMine);
 router.post('/', createEducation);
 router.put('/:id', updateEducation);
 router.delete('/:id', deleteEducation);

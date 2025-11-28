@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
 
 export default function ForgotPasswordPage() {
     const [email, setEmail] = useState('');
@@ -28,7 +28,8 @@ export default function ForgotPasswordPage() {
                         Reset your password
                     </h2>
                     <p className="mt-2 text-sm text-muted-foreground">
-                        Enter your email address and we'll send you a link to reset your password.
+                        Enter your email address and we&apos;ll send you a link to reset your
+                        password.
                     </p>
                 </div>
 
@@ -36,12 +37,17 @@ export default function ForgotPasswordPage() {
                     <div className="rounded-md bg-green-50 p-4">
                         <div className="flex">
                             <div className="ml-3">
-                                <h3 className="text-sm font-medium text-green-800">Check your email</h3>
+                                <h3 className="text-sm font-medium text-green-800">
+                                    Check your email
+                                </h3>
                                 <div className="mt-2 text-sm text-green-700">
                                     <p>We have sent a password reset link to {email}.</p>
                                 </div>
                                 <div className="mt-4">
-                                    <Link href="/login" className="text-sm font-medium text-green-800 hover:text-green-900">
+                                    <Link
+                                        href="/login"
+                                        className="text-sm font-medium text-green-800 hover:text-green-900"
+                                    >
                                         Back to login &rarr;
                                     </Link>
                                 </div>
@@ -51,7 +57,10 @@ export default function ForgotPasswordPage() {
                 ) : (
                     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-foreground"
+                            >
                                 Email address
                             </label>
                             <div className="mt-1">
@@ -60,7 +69,7 @@ export default function ForgotPasswordPage() {
                                     type="email"
                                     required
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={e => setEmail(e.target.value)}
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                     placeholder="john@example.com"
                                 />
@@ -68,11 +77,7 @@ export default function ForgotPasswordPage() {
                         </div>
 
                         <div>
-                            <Button
-                                type="submit"
-                                className="w-full"
-                                disabled={isLoading}
-                            >
+                            <Button type="submit" className="w-full" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -85,7 +90,10 @@ export default function ForgotPasswordPage() {
                         </div>
 
                         <div className="flex items-center justify-center">
-                            <Link href="/login" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground">
+                            <Link
+                                href="/login"
+                                className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground"
+                            >
                                 <ArrowLeft className="mr-2 h-4 w-4" />
                                 Back to login
                             </Link>

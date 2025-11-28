@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Hero() {
     return (
@@ -34,7 +34,8 @@ export default function Hero() {
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl"
                     >
-                        The ultimate portfolio generator for developers. Choose a theme, fill in your details, and get a professional portfolio website instantly.
+                        The ultimate portfolio generator for developers. Choose a theme, fill in
+                        your details, and get a professional portfolio website instantly.
                     </motion.p>
 
                     <motion.div
@@ -66,7 +67,9 @@ export default function Hero() {
                         className="mt-20 w-full max-w-5xl rounded-xl border bg-card p-2 shadow-2xl"
                     >
                         <div className="aspect-video w-full overflow-hidden rounded-lg bg-muted/50 flex items-center justify-center">
-                            <p className="text-muted-foreground">Portfolio Preview Carousel Coming Soon</p>
+                            <p className="text-muted-foreground">
+                                Portfolio Preview Carousel Coming Soon
+                            </p>
                         </div>
                     </motion.div>
                 </div>

@@ -10,6 +10,7 @@ const baseObject = z.object({
     expirationDate: isoDate.nullable().optional(),
     credentialID: z.string().optional(),
     credentialURL: z.string().url().optional(),
+    mediaUrl: z.string().url().optional(),
     description: z.string().optional(),
 });
 

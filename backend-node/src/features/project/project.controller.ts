@@ -54,3 +54,12 @@ export const listBySlug = async (req: Request, res: Response, next: NextFunction
         next(e);
     }
 };
+
+export const listMine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const prjs = await ProjectService.listByUser(new Types.ObjectId(req.auth!.userId));
+        res.json({ message: 'Projects retrieved', data: prjs });
+    } catch (e) {
+        next(e);
+    }
+};

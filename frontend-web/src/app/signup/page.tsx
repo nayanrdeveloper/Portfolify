@@ -1,20 +1,20 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { registerUser } from '@/features/auth/authSlice';
+import { RegisterFormData, registerSchema } from '@/features/auth/schema';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import { registerUser } from '@/features/auth/authSlice';
-import { registerSchema, RegisterFormData } from '@/features/auth/schema';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
 
 export default function SignupPage() {
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const { isLoading, error, isAuthenticated } = useAppSelector((state) => state.auth);
+    const { isLoading, error, isAuthenticated } = useAppSelector(state => state.auth);
 
     const {
         register,
@@ -43,7 +43,10 @@ export default function SignupPage() {
                     </h2>
                     <p className="mt-2 text-sm text-muted-foreground">
                         Or{' '}
-                        <Link href="/login" className="font-medium text-primary hover:text-primary/90">
+                        <Link
+                            href="/login"
+                            className="font-medium text-primary hover:text-primary/90"
+                        >
                             sign in to your existing account
                         </Link>
                     </p>
@@ -52,7 +55,10 @@ export default function SignupPage() {
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="space-y-4">
                         <div>
-                            <label htmlFor="fullName" className="block text-sm font-medium text-foreground">
+                            <label
+                                htmlFor="fullName"
+                                className="block text-sm font-medium text-foreground"
+                            >
                                 Full Name
                             </label>
                             <div className="mt-1">
@@ -65,13 +71,18 @@ export default function SignupPage() {
                                     {...register('fullName')}
                                 />
                                 {errors.fullName && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.fullName.message}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.fullName.message}
+                                    </p>
                                 )}
                             </div>
                         </div>
 
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-foreground"
+                            >
                                 Email address
                             </label>
                             <div className="mt-1">
@@ -84,13 +95,18 @@ export default function SignupPage() {
                                     {...register('email')}
                                 />
                                 {errors.email && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.email.message}
+                                    </p>
                                 )}
                             </div>
                         </div>
 
                         <div>
-                            <label htmlFor="slug" className="block text-sm font-medium text-foreground">
+                            <label
+                                htmlFor="slug"
+                                className="block text-sm font-medium text-foreground"
+                            >
                                 Username (Optional)
                             </label>
                             <div className="mt-1">
@@ -103,13 +119,18 @@ export default function SignupPage() {
                                     {...register('slug')}
                                 />
                                 {errors.slug && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.slug.message}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.slug.message}
+                                    </p>
                                 )}
                             </div>
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-foreground">
+                            <label
+                                htmlFor="password"
+                                className="block text-sm font-medium text-foreground"
+                            >
                                 Password
                             </label>
                             <div className="mt-1">
@@ -122,7 +143,9 @@ export default function SignupPage() {
                                     {...register('password')}
                                 />
                                 {errors.password && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+                                    <p className="mt-1 text-sm text-red-500">
+                                        {errors.password.message}
+                                    </p>
                                 )}
                             </div>
                         </div>
@@ -142,11 +165,7 @@ export default function SignupPage() {
                     )}
 
                     <div>
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            disabled={isLoading}
-                        >
+                        <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -12,7 +12,7 @@ const base = z.object({
     categoryIds: z
         .array(z.string().length(24))
         .optional() // when visitor supplies IDs
-        .refine(arr => arr?.every(id => /^[a-f0-9]{24}$/i.test(id)), 'Invalid ObjectId'),
+        .refine(arr => !arr || arr.every(id => /^[a-f0-9]{24}$/i.test(id)), 'Invalid ObjectId'),
 });
 
 export const createSkillSchema = base.refine(d => !!d.categoryNames || !!d.categoryIds, {

@@ -10,7 +10,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-    (config) => {
+    config => {
         if (typeof window !== 'undefined') {
             const token = localStorage.getItem('token');
             if (token) {
@@ -19,14 +19,14 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => {
+    error => {
         return Promise.reject(error);
-    }
+    },
 );
 
 api.interceptors.response.use(
-    (response) => response,
-    (error) => {
+    response => response,
+    error => {
         // Handle 401 Unauthorized globally if needed
         if (error.response?.status === 401) {
             // Optional: Clear token and redirect to login
@@ -36,7 +36,7 @@ api.interceptors.response.use(
             // }
         }
         return Promise.reject(error);
-    }
+    },
 );
 
 export default api;

@@ -9,6 +9,7 @@ export interface Achievement extends Document {
     expirationDate?: Date | null;
     credentialID?: string;
     credentialURL?: string;
+    mediaUrl?: string;
     description?: string;
     createdAt: Date;
 }

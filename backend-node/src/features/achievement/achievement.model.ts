@@ -10,6 +10,7 @@ const achievementSchema = new Schema<Achievement>(
         expirationDate: Date,
         credentialID: String,
         credentialURL: String,
+        mediaUrl: String,
         description: String,
     },
     { timestamps: true },
