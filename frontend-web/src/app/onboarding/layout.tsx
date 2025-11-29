@@ -3,7 +3,6 @@
 import { useAppSelector } from '@/lib/store/hooks';
 import { cn } from '@/lib/utils';
 import { Check } from 'lucide-react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const steps = [
@@ -40,7 +39,7 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
                         <div
                             className="absolute top-1/2 left-0 h-1 -translate-y-1/2 bg-primary rounded-full transition-all duration-500"
                             style={{
-                                width: `${(currentStepIndex / (steps.length - 1)) * 100}%`
+                                width: `${(currentStepIndex / (steps.length - 1)) * 100}%`,
                             }}
                         />
 
@@ -49,25 +48,33 @@ export default function OnboardingLayout({ children }: { children: React.ReactNo
                             const isCurrent = index === currentStepIndex;
 
                             return (
-                                <div key={step.path} className="relative z-10 flex flex-col items-center">
+                                <div
+                                    key={step.path}
+                                    className="relative z-10 flex flex-col items-center"
+                                >
                                     <div
                                         className={cn(
                                             'flex h-10 w-10 items-center justify-center rounded-full border-2 bg-background transition-colors duration-300',
-                                            isCompleted && 'border-primary bg-primary text-primary-foreground',
+                                            isCompleted &&
+                                                'border-primary bg-primary text-primary-foreground',
                                             isCurrent && 'border-primary ring-4 ring-primary/20',
-                                            !isCompleted && !isCurrent && 'border-muted-foreground/30 text-muted-foreground'
+                                            !isCompleted &&
+                                                !isCurrent &&
+                                                'border-muted-foreground/30 text-muted-foreground',
                                         )}
                                     >
                                         {isCompleted ? (
                                             <Check className="h-5 w-5" />
                                         ) : (
-                                            <span className="text-sm font-semibold">{index + 1}</span>
+                                            <span className="text-sm font-semibold">
+                                                {index + 1}
+                                            </span>
                                         )}
                                     </div>
                                     <span
                                         className={cn(
                                             'absolute -bottom-8 w-32 text-center text-xs font-medium transition-colors duration-300',
-                                            isCurrent ? 'text-primary' : 'text-muted-foreground'
+                                            isCurrent ? 'text-primary' : 'text-muted-foreground',
                                         )}
                                     >
                                         {step.name}

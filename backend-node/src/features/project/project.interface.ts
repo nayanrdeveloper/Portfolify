@@ -8,5 +8,6 @@ export interface Project extends Document {
     demoLink?: string;
     githubLink?: string;
     mediaUrls?: string[];
-    createdAt: Date;
+    clicks?: number;
+    createdAt?: Date;
 }

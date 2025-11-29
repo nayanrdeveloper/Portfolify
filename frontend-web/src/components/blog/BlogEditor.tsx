@@ -1,5 +1,6 @@
 'use client';
 
+import { ImagePicker } from '@/components/media/MediaLibrary';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -43,7 +44,10 @@ export function BlogEditor({ initialData, onSubmit, isSubmitting = false }: Blog
 
     const handleTagsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTagsInput(e.target.value);
-        const tags = e.target.value.split(',').map(tag => tag.trim()).filter(Boolean);
+        const tags = e.target.value
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(Boolean);
         setFormData(prev => ({ ...prev, tags }));
     };
 
@@ -71,13 +75,10 @@ export function BlogEditor({ initialData, onSubmit, isSubmitting = false }: Blog
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="coverImage">Cover Image URL</Label>
-                    <Input
-                        id="coverImage"
-                        name="coverImage"
+                    <Label htmlFor="coverImage">Cover Image</Label>
+                    <ImagePicker
                         value={formData.coverImage}
-                        onChange={handleChange}
-                        placeholder="https://example.com/image.jpg"
+                        onChange={url => setFormData(prev => ({ ...prev, coverImage: url }))}
                     />
                 </div>
             </div>
@@ -121,10 +122,7 @@ export function BlogEditor({ initialData, onSubmit, isSubmitting = false }: Blog
                             : 'This article is currently a draft.'}
                     </p>
                 </div>
-                <Switch
-                    checked={formData.isPublished}
-                    onCheckedChange={handleSwitchChange}
-                />
+                <Switch checked={formData.isPublished} onCheckedChange={handleSwitchChange} />
             </div>
 
             <div className="flex justify-end">

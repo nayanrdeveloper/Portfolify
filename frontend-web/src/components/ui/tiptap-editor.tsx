@@ -56,7 +56,7 @@ export function TiptapEditor({ value, onChange }: TiptapEditorProps) {
             // Check if the content is actually different to avoid cursor jumping
             // This is a simple check, for production might need more robust comparison
             if (editor.getText() === '' && value === '') return;
-            // Only set content if it's drastically different or empty, 
+            // Only set content if it's drastically different or empty,
             // otherwise we trust the editor's internal state for typing.
             // Actually, for a controlled component pattern, we should be careful.
             // But for this simple case, we usually only set content on mount.

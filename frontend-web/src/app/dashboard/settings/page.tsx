@@ -1,17 +1,17 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { SeoFormData, seoSchema } from '@/features/onboarding/schema';
+import api from '@/lib/api';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Globe, Loader2, Save } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import api from '@/lib/api';
-import { seoSchema, SeoFormData } from '@/features/onboarding/schema';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Save, Globe } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
 
 export default function DashboardSettingsPage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +70,12 @@ export default function DashboardSettingsPage() {
                 seo: {
                     title: data.title,
                     description: data.description,
-                    keywords: data.keywords ? data.keywords.split(',').map(k => k.trim()).filter(k => k) : [],
+                    keywords: data.keywords
+                        ? data.keywords
+                              .split(',')
+                              .map(k => k.trim())
+                              .filter(k => k)
+                        : [],
                     ogImage: data.ogImage,
                 },
             };
@@ -79,15 +84,15 @@ export default function DashboardSettingsPage() {
             setCurrentSettings(response.data.data);
 
             toast({
-                title: "Settings Saved",
-                description: "Your SEO settings have been updated successfully.",
+                title: 'Settings Saved',
+                description: 'Your SEO settings have been updated successfully.',
             });
         } catch (error) {
             console.error('Failed to save settings', error);
             toast({
-                title: "Error",
-                description: "Failed to save settings. Please try again.",
-                variant: "destructive",
+                title: 'Error',
+                description: 'Failed to save settings. Please try again.',
+                variant: 'destructive',
             });
         } finally {
             setIsLoading(false);
@@ -166,9 +171,12 @@ export default function DashboardSettingsPage() {
                                 placeholder="https://..."
                                 {...register('ogImage')}
                             />
-                            {errors.ogImage && <p className="text-sm text-red-500">{errors.ogImage.message}</p>}
+                            {errors.ogImage && (
+                                <p className="text-sm text-red-500">{errors.ogImage.message}</p>
+                            )}
                             <p className="text-xs text-muted-foreground">
-                                The image that appears when your portfolio is shared on social media.
+                                The image that appears when your portfolio is shared on social
+                                media.
                             </p>
                         </div>
 

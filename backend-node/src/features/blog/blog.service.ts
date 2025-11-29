@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import slugify from 'slugify';
 import { NotFoundError } from '../../core/errors/ApiError';
 import { Blog } from './blog.interface';

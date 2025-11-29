@@ -9,6 +9,7 @@ const projectSchema = new Schema<Project>(
         demoLink: String,
         githubLink: String,
         mediaUrls: [String],
+        clicks: { type: Number, default: 0 },
     },
     { timestamps: true },
 );
