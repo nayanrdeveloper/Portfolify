@@ -7,9 +7,11 @@ import {
     Award,
     BarChart3,
     Briefcase,
+    FileText,
     FolderKanban,
     Image as ImageIcon,
     LayoutDashboard,
+    MessageSquare,
     LogOut,
     Palette,
     Settings,
@@ -27,10 +29,12 @@ const navItems = [
     { name: 'Skills', href: '/dashboard/skills', icon: Zap },
     { name: 'Experience', href: '/dashboard/experience', icon: Briefcase },
     { name: 'Certificates', href: '/dashboard/certificates', icon: Award },
+    { name: 'Messages', href: '/dashboard/messages', icon: MessageSquare }, // Added Messages link
     { name: 'Themes', href: '/dashboard/themes', icon: Palette },
     { name: 'Media Library', href: '/dashboard/media', icon: ImageIcon },
     { name: 'Publish', href: '/dashboard/publish', icon: UploadCloud },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
+    { name: 'Articles', href: '/dashboard/articles', icon: FileText }, // Added Articles link
     { name: 'Account', href: '/dashboard/account', icon: UserCircle },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];

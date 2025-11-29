@@ -14,6 +14,8 @@ import userRoutes from '../features/user/user.route';
 import userDetailsRoutes from '../features/userDetails/userDetails.route';
 import settingsRoutes from '../features/userSettings/settings.route';
 
+import blogRoutes from '../features/blog/blog.route';
+
 const apiRouter = Router();
 
 apiRouter.use('/auth', authRoutes);
@@ -29,5 +31,6 @@ apiRouter.use('/skills', skillRoutes);
 apiRouter.use('/socialmedia', socialRoutes);
 apiRouter.use('/user-details', userDetailsRoutes);
 apiRouter.use('/settings', settingsRoutes);
+apiRouter.use('/blogs', blogRoutes);
 
 export default apiRouter;

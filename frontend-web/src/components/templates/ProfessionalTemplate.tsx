@@ -33,6 +33,11 @@ export default function ProfessionalTemplate({ data }: ProfessionalTemplateProps
                         <a href="#contact" className="hover:text-blue-600 transition-colors">
                             Contact
                         </a>
+                        {data.blogs && data.blogs.length > 0 && (
+                            <a href="#articles" className="hover:text-blue-600 transition-colors">
+                                Articles
+                            </a>
+                        )}
                     </nav>
                     <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
                         Download Resume
@@ -289,6 +294,54 @@ export default function ProfessionalTemplate({ data }: ProfessionalTemplateProps
                                             </Card>
                                         ),
                                     )}
+                                </div>
+                            </section>
+                        )}
+
+                        {/* Latest Articles */}
+                        {data.blogs && data.blogs.length > 0 && (
+                            <section id="articles">
+                                <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                                    <span className="w-8 h-1 bg-blue-600 rounded-full"></span>
+                                    Latest Articles
+                                </h2>
+                                <div className="grid gap-6">
+                                    {data.blogs.map((blog: any) => (
+                                        <Card key={blog._id} className="p-6 hover:shadow-md transition-shadow">
+                                            <div className="flex flex-col gap-2">
+                                                <h3 className="text-xl font-bold text-slate-900">
+                                                    {blog.title}
+                                                </h3>
+                                                <div className="flex items-center gap-4 text-sm text-slate-500">
+                                                    <span>
+                                                        {new Date(blog.createdAt).toLocaleDateString(undefined, {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric',
+                                                        })}
+                                                    </span>
+                                                    {blog.tags && blog.tags.length > 0 && (
+                                                        <div className="flex gap-2">
+                                                            {blog.tags.map((tag: string) => (
+                                                                <span key={tag} className="bg-slate-100 px-2 py-0.5 rounded text-xs">
+                                                                    {tag}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <p className="text-slate-600 mt-2 line-clamp-3">
+                                                    {blog.summary || blog.content.substring(0, 150) + '...'}
+                                                </p>
+                                                <a
+                                                    href={`/${userDetails.slug}/blog/${blog.slug}`}
+                                                    className="text-blue-600 font-medium hover:underline mt-2 inline-block"
+                                                >
+                                                    Read Article &rarr;
+                                                </a>
+                                            </div>
+                                        </Card>
+                                    ))}
                                 </div>
                             </section>
                         )}

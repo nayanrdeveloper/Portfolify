@@ -59,11 +59,17 @@ export default async function PublicPortfolioPage({ params }: Props) {
         const settingsRes = await api.get(`/settings/user/${username}`);
         const userSettings = settingsRes.data.data;
 
-        // 3. Fetch Related Data (Projects, Skills, Achievements)
-        const [projectsRes, skillsRes, achievementsRes] = await Promise.all([
+        // 3. Fetch Related Data (Projects, Skills, Achievements, Blogs)
+        // We need userId for blogs, which is in userDetails.user
+        // Assuming userDetails.user is populated or is the ID.
+        // If it's an object, we take _id. If string, use it directly.
+        const userId = typeof userDetails.user === 'object' ? userDetails.user._id : userDetails.user;
+
+        const [projectsRes, skillsRes, achievementsRes, blogsRes] = await Promise.all([
             api.get(`/projects/user/${username}`),
             api.get(`/skills/user/${username}`),
             api.get(`/achievements/user/${username}`),
+            api.get('/blogs', { params: { userId } }),
         ]);
 
         data = {
@@ -71,6 +77,7 @@ export default async function PublicPortfolioPage({ params }: Props) {
             projects: projectsRes.data.data,
             skills: skillsRes.data.data,
             achievements: achievementsRes.data.data,
+            blogs: blogsRes.data.data,
             socialMedia: userDetails.socialMedia || {},
         };
         settings = userSettings;
