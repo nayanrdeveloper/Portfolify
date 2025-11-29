@@ -1,6 +1,7 @@
 import { Router } from 'express';
 
 import achievementRoutes from '../features/achievement/achievement.route';
+import analyticsRoutes from '../features/analytics/analytics.route';
 import authRoutes from '../features/auth/auth.route';
 import categoryRoutes from '../features/category/category.route';
 import contactRoutes from '../features/contact/contact.route';
@@ -19,6 +20,7 @@ import blogRoutes from '../features/blog/blog.route';
 const apiRouter = Router();
 
 apiRouter.use('/auth', authRoutes);
+apiRouter.use('/analytics', analyticsRoutes);
 apiRouter.use('/users', userRoutes);
 apiRouter.use('/uploads', uploadRoutes);
 apiRouter.use('/educations', educationRoutes);

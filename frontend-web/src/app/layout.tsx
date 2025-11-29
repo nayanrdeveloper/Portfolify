@@ -16,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: 'Portfolify - Build Your Dream Portfolio',
-    description: 'The ultimate portfolio generator for developers. Showcase your work with professional themes.',
+    description:
+        'The ultimate portfolio generator for developers. Showcase your work with professional themes.',
     icons: {
         icon: '/favicon.png',
     },

@@ -83,9 +83,7 @@ export default function ArticlesPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Articles</h1>
-                    <p className="text-muted-foreground">
-                        Write and manage your blog posts.
-                    </p>
+                    <p className="text-muted-foreground">Write and manage your blog posts.</p>
                 </div>
                 <Link href="/dashboard/articles/new">
                     <Button>
@@ -132,10 +130,11 @@ export default function ArticlesPage() {
                                         {article.views} views
                                     </div>
                                     <div
-                                        className={`rounded-full px-2 py-0.5 ${article.isPublished
+                                        className={`rounded-full px-2 py-0.5 ${
+                                            article.isPublished
                                                 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                                                 : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
-                                            }`}
+                                        }`}
                                     >
                                         {article.isPublished ? 'Published' : 'Draft'}
                                     </div>

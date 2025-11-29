@@ -6,7 +6,6 @@ import api from '@/lib/api';
 import { useAppSelector } from '@/lib/store/hooks';
 import {
     Briefcase,
-    Edit,
     ExternalLink,
     Eye,
     FileText,
@@ -167,7 +166,9 @@ export default function DashboardPage() {
                 <Card className="col-span-4">
                     <CardHeader>
                         <CardTitle>Quick Actions</CardTitle>
-                        <CardDescription>Manage your portfolio content efficiently.</CardDescription>
+                        <CardDescription>
+                            Manage your portfolio content efficiently.
+                        </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-4 sm:grid-cols-2">
                         <Link

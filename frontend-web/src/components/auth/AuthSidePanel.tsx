@@ -1,25 +1,25 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const testimonials = [
     {
-        quote: "Portfolify helped me land my dream job in weeks! The templates are stunning and easy to customize.",
-        author: "Sarah Jenkins",
-        role: "Frontend Developer"
+        quote: 'Portfolify helped me land my dream job in weeks! The templates are stunning and easy to customize.',
+        author: 'Sarah Jenkins',
+        role: 'Frontend Developer',
     },
     {
         quote: "I built my portfolio in 10 minutes. It's so easy to use and looks professional. Highly recommended!",
-        author: "Mike Thompson",
-        role: "UX Designer"
+        author: 'Mike Thompson',
+        role: 'UX Designer',
     },
     {
         quote: "The SEO features are a game changer. I'm finally getting noticed by recruiters and clients.",
-        author: "Emily Rodriguez",
-        role: "Full Stack Developer"
-    }
+        author: 'Emily Rodriguez',
+        role: 'Full Stack Developer',
+    },
 ];
 
 export default function AuthSidePanel() {
@@ -27,7 +27,7 @@ export default function AuthSidePanel() {
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCurrent((prev) => (prev + 1) % testimonials.length);
+            setCurrent(prev => (prev + 1) % testimonials.length);
         }, 5000);
         return () => clearInterval(timer);
     }, []);
@@ -70,8 +70,12 @@ export default function AuthSidePanel() {
                                     &ldquo;{testimonials[current].quote}&rdquo;
                                 </p>
                                 <footer className="text-sm">
-                                    <div className="font-semibold">{testimonials[current].author}</div>
-                                    <div className="text-white/60">{testimonials[current].role}</div>
+                                    <div className="font-semibold">
+                                        {testimonials[current].author}
+                                    </div>
+                                    <div className="text-white/60">
+                                        {testimonials[current].role}
+                                    </div>
                                 </footer>
                             </blockquote>
                         </motion.div>
@@ -83,8 +87,11 @@ export default function AuthSidePanel() {
                         <button
                             key={index}
                             onClick={() => setCurrent(index)}
-                            className={`h-1.5 rounded-full transition-all ${index === current ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/60'
-                                }`}
+                            className={`h-1.5 rounded-full transition-all ${
+                                index === current
+                                    ? 'w-6 bg-white'
+                                    : 'w-1.5 bg-white/40 hover:bg-white/60'
+                            }`}
                             aria-label={`Go to slide ${index + 1}`}
                         />
                     ))}

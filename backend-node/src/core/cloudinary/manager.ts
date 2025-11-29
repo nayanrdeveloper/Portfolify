@@ -26,4 +26,12 @@ export class CloudinaryManager {
                 .end(buffer);
         });
     }
+    static async delete(publicId: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            cloudinary.uploader.destroy(publicId, (err, res) => {
+                if (err) return reject(err);
+                resolve();
+            });
+        });
+    }
 }

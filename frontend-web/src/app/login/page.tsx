@@ -1,19 +1,19 @@
 'use client';
 
+import AuthSidePanel from '@/components/auth/AuthSidePanel';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { loginUser } from '@/features/auth/authSlice';
 import { LoginFormData, loginSchema } from '@/features/auth/schema';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import AuthSidePanel from '@/components/auth/AuthSidePanel';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 export default function LoginPage() {
     const dispatch = useAppDispatch();
@@ -60,9 +60,7 @@ export default function LoginPage() {
                                 priority
                             />
                         </div>
-                        <h1 className="text-2xl font-semibold tracking-tight">
-                            Welcome back
-                        </h1>
+                        <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
                         <p className="text-sm text-muted-foreground">
                             Enter your email to sign in to your account
                         </p>
@@ -120,9 +118,7 @@ export default function LoginPage() {
                                 )}
 
                                 <Button disabled={isLoading}>
-                                    {isLoading && (
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    )}
+                                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                     Sign In
                                 </Button>
                             </div>

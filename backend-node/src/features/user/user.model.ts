@@ -17,6 +17,7 @@ const userSchema = new Schema<User>(
         password: { type: String, required: true, select: false },
         avatarUrl: { type: String },
         isOnboardingCompleted: { type: Boolean, default: false },
+        profileViews: { type: Number, default: 0 },
     },
     { timestamps: true },
 );

@@ -1,7 +1,6 @@
 'use client';
 
-import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import { logoutUser } from '@/features/auth/authSlice';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -11,7 +10,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { logoutUser } from '@/features/auth/authSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { Bell, LogOut, Settings, User } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -28,11 +28,11 @@ export function DashboardHeader() {
 
     const initials = user?.fullName
         ? user.fullName
-            .split(' ')
-            .map(n => n[0])
-            .join('')
-            .toUpperCase()
-            .substring(0, 2)
+              .split(' ')
+              .map(n => n[0])
+              .join('')
+              .toUpperCase()
+              .substring(0, 2)
         : 'U';
 
     return (

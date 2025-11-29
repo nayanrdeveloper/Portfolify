@@ -3,7 +3,6 @@ import ModernTemplate from '@/components/templates/ModernTemplate';
 import ProfessionalTemplate from '@/components/templates/ProfessionalTemplate';
 import StandardTemplate from '@/components/templates/StandardTemplate';
 import api from '@/lib/api';
-import { Loader2 } from 'lucide-react';
 import { Metadata } from 'next';
 
 type Props = {
@@ -59,18 +58,29 @@ export default async function PublicPortfolioPage({ params }: Props) {
         const settingsRes = await api.get(`/settings/user/${username}`);
         const userSettings = settingsRes.data.data;
 
+        // Track Profile View (Fire and forget)
+        try {
+            await api.post(`/analytics/track/profile/${username}`);
+        } catch (error) {
+            console.error('Failed to track profile view', error);
+        }
+
         // 3. Fetch Related Data (Projects, Skills, Achievements, Blogs)
         // We need userId for blogs, which is in userDetails.user
         // Assuming userDetails.user is populated or is the ID.
         // If it's an object, we take _id. If string, use it directly.
-        const userId = typeof userDetails.user === 'object' ? userDetails.user._id : userDetails.user;
+        const userId =
+            typeof userDetails.user === 'object' ? userDetails.user._id : userDetails.user;
 
-        const [projectsRes, skillsRes, achievementsRes, blogsRes] = await Promise.all([
-            api.get(`/projects/user/${username}`),
-            api.get(`/skills/user/${username}`),
-            api.get(`/achievements/user/${username}`),
-            api.get('/blogs', { params: { userId } }),
-        ]);
+        const [projectsRes, skillsRes, achievementsRes, blogsRes, experienceRes, educationRes] =
+            await Promise.all([
+                api.get(`/projects/user/${username}`),
+                api.get(`/skills/user/${username}`),
+                api.get(`/achievements/user/${username}`),
+                api.get('/blogs', { params: { userId } }),
+                api.get(`/experiences/user/${username}`),
+                api.get(`/educations/user/${username}`),
+            ]);
 
         data = {
             userDetails,
@@ -78,6 +88,8 @@ export default async function PublicPortfolioPage({ params }: Props) {
             skills: skillsRes.data.data,
             achievements: achievementsRes.data.data,
             blogs: blogsRes.data.data,
+            experience: experienceRes.data.data,
+            education: educationRes.data.data,
             socialMedia: userDetails.socialMedia || {},
         };
         settings = userSettings;

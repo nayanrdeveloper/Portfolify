@@ -3,8 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { logoutUser } from '@/features/auth/authSlice';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Navbar() {
     const { isAuthenticated } = useAppSelector(state => state.auth);

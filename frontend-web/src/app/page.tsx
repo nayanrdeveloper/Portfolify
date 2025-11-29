@@ -19,9 +19,15 @@ export default function Home() {
                             <span className="text-xl font-bold text-primary">Portfolify</span>
                         </div>
                         <div className="flex gap-6 text-sm text-muted-foreground">
-                            <a href="#" className="hover:text-foreground">Privacy Policy</a>
-                            <a href="#" className="hover:text-foreground">Terms of Service</a>
-                            <a href="#" className="hover:text-foreground">Contact</a>
+                            <a href="#" className="hover:text-foreground">
+                                Privacy Policy
+                            </a>
+                            <a href="#" className="hover:text-foreground">
+                                Terms of Service
+                            </a>
+                            <a href="#" className="hover:text-foreground">
+                                Contact
+                            </a>
                         </div>
                         <p className="text-sm text-muted-foreground">
                             &copy; {new Date().getFullYear()} Portfolify. All rights reserved.

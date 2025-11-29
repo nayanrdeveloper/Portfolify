@@ -23,14 +23,14 @@ export default function EditArticlePage() {
 
     const fetchArticle = async (id: string) => {
         try {
-            // Note: We need an endpoint to get by ID for editing, 
+            // Note: We need an endpoint to get by ID for editing,
             // but our controller currently only has getBySlug for public/protected view.
             // However, getBySlug logic allows owner to view draft.
             // Wait, the controller has getBlogs (list) and getBlogBySlug.
             // It DOES NOT have getById exposed directly in the routes?
             // Let's check blog.route.ts.
             // router.get('/:slug', getBlogBySlug);
-            // We might need to add getById or just use the list to find it? 
+            // We might need to add getById or just use the list to find it?
             // No, that's inefficient.
             // Actually, usually for editing we want to fetch by ID.
             // Let's check if I implemented getById in controller/route.
@@ -106,9 +106,7 @@ export default function EditArticlePage() {
         <div className="space-y-6">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Edit Article</h1>
-                <p className="text-muted-foreground">
-                    Update your blog post.
-                </p>
+                <p className="text-muted-foreground">Update your blog post.</p>
             </div>
             <div className="rounded-lg border bg-card p-6 shadow-sm">
                 <BlogEditor

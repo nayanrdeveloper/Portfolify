@@ -1,7 +1,7 @@
 'use client';
 
-import { Sidebar } from '@/components/dashboard/Sidebar';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import { Sidebar } from '@/components/dashboard/Sidebar';
 import { useAppSelector } from '@/lib/store/hooks';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
