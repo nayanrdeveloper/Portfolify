@@ -91,6 +91,7 @@ export default async function PublicPortfolioPage({ params }: Props) {
             experience: experienceRes.data.data,
             education: educationRes.data.data,
             socialMedia: userDetails.socialMedia || {},
+            resumeTemplate: userSettings?.resumeTemplate || 'modern',
         };
         settings = userSettings;
     } catch (err) {

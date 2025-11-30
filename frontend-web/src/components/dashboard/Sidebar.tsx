@@ -34,6 +34,7 @@ const navItems = [
     { name: 'Media', href: '/dashboard/media', icon: ImageIcon },
     { name: 'Publish', href: '/dashboard/publish', icon: UploadCloud },
     { name: 'Articles', href: '/dashboard/articles', icon: FileText },
+    { name: 'Resume', href: '/dashboard/resume', icon: FileText },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     { name: 'Account', href: '/dashboard/account', icon: UserCircle },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },

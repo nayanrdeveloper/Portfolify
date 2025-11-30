@@ -10,9 +10,12 @@ export const ALLOWED_TEMPLATES = [
 ] as const;
 
 export const updateSettingsSchema = z.object({
-    template: z.enum(ALLOWED_TEMPLATES, {
-        errorMap: () => ({ message: 'Invalid template name' }),
-    }),
+    template: z
+        .enum(ALLOWED_TEMPLATES, {
+            errorMap: () => ({ message: 'Invalid template name' }),
+        })
+        .optional(),
+    resumeTemplate: z.string().optional(),
     customization: z
         .object({
             primaryColor: z.string().optional(),

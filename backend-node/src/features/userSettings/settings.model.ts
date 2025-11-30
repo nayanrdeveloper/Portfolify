@@ -5,6 +5,7 @@ const settingsSchema = new Schema<UserSettings>(
     {
         user: { type: Schema.Types.ObjectId, ref: 'User', unique: true, index: true },
         template: { type: String, required: true, default: 'default' },
+        resumeTemplate: { type: String, default: 'modern' },
         customization: {
             primaryColor: { type: String },
             secondaryColor: { type: String },

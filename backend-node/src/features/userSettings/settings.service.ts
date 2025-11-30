@@ -17,6 +17,7 @@ export class SettingsService {
             { user: userId },
             {
                 template: data.template,
+                resumeTemplate: data.resumeTemplate,
                 customization: data.customization,
                 seo: data.seo,
             },

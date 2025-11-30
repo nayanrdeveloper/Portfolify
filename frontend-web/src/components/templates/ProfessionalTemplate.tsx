@@ -1,5 +1,6 @@
 'use client';
 
+import { ResumeRenderer } from '@/components/resume/ResumeRenderer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import api from '@/lib/api';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import {
     ArrowUpRight,
     Briefcase,
@@ -95,9 +97,28 @@ export default function ProfessionalTemplate({ data }: ProfessionalTemplateProps
                             </button>
                         ))}
                     </div>
-                    <Button onClick={() => window.print()} variant="outline" size="sm">
-                        Resume
+                    <Button
+                        onClick={() => window.print()}
+                        variant="outline"
+                        size="sm"
+                        className="hidden md:flex"
+                    >
+                        Print
                     </Button>
+
+                    {/* Client-side only to avoid hydration mismatch with PDFDownloadLink */}
+                    {typeof window !== 'undefined' && (
+                        <PDFDownloadLink
+                            document={<ResumeRenderer template={data.resumeTemplate} data={data} />}
+                            fileName={`${userDetails?.firstName}_${userDetails?.lastName}_Resume.pdf`}
+                        >
+                            {({ loading }) => (
+                                <Button size="sm" disabled={loading}>
+                                    {loading ? 'Generating...' : 'Download Resume'}
+                                </Button>
+                            )}
+                        </PDFDownloadLink>
+                    )}
                 </div>
             </nav>
 

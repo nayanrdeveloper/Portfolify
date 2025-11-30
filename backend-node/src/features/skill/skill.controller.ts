@@ -70,3 +70,26 @@ export const listBySlug = async (req: Request, res: Response, next: NextFunction
         next(e);
     }
 };
+
+export const listMine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const skills = await SkillService.listByUser(new Types.ObjectId(req.auth!.userId));
+
+        /* map categoryId → name (bulk query) */
+        const uniqueIds = [...new Set(skills.flatMap(s => s.categoryIds.map(String)))];
+        const catDocs = await CategoryService.listByIds(
+            uniqueIds.map(id => new Types.ObjectId(id)),
+        );
+        const catMap = Object.fromEntries(catDocs.map(c => [c._id.toString(), c.name]));
+
+        /* decorate */
+        const decorated = skills.map(s => ({
+            ...s,
+            categoryNames: s.categoryIds.map(id => catMap[id.toString()]).filter(Boolean),
+        }));
+
+        res.json({ message: 'Skills retrieved', data: decorated });
+    } catch (e) {
+        next(e);
+    }
+};

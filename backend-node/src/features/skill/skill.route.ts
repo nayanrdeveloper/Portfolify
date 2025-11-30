@@ -1,6 +1,13 @@
 import { Router } from 'express';
 import { requireAuth } from '../../core/middlewares/requireAuth';
-import { createSkill, deleteSkill, getSkill, listBySlug, updateSkill } from './skill.controller';
+import {
+    createSkill,
+    deleteSkill,
+    getSkill,
+    listBySlug,
+    listMine,
+    updateSkill,
+} from './skill.controller';
 
 const router = Router();
 
@@ -10,6 +17,7 @@ router.get('/:id', getSkill);
 
 /* Protected */
 router.use(requireAuth);
+router.get('/', listMine);
 router.post('/', createSkill);
 router.put('/:id', updateSkill);
 router.delete('/:id', deleteSkill);
