@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { AiPolishButton } from '@/components/ai/AiPolishButton';
 import { Card, CardContent } from '@/components/ui/card';
 import {
     Dialog,
@@ -60,6 +61,7 @@ export default function DashboardExperiencePage() {
         handleSubmit: handleSubmitExp,
         reset: resetExp,
         setValue: setValueExp,
+        watch: watchExp,
         formState: { errors: errorsExp },
     } = useForm<ExperienceFormData>({
         resolver: zodResolver(experienceSchema),
@@ -97,14 +99,28 @@ export default function DashboardExperiencePage() {
         }
     };
 
+    // Helper to format date for display (Month Year)
+    const formatDate = (dateString: string) => {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        // Handle YYYY-MM format which might be parsed as UTC
+        if (dateString.length === 7) {
+            const [year, month] = dateString.split('-');
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${months[parseInt(month) - 1]} ${year}`;
+        }
+        return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    };
+
     // Experience Handlers
     const handleOpenExpDialog = (exp?: Experience) => {
         if (exp) {
             setEditingExp(exp);
             setValueExp('title', exp.title);
             setValueExp('company', exp.company);
-            setValueExp('startDate', exp.startDate);
-            setValueExp('endDate', exp.endDate || '');
+            // Extract YYYY-MM for the input
+            setValueExp('startDate', exp.startDate.substring(0, 7));
+            setValueExp('endDate', exp.endDate ? exp.endDate.substring(0, 7) : '');
             setValueExp('description', exp.description || '');
             setValueExp('isCurrent', !exp.endDate);
         } else {
@@ -152,8 +168,9 @@ export default function DashboardExperiencePage() {
             setEditingEdu(edu);
             setValueEdu('institution', edu.institution);
             setValueEdu('degree', edu.degree);
-            setValueEdu('startDate', edu.startDate);
-            setValueEdu('endDate', edu.endDate || '');
+            // Extract YYYY-MM for the input
+            setValueEdu('startDate', edu.startDate.substring(0, 7));
+            setValueEdu('endDate', edu.endDate ? edu.endDate.substring(0, 7) : '');
             setValueEdu('isCurrent', !edu.endDate);
         } else {
             setEditingEdu(null);
@@ -236,7 +253,7 @@ export default function DashboardExperiencePage() {
                                         <h3 className="font-semibold text-lg">{exp.title}</h3>
                                         <p className="text-primary font-medium">{exp.company}</p>
                                         <p className="text-sm text-muted-foreground mt-1">
-                                            {exp.startDate} — {exp.endDate || 'Present'}
+                                            {formatDate(exp.startDate)} — {exp.endDate ? formatDate(exp.endDate) : 'Present'}
                                         </p>
                                         {exp.description && (
                                             <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
@@ -290,7 +307,7 @@ export default function DashboardExperiencePage() {
                                         <h3 className="font-semibold text-lg">{edu.institution}</h3>
                                         <p className="text-primary font-medium">{edu.degree}</p>
                                         <p className="text-sm text-muted-foreground mt-1">
-                                            {edu.startDate} — {edu.endDate || 'Present'}
+                                            {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : 'Present'}
                                         </p>
                                     </div>
                                     <DropdownMenu>
@@ -370,7 +387,7 @@ export default function DashboardExperiencePage() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="startDate">Start Date</Label>
-                                <Input id="startDate" type="date" {...registerExp('startDate')} />
+                                <Input id="startDate" type="month" {...registerExp('startDate')} />
                                 {errorsExp.startDate && (
                                     <p className="text-xs text-red-500">
                                         {errorsExp.startDate.message}
@@ -379,7 +396,7 @@ export default function DashboardExperiencePage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="endDate">End Date</Label>
-                                <Input id="endDate" type="date" {...registerExp('endDate')} />
+                                <Input id="endDate" type="month" {...registerExp('endDate')} />
                                 {errorsExp.endDate && (
                                     <p className="text-xs text-red-500">
                                         {errorsExp.endDate.message}
@@ -388,7 +405,13 @@ export default function DashboardExperiencePage() {
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
+                            <div className="flex justify-between items-center">
+                                <Label htmlFor="description">Description</Label>
+                                <AiPolishButton
+                                    initialText={watchExp('description') || ''}
+                                    onPolished={text => setValueExp('description', text)}
+                                />
+                            </div>
                             <Textarea
                                 id="description"
                                 placeholder="Describe your role..."
@@ -457,7 +480,7 @@ export default function DashboardExperiencePage() {
                                 <Label htmlFor="eduStartDate">Start Date</Label>
                                 <Input
                                     id="eduStartDate"
-                                    type="date"
+                                    type="month"
                                     {...registerEdu('startDate')}
                                 />
                                 {errorsEdu.startDate && (
@@ -468,7 +491,7 @@ export default function DashboardExperiencePage() {
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="eduEndDate">End Date</Label>
-                                <Input id="eduEndDate" type="date" {...registerEdu('endDate')} />
+                                <Input id="eduEndDate" type="month" {...registerEdu('endDate')} />
                                 {errorsEdu.endDate && (
                                     <p className="text-xs text-red-500">
                                         {errorsEdu.endDate.message}

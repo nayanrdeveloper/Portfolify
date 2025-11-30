@@ -78,9 +78,9 @@ export const MinimalResume = ({ data }: { data: any }) => {
                                         <Text style={{ fontWeight: 'bold' }}>{edu.degree}</Text>
                                         <Text>{edu.institution}</Text>
                                         <Text style={styles.date}>
-                                            {new Date(edu.startDate).getFullYear()} -{' '}
+                                            {new Date(edu.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} -{' '}
                                             {edu.endDate
-                                                ? new Date(edu.endDate).getFullYear()
+                                                ? new Date(edu.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
                                                 : 'Present'}
                                         </Text>
                                     </View>
@@ -104,9 +104,9 @@ export const MinimalResume = ({ data }: { data: any }) => {
                                         <Text style={styles.jobTitle}>{job.position}</Text>
                                         <Text style={styles.company}>{job.company}</Text>
                                         <Text style={styles.date}>
-                                            {new Date(job.startDate).getFullYear()} -{' '}
+                                            {new Date(job.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} -{' '}
                                             {job.endDate
-                                                ? new Date(job.endDate).getFullYear()
+                                                ? new Date(job.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
                                                 : 'Present'}
                                         </Text>
                                         <Text style={styles.description}>{job.description}</Text>
