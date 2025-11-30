@@ -34,4 +34,5 @@ export const env = {
     CORS_ORIGINS,
     CORS_ALLOW_LOCAL,
     isProd,
+    GEMINI_API_KEY: requireEnv('GEMINI_API_KEY'),
 } as const;

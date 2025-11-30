@@ -216,9 +216,9 @@ export default function ProfessionalTemplate({ data }: ProfessionalTemplateProps
                                                 {job.company}
                                             </div>
                                             <div className="text-sm text-slate-500">
-                                                {new Date(job.startDate).getFullYear()} -{' '}
+                                                {new Date(job.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} -{' '}
                                                 {job.endDate
-                                                    ? new Date(job.endDate).getFullYear()
+                                                    ? new Date(job.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
                                                     : 'Present'}
                                             </div>
                                             <p className="text-sm text-slate-600">
@@ -251,9 +251,9 @@ export default function ProfessionalTemplate({ data }: ProfessionalTemplateProps
                                                 {edu.institution}
                                             </div>
                                             <div className="text-sm text-slate-500">
-                                                {new Date(edu.startDate).getFullYear()} -{' '}
+                                                {new Date(edu.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} -{' '}
                                                 {edu.endDate
-                                                    ? new Date(edu.endDate).getFullYear()
+                                                    ? new Date(edu.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
                                                     : 'Present'}
                                             </div>
                                         </div>

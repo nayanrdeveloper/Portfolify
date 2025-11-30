@@ -69,9 +69,9 @@ export const ClassicResume = ({ data }: { data: any }) => {
                                 <View style={styles.jobHeader}>
                                     <Text style={styles.jobTitle}>{job.position}</Text>
                                     <Text style={styles.date}>
-                                        {new Date(job.startDate).getFullYear()} -{' '}
+                                        {new Date(job.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} -{' '}
                                         {job.endDate
-                                            ? new Date(job.endDate).getFullYear()
+                                            ? new Date(job.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
                                             : 'Present'}
                                     </Text>
                                 </View>
@@ -89,9 +89,9 @@ export const ClassicResume = ({ data }: { data: any }) => {
                                 <View style={styles.jobHeader}>
                                     <Text style={styles.jobTitle}>{edu.degree}</Text>
                                     <Text style={styles.date}>
-                                        {new Date(edu.startDate).getFullYear()} -{' '}
+                                        {new Date(edu.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })} -{' '}
                                         {edu.endDate
-                                            ? new Date(edu.endDate).getFullYear()
+                                            ? new Date(edu.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
                                             : 'Present'}
                                     </Text>
                                 </View>

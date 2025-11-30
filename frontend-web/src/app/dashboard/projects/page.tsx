@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { AiPolishButton } from '@/components/ai/AiPolishButton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Dialog,
@@ -291,7 +292,13 @@ export default function DashboardProjectsPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
+                            <div className="flex justify-between items-center">
+                                <Label htmlFor="description">Description</Label>
+                                <AiPolishButton
+                                    initialText={watch('description') || ''}
+                                    onPolished={text => setValue('description', text)}
+                                />
+                            </div>
                             <Textarea
                                 id="description"
                                 placeholder="Briefly describe what you built..."

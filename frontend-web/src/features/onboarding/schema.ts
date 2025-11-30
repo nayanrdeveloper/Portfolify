@@ -51,10 +51,10 @@ export const experienceSchema = z
         title: z.string().min(2, 'Title must be at least 2 characters'),
         company: z.string().min(2, 'Company must be at least 2 characters'),
         location: z.string().optional(),
-        startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD'),
+        startDate: z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, 'Date must be YYYY-MM or YYYY-MM-DD'),
         endDate: z
             .string()
-            .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD')
+            .regex(/^\d{4}-\d{2}(-\d{2})?$/, 'Date must be YYYY-MM or YYYY-MM-DD')
             .optional()
             .or(z.literal('')),
         isCurrent: z.boolean().optional(),
@@ -90,10 +90,10 @@ export const educationSchema = z.object({
     institution: z.string().min(2, 'Institution must be at least 2 characters'),
     degree: z.string().optional(),
     fieldOfStudy: z.string().optional(),
-    startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD'),
+    startDate: z.string().regex(/^\d{4}-\d{2}(-\d{2})?$/, 'Date must be YYYY-MM or YYYY-MM-DD'),
     endDate: z
         .string()
-        .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD')
+        .regex(/^\d{4}-\d{2}(-\d{2})?$/, 'Date must be YYYY-MM or YYYY-MM-DD')
         .optional()
         .or(z.literal('')),
     isCurrent: z.boolean().optional(),

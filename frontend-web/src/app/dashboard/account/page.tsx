@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { AiPolishButton } from '@/components/ai/AiPolishButton';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -243,7 +244,13 @@ export default function DashboardAccountPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="bio">Bio</Label>
+                            <div className="flex justify-between items-center">
+                                <Label htmlFor="bio">Bio</Label>
+                                <AiPolishButton
+                                    initialText={watch('bio') || ''}
+                                    onPolished={text => setValue('bio', text)}
+                                />
+                            </div>
                             <Textarea
                                 id="bio"
                                 placeholder="Write a short bio about yourself..."
