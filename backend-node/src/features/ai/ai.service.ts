@@ -37,4 +37,40 @@ Text: "${text}"`;
             throw new Error(`AI Polish Failed: ${error.message || 'Unknown error'}`);
         }
     }
+
+    async tailorResume(profile: any, jobDescription: string): Promise<any> {
+        if (!env.GEMINI_API_KEY) {
+            throw new Error('AI service is not configured (missing API key).');
+        }
+
+        const prompt = `You are an expert ATS (Applicant Tracking System) and Resume Coach.
+        
+        Analyze the following Candidate Profile against the provided Job Description.
+        
+        Job Description:
+        "${jobDescription}"
+        
+        Candidate Profile (JSON):
+        ${JSON.stringify(profile)}
+        
+        Provide the output in the following JSON format ONLY (no markdown formatting):
+        {
+            "matchScore": number (0-100),
+            "missingKeywords": string[] (list of important keywords/skills from JD missing in profile),
+            "rewrittenSummary": string (a tailored professional summary optimized for this JD),
+            "improvementTips": string[] (3-5 specific, actionable tips to improve the resume for this role)
+        }`;
+
+        try {
+            const result = await this.model.generateContent(prompt);
+            const response = await result.response;
+            const text = response.text();
+            // Clean up potential markdown code blocks if Gemini adds them
+            const jsonString = text.replace(/```json/g, '').replace(/```/g, '').trim();
+            return JSON.parse(jsonString);
+        } catch (error: any) {
+            console.error('Gemini API Error (Tailor):', error);
+            throw new Error(`AI Tailor Failed: ${error.message || 'Unknown error'}`);
+        }
+    }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { ResumeRenderer } from '@/components/resume/ResumeRenderer';
+import { ResumeTailor } from '@/components/resume/ResumeTailor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
@@ -97,6 +98,51 @@ export default function ResumeManagerPage() {
         }
     };
 
+    const handleUpdateSummary = async (newSummary: string) => {
+        if (!userData?.userDetails) return;
+
+        setSaving(true);
+        try {
+            // Prepare the payload with existing data + new summary
+            // We need to map the fields correctly as per the backend expectation if needed
+            // Based on previous analysis, backend expects: fullName, headLine, about, location, profilePictureUrl
+            // But userData.userDetails usually comes from backend, so it might have extra fields like _id, etc.
+            // Let's construct a clean payload.
+            const payload = {
+                fullName: userData.userDetails.fullName,
+                headLine: userData.userDetails.headLine || userData.userDetails.title, // Handle potential field name mismatch
+                about: newSummary,
+                location: userData.userDetails.location,
+                profilePictureUrl: userData.userDetails.profilePictureUrl,
+            };
+
+            const response = await api.post('/user-details', payload);
+
+            // Update local state
+            setUserData({
+                ...userData,
+                userDetails: {
+                    ...userData.userDetails,
+                    about: newSummary,
+                },
+            });
+
+            toast({
+                title: 'Summary Updated',
+                description: 'Your professional summary has been updated based on the AI suggestion.',
+            });
+        } catch (error) {
+            console.error('Failed to update summary', error);
+            toast({
+                title: 'Error',
+                description: 'Failed to save the new summary.',
+                variant: 'destructive',
+            });
+        } finally {
+            setSaving(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex h-96 items-center justify-center">
@@ -107,11 +153,19 @@ export default function ResumeManagerPage() {
 
     return (
         <div className="space-y-8 p-8">
-            <div>
-                <h2 className="text-3xl font-bold tracking-tight">Resume Manager</h2>
-                <p className="text-muted-foreground">
-                    Select a template for your downloadable resume.
-                </p>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 className="text-3xl font-bold tracking-tight">Resume Manager</h2>
+                    <p className="text-muted-foreground">
+                        Select a template and tailor your resume for specific job applications.
+                    </p>
+                </div>
+                {userData && (
+                    <ResumeTailor
+                        profileData={userData}
+                        onUpdateSummary={handleUpdateSummary}
+                    />
+                )}
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
