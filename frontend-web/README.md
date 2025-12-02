@@ -1,36 +1,156 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolify - Frontend Web Application
 
-## Getting Started
+Portfolify is a modern, feature-rich platform that allows users to build professional portfolios and resumes with ease. This repository contains the frontend application built with Next.js 15, React 19, and Tailwind CSS.
 
-First, run the development server:
+## 🚀 Tech Stack
 
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **UI Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **State Management**: [Redux Toolkit](https://redux-toolkit.js.org/)
+- **Form Handling**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/)
+- **UI Components**: [Radix UI](https://www.radix-ui.com/) (Primitives), [Lucide React](https://lucide.dev/) (Icons)
+- **Rich Text Editor**: [Tiptap](https://tiptap.dev/)
+- **PDF Generation**: [@react-pdf/renderer](https://react-pdf.org/)
+- **HTTP Client**: [Axios](https://axios-http.com/)
+
+## 🛠️ Prerequisites
+
+Before you begin, ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (v18 or higher recommended)
+- [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/) (preferred)
+
+## 📦 Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone git@github.com:nayanrdeveloper/Portfolify.git
+    cd Portfolify/frontend-web
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    pnpm install
+    ```
+
+3.  **Environment Setup:**
+    Create a `.env.local` file in the root directory and add necessary environment variables (e.g., API base URL).
+    ```env
+    NEXT_PUBLIC_API_URL=http://localhost:5000/api/v1
+    ```
+
+## 🏃‍♂️ Running the Project
+
+### Development Server
+To start the development server with hot reloading:
 ```bash
 npm run dev
 # or
-yarn dev
-# or
 pnpm dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Production Build
+To build the application for production:
+```bash
+npm run build
 # or
-bun dev
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Start Production Server
+To run the built application:
+```bash
+npm start
+# or
+pnpm start
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📂 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The project follows a feature-based and modular architecture within the `src` directory:
 
-## Learn More
+```
+src/
+├── app/                 # Next.js App Router pages and layouts
+│   ├── (auth)/          # Authentication routes (login, signup)
+│   ├── dashboard/       # Protected dashboard routes
+│   ├── [username]/      # Public portfolio routes
+│   └── layout.tsx       # Root layout
+├── components/          # Reusable UI components
+│   ├── ui/              # Base UI elements (Buttons, Inputs, Cards)
+│   ├── resume/          # Resume builder specific components
+│   ├── templates/       # Portfolio templates (Modern, Creative, etc.)
+│   └── ...
+├── features/            # Redux slices and feature-specific logic
+│   ├── auth/            # Authentication state
+│   ├── user/            # User profile state
+│   └── ...
+├── lib/                 # Utilities and configuration
+│   ├── api.ts           # Axios instance configuration
+│   ├── utils.ts         # Helper functions (cn, etc.)
+│   └── store.ts         # Redux store configuration
+└── ...
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🧩 Component Architecture
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+We follow a **Atomic Design** inspired approach combined with **Feature-based** organization:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+-   **UI Components (`components/ui`)**: Small, reusable, dumb components (atoms/molecules) like `Button`, `Input`, `Card`. These are built using Radix UI primitives and Tailwind CSS.
+-   **Feature Components**: Complex components tied to specific business logic, often found in `app/` or specific subfolders in `components/` (e.g., `ResumeTailor`, `BlogEditor`).
+-   **Templates (`components/templates`)**: Large layout components that define the look and feel of a user's public portfolio.
 
-## Deploy on Vercel
+## 🎨 How to Add a New Portfolio Template
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1.  **Create the Component**:
+    Create a new file in `src/components/templates/`, e.g., `MyNewTemplate.tsx`.
+    ```tsx
+    import { TemplateProps } from '@/types'; // Define appropriate types
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    export default function MyNewTemplate({ data }: TemplateProps) {
+        return (
+            <div className="my-new-template">
+                <h1>{data.userDetails.fullName}</h1>
+                {/* Render other sections */}
+            </div>
+        );
+    }
+    ```
+
+2.  **Register the Template**:
+    Update `src/app/[username]/page.tsx` to include your new template in the switch case.
+    ```tsx
+    // ... imports
+    import MyNewTemplate from '@/components/templates/MyNewTemplate';
+
+    // ... inside the component
+    switch (template) {
+        case 'my-new-template':
+            return <MyNewTemplate data={data} />;
+        // ... other cases
+    }
+    ```
+
+3.  **Update Settings**:
+    Ensure the backend supports the new template key (`my-new-template`) in the `userSettings` model so users can select it.
+
+## 📏 Code Standards
+
+-   **Linting**: We use [ESLint](https://eslint.org/) with Next.js configuration. Run `npm run lint` to check for errors.
+-   **Formatting**: [Prettier](https://prettier.io/) is used for code formatting. Run `npm run format` to format code.
+-   **Naming Conventions**:
+    -   Components: PascalCase (e.g., `MyComponent.tsx`)
+    -   Functions/Variables: camelCase (e.g., `myFunction`)
+    -   Constants: UPPER_SNAKE_CASE (e.g., `MAX_COUNT`)
+-   **Imports**: Absolute imports are configured using `@/` alias (e.g., `import Button from '@/components/ui/button'`).
+
+## 🤝 Contributing
+
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/amazing-feature`).
+3.  Commit your changes (`git commit -m 'Add some amazing feature'`).
+4.  Push to the branch (`git push origin feature/amazing-feature`).
+5.  Open a Pull Request.
