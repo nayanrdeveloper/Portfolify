@@ -10,6 +10,7 @@ yarn-error.log*
 dist/                   # tsc output
 coverage/               # test coverage
 *.tsbuildinfo           # incremental TS cache
+/dist
 
 # ───── Env & secrets ─────
 .env*
