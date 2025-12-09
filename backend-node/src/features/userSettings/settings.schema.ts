@@ -7,6 +7,8 @@ export const ALLOWED_TEMPLATES = [
     'modern',
     'professional',
     'creative',
+    'editorial',
+    'tech',
 ] as const;
 
 export const updateSettingsSchema = z.object({

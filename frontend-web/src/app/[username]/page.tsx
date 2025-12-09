@@ -1,7 +1,9 @@
 import CreativeTemplate from '@/components/templates/CreativeTemplate';
+import EditorialTemplate from '@/components/templates/EditorialTemplate';
 import ModernTemplate from '@/components/templates/ModernTemplate';
 import ProfessionalTemplate from '@/components/templates/ProfessionalTemplate';
 import StandardTemplate from '@/components/templates/StandardTemplate';
+import TechTemplate from '@/components/templates/TechTemplate';
 import api from '@/lib/api';
 import { Metadata } from 'next';
 
@@ -110,7 +112,7 @@ export default async function PublicPortfolioPage({ params }: Props) {
 
     // Render Template based on settings
     const template = settings?.template;
-
+    console.log(template);
     switch (template) {
         case 'default':
             return <ModernTemplate data={data} />;
@@ -118,6 +120,10 @@ export default async function PublicPortfolioPage({ params }: Props) {
             return <CreativeTemplate data={data} />;
         case 'professional':
             return <ProfessionalTemplate data={data} />;
+        case 'editorial':
+            return <EditorialTemplate data={data} />;
+        case 'tech':
+            return <TechTemplate data={data} />;
         case 'standard':
         default:
             return <StandardTemplate data={data} customization={settings?.customization} />;

@@ -55,6 +55,32 @@ const defaultThemes: Theme[] = [
         },
         fontFamily: 'Outfit',
     },
+    {
+        id: 'editorial',
+        name: 'Editorial',
+        description: 'Bold, high-contrast style for writers and thought leaders.',
+        thumbnailUrl: '/themes/editorial.png',
+        colors: {
+            primary: '#FDE047', // Yellow
+            secondary: '#000000',
+            background: '#ffffff',
+            foreground: '#000000',
+        },
+        fontFamily: 'Playfair Display',
+    },
+    {
+        id: 'tech',
+        name: 'Tech',
+        description: 'Dark mode terminal style for developers.',
+        thumbnailUrl: '/themes/tech.png',
+        colors: {
+            primary: '#22c55e', // Green 500
+            secondary: '#000000',
+            background: '#09090b', // Zinc 950
+            foreground: '#22c55e',
+        },
+        fontFamily: 'Geist Mono',
+    },
 ];
 
 const initialState: ThemeState = {
