@@ -5,11 +5,13 @@ import { BasicInfoFormData, basicInfoSchema } from '@/features/onboarding/schema
 import api from '@/lib/api';
 import { useAppSelector } from '@/lib/store/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, User } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Camera, Loader2, Sparkles, User } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { ImagePicker } from '@/components/media/MediaLibrary';
 
 export default function BasicInfoPage() {
     const router = useRouter();
@@ -22,7 +24,7 @@ export default function BasicInfoPage() {
         handleSubmit,
         watch,
         setValue,
-        formState: { errors },
+        formState: { errors, isValid },
     } = useForm<BasicInfoFormData>({
         resolver: zodResolver(basicInfoSchema),
         defaultValues: {
@@ -32,6 +34,7 @@ export default function BasicInfoPage() {
             location: '',
             profilePictureUrl: '',
         },
+        mode: 'onChange',
     });
 
     const watchedValues = watch();
@@ -49,7 +52,7 @@ export default function BasicInfoPage() {
                     const data = response.data.data;
                     setValue('fullName', data.fullName || '');
                     setValue('title', data.title || '');
-                    setValue('bio', data.about || ''); // Mapping 'about' to 'bio'
+                    setValue('bio', data.about || '');
                     setValue('location', data.location || '');
                     setValue('profilePictureUrl', data.profilePictureUrl || '');
                 }
@@ -66,7 +69,6 @@ export default function BasicInfoPage() {
     const onSubmit = async (data: BasicInfoFormData) => {
         setIsLoading(true);
         try {
-            // Map 'bio' back to 'about' for backend
             const payload = {
                 ...data,
                 about: data.bio,
@@ -75,7 +77,6 @@ export default function BasicInfoPage() {
             router.push('/onboarding/skills');
         } catch (error) {
             console.error('Failed to save details', error);
-            alert('Failed to save details');
         } finally {
             setIsLoading(false);
         }
@@ -83,207 +84,228 @@ export default function BasicInfoPage() {
 
     if (isFetching) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-50/50 via-purple-50/50 to-pink-50/50">
+                <Loader2 className="h-10 w-10 animate-spin text-indigo-500" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex flex-col lg:flex-row">
+        <div className="min-h-full flex flex-col lg:flex-row relative overflow-hidden bg-gradient-to-br from-indigo-50/40 via-purple-50/40 to-pink-50/40">
+            {/* Background Decorations */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-200/20 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-200/20 rounded-full blur-[100px]" />
+            </div>
+
             {/* Left Side: Form */}
-            <div className="w-full lg:w-1/2 p-6 lg:p-12 overflow-y-auto bg-background">
-                <div className="max-w-xl mx-auto">
-                    <h1 className="text-3xl font-bold mb-2">Basic Information</h1>
-                    <p className="text-muted-foreground mb-8">
-                        Let&apos;s start with the basics. This information will be displayed at the
-                        top of your portfolio.
-                    </p>
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="w-full lg:w-1/2 p-6 lg:p-12 relative z-10 flex flex-col justify-center"
+            >
+                <div className="max-w-xl mx-auto w-full">
+                    <div className="mb-8">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/50 text-indigo-600 text-sm font-medium mb-4">
+                            <Sparkles className="h-4 w-4" />
+                            <span>Step 1 of 5</span>
+                        </div>
+                        <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            Let's get to know you
+                        </h1>
+                        <p className="text-slate-500 text-lg">
+                            Start building your professional identity with the basics.
+                        </p>
+                    </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        <div>
-                            <label htmlFor="fullName" className="block text-sm font-medium mb-1">
-                                Full Name
-                            </label>
-                            <input
-                                id="fullName"
-                                type="text"
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                placeholder="John Doe"
-                                {...register('fullName')}
-                            />
-                            {errors.fullName && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {errors.fullName.message}
-                                </p>
-                            )}
-                        </div>
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormInput
+                                    label="Full Name"
+                                    id="fullName"
+                                    placeholder="e.g. Sarah Miller"
+                                    error={errors.fullName?.message}
+                                    {...register('fullName')}
+                                />
+                                <FormInput
+                                    label="Professional Title"
+                                    id="title"
+                                    placeholder="e.g. UX Designer"
+                                    error={errors.title?.message}
+                                    {...register('title')}
+                                />
+                            </div>
 
-                        <div>
-                            <label htmlFor="title" className="block text-sm font-medium mb-1">
-                                Professional Title
-                            </label>
-                            <input
-                                id="title"
-                                type="text"
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                placeholder="Frontend Developer"
-                                {...register('title')}
-                            />
-                            {errors.title && (
-                                <p className="mt-1 text-sm text-red-500">{errors.title.message}</p>
-                            )}
-                        </div>
+                            <div className="space-y-2">
+                                <label htmlFor="bio" className="text-sm font-medium text-slate-700 ml-1">
+                                    Short Bio
+                                </label>
+                                <textarea
+                                    id="bio"
+                                    className="flex min-h-[120px] w-full rounded-2xl border-slate-200 bg-white/50 px-4 py-3 text-sm ring-offset-background placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 transition-all resize-none shadow-sm"
+                                    placeholder="Tell us a bit about yourself, your passions, and what drives you..."
+                                    {...register('bio')}
+                                />
+                                {errors.bio && (
+                                    <p className="text-sm text-red-500 ml-1">{errors.bio.message}</p>
+                                )}
+                            </div>
 
-                        <div>
-                            <label htmlFor="bio" className="block text-sm font-medium mb-1">
-                                Short Bio
-                            </label>
-                            <textarea
-                                id="bio"
-                                className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                placeholder="I build pixel-perfect web experiences..."
-                                {...register('bio')}
-                            />
-                            {errors.bio && (
-                                <p className="mt-1 text-sm text-red-500">{errors.bio.message}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label htmlFor="location" className="block text-sm font-medium mb-1">
-                                Location
-                            </label>
-                            <input
+                            <FormInput
+                                label="Location"
                                 id="location"
-                                type="text"
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                placeholder="San Francisco, CA"
+                                placeholder="e.g. New York, NY"
+                                error={errors.location?.message}
                                 {...register('location')}
                             />
-                            {errors.location && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {errors.location.message}
-                                </p>
-                            )}
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-700 ml-1">
+                                    Profile Picture
+                                </label>
+                                <div className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 bg-white/50 shadow-sm">
+                                    <div className="relative h-16 w-16 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 border-2 border-white shadow-md">
+                                        {watchedValues.profilePictureUrl ? (
+                                            <Image
+                                                src={watchedValues.profilePictureUrl}
+                                                alt="Profile"
+                                                fill
+                                                className="object-cover"
+                                                unoptimized
+                                            />
+                                        ) : (
+                                            <div className="h-full w-full flex items-center justify-center text-slate-300">
+                                                <User className="h-8 w-8" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="flex-1">
+                                        <ImagePicker
+                                            value={watchedValues.profilePictureUrl}
+                                            onChange={(url) => setValue('profilePictureUrl', url)}
+                                            trigger={
+                                                <Button type="button" variant="outline" className="w-full justify-start text-slate-600 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-colors">
+                                                    <Camera className="mr-2 h-4 w-4" />
+                                                    {watchedValues.profilePictureUrl ? 'Change Photo' : 'Upload Photo'}
+                                                </Button>
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label
-                                htmlFor="profilePictureUrl"
-                                className="block text-sm font-medium mb-1"
+                        <div className="pt-6">
+                            <Button
+                                type="submit"
+                                className="w-full h-12 rounded-xl text-base bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-500/20 transition-all hover:scale-[1.01]"
+                                disabled={isLoading}
                             >
-                                Profile Picture URL
-                            </label>
-                            <input
-                                id="profilePictureUrl"
-                                type="url"
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                placeholder="https://example.com/me.jpg"
-                                {...register('profilePictureUrl')}
-                            />
-                            {errors.profilePictureUrl && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {errors.profilePictureUrl.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="pt-4">
-                            <Button type="submit" className="w-full" disabled={isLoading}>
                                 {isLoading ? (
                                     <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                                         Saving...
                                     </>
                                 ) : (
-                                    'Save & Continue'
+                                    <div className="flex items-center justify-center gap-2">
+                                        <span>Continue to Skills</span>
+                                        <ArrowRight className="h-4 w-4" />
+                                    </div>
                                 )}
                             </Button>
                         </div>
                     </form>
                 </div>
-            </div>
+            </motion.div>
 
-            {/* Right Side: Preview */}
-            <div className="hidden lg:block w-1/2 bg-muted/30 p-12 overflow-hidden relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full max-w-md bg-card rounded-2xl shadow-2xl overflow-hidden border transform transition-all duration-300 hover:scale-[1.02]">
-                        {/* Preview Header */}
-                        <div className="bg-primary h-32 relative">
-                            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2">
-                                <div className="h-24 w-24 rounded-full border-4 border-card bg-muted flex items-center justify-center overflow-hidden">
+            {/* Right Side: Visual Preview */}
+            <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="hidden lg:flex w-1/2 p-12 items-center justify-center relative z-10"
+            >
+                <div className="relative w-full max-w-md aspect-[3/4]">
+                    {/* Floating Elements */}
+                    <div className="absolute top-[-20px] right-[-20px] bg-white p-4 rounded-2xl shadow-xl z-20 animate-bounce-slow">
+                        <div className="flex items-center gap-3">
+                            <div className="h-2 w-2 rounded-full bg-green-500" />
+                            <p className="text-sm font-semibold text-slate-700">Portfolio Live</p>
+                        </div>
+                    </div>
+
+                    <div className="w-full h-full bg-white/40 backdrop-blur-xl rounded-[2.5rem] border border-white/50 shadow-2xl overflow-hidden relative p-8 flex flex-col items-center text-center">
+                        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-indigo-500/10 to-transparent" />
+
+                        <div className="relative mb-6 group cursor-pointer">
+                            <div className="h-32 w-32 rounded-full p-1 bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-xl group-hover:scale-105 transition-transform duration-500">
+                                <div className="h-full w-full rounded-full border-4 border-white bg-slate-100 overflow-hidden relative">
                                     {watchedValues.profilePictureUrl ? (
                                         <Image
                                             src={watchedValues.profilePictureUrl}
-                                            alt="Profile"
+                                            alt="Preview"
                                             fill
                                             className="object-cover"
                                             unoptimized
                                         />
                                     ) : (
-                                        <User className="h-12 w-12 text-muted-foreground" />
+                                        <div className="h-full w-full flex items-center justify-center text-slate-300 bg-slate-50">
+                                            <User className="h-12 w-12" />
+                                        </div>
                                     )}
                                 </div>
                             </div>
+                            <div className="absolute bottom-2 right-2 bg-green-500 h-6 w-6 rounded-full border-4 border-white" />
                         </div>
 
-                        {/* Preview Body */}
-                        <div className="pt-16 pb-8 px-6 text-center">
-                            <h2 className="text-2xl font-bold text-foreground">
-                                {watchedValues.fullName || 'Your Name'}
-                            </h2>
-                            <p className="text-primary font-medium mt-1">
-                                {watchedValues.title || 'Professional Title'}
-                            </p>
-
-                            {watchedValues.location && (
-                                <p className="text-sm text-muted-foreground mt-2">
-                                    📍 {watchedValues.location}
-                                </p>
+                        <div className="space-y-2 mb-8 relative z-10">
+                            {watchedValues.fullName ? (
+                                <h2 className="text-2xl font-bold text-slate-800">{watchedValues.fullName}</h2>
+                            ) : (
+                                <div className="h-8 w-48 bg-slate-200/50 rounded-lg mx-auto animate-pulse" />
                             )}
 
-                            <p className="mt-6 text-muted-foreground leading-relaxed">
-                                {watchedValues.bio ||
-                                    'Your short bio will appear here. Tell the world about yourself!'}
-                            </p>
+                            {watchedValues.title ? (
+                                <p className="text-indigo-600 font-medium">{watchedValues.title}</p>
+                            ) : (
+                                <div className="h-5 w-32 bg-slate-200/50 rounded-lg mx-auto animate-pulse" />
+                            )}
+                        </div>
 
-                            <div className="mt-8 flex justify-center gap-4">
-                                <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                                    <span className="sr-only">GitHub</span>
-                                    <svg
-                                        className="h-5 w-5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                </div>
-                                <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                                    <span className="sr-only">LinkedIn</span>
-                                    <svg
-                                        className="h-5 w-5"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24"
-                                        aria-hidden="true"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                </div>
-                            </div>
+                        <div className="w-full space-y-3 relative z-10">
+                            {watchedValues.bio ? (
+                                <p className="text-slate-600 text-sm leading-relaxed line-clamp-4">{watchedValues.bio}</p>
+                            ) : (
+                                <>
+                                    <div className="h-4 w-full bg-slate-100 rounded mx-auto animate-pulse" />
+                                    <div className="h-4 w-[90%] bg-slate-100 rounded mx-auto animate-pulse" />
+                                    <div className="h-4 w-[80%] bg-slate-100 rounded mx-auto animate-pulse" />
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
+        </div>
+    );
+}
+
+function FormInput({ label, id, error, className, ...props }: any) {
+    return (
+        <div className="space-y-2">
+            <label htmlFor={id} className="text-sm font-medium text-slate-700 ml-1">
+                {label}
+            </label>
+            <input
+                id={id}
+                className={`flex h-12 w-full rounded-xl border-slate-200 bg-white/50 px-4 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/20 focus-visible:border-indigo-500 transition-all disabled:cursor-not-allowed disabled:opacity-50 shadow-sm ${className}`}
+                {...props}
+            />
+            {error && (
+                <p className="text-sm text-red-500 ml-1">{error}</p>
+            )}
         </div>
     );
 }

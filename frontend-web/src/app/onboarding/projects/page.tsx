@@ -5,7 +5,8 @@ import { Project, ProjectFormData, projectSchema } from '@/features/onboarding/s
 import api from '@/lib/api';
 import { useAppSelector } from '@/lib/store/hooks';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ExternalLink, Github, Loader2, Plus, Trash2, Upload } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowRight, Briefcase, ExternalLink, Github, Layers, Loader2, Plus, Sparkles, Trash2, Upload, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -72,14 +73,12 @@ export default function ProjectsPage() {
             });
         } catch (error) {
             console.error('Failed to add project', error);
-            alert('Failed to add project');
         } finally {
             setIsLoading(false);
         }
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this project?')) return;
         try {
             await api.delete(`/projects/${id}`);
             setProjects(projects.filter(p => p._id !== id));
@@ -104,10 +103,13 @@ export default function ProjectsPage() {
             setValue('mediaUrls', [...(mediaUrls || []), url]);
         } catch (error) {
             console.error('Upload failed', error);
-            alert('Upload failed');
         } finally {
             setIsUploading(false);
         }
+    };
+
+    const removeImage = (indexToRemove: number) => {
+        setValue('mediaUrls', mediaUrls?.filter((_, index) => index !== indexToRemove));
     };
 
     const handleContinue = () => {
@@ -116,134 +118,85 @@ export default function ProjectsPage() {
 
     if (isFetching) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50/50 via-teal-50/50 to-green-50/50">
+                <Loader2 className="h-10 w-10 animate-spin text-emerald-500" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex flex-col lg:flex-row">
-            {/* Left Side: Form */}
-            <div className="w-full lg:w-1/2 p-6 lg:p-12 overflow-y-auto bg-background">
-                <div className="max-w-xl mx-auto">
-                    <h1 className="text-3xl font-bold mb-2">Featured Projects</h1>
-                    <p className="text-muted-foreground mb-8">
-                        Showcase your best work. Add projects that demonstrate your skills and
-                        experience.
-                    </p>
+        <div className="min-h-full flex flex-col lg:flex-row relative overflow-hidden bg-gradient-to-br from-emerald-50/40 via-teal-50/40 to-green-50/40">
+            {/* Background Decorations */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-200/20 rounded-full blur-[100px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-200/20 rounded-full blur-[100px]" />
+            </div>
 
-                    <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className="space-y-6 mb-10 border p-6 rounded-xl bg-card/50"
-                    >
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium mb-1">
-                                Project Name
-                            </label>
-                            <input
+            {/* Left Side: Form */}
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5 }}
+                className="w-full lg:w-1/2 p-6 lg:p-12 relative z-10 flex flex-col justify-center"
+            >
+                <div className="max-w-xl mx-auto w-full">
+                    <div className="mb-8">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100/50 text-emerald-700 text-sm font-medium mb-4">
+                            <Layers className="h-4 w-4" />
+                            <span>Step 3 of 5</span>
+                        </div>
+                        <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                            Feature your best work
+                        </h1>
+                        <p className="text-slate-500 text-lg">
+                            Add projects that demonstrate your skills and experience.
+                        </p>
+                    </div>
+
+                    <div className="bg-white/60 backdrop-blur-md rounded-2xl border border-white/50 shadow-sm p-6 mb-8">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                            <FormInput
+                                label="Project Name"
                                 id="name"
-                                type="text"
-                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                 placeholder="e.g. E-commerce Dashboard"
+                                error={errors.name?.message}
                                 {...register('name')}
                             />
-                            {errors.name && (
-                                <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
-                            )}
-                        </div>
 
-                        <div>
-                            <label htmlFor="description" className="block text-sm font-medium mb-1">
-                                Short Description
-                            </label>
-                            <textarea
-                                id="description"
-                                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                placeholder="Briefly describe what you built..."
-                                {...register('description')}
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label
-                                    htmlFor="demoLink"
-                                    className="block text-sm font-medium mb-1"
-                                >
-                                    Live Demo URL
+                            <div className="space-y-2">
+                                <label htmlFor="description" className="text-sm font-medium text-slate-700 ml-1">
+                                    Short Description
                                 </label>
-                                <input
+                                <textarea
+                                    id="description"
+                                    className="flex min-h-[80px] w-full rounded-xl border-slate-200 bg-white/70 px-4 py-3 text-sm ring-offset-background placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all resize-none"
+                                    placeholder="Briefly describe what you built and the technologies used..."
+                                    {...register('description')}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <FormInput
+                                    label="Live Demo URL"
                                     id="demoLink"
-                                    type="url"
-                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                     placeholder="https://..."
+                                    error={errors.demoLink?.message}
                                     {...register('demoLink')}
                                 />
-                                {errors.demoLink && (
-                                    <p className="mt-1 text-sm text-red-500">
-                                        {errors.demoLink.message}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div>
-                                <label
-                                    htmlFor="githubLink"
-                                    className="block text-sm font-medium mb-1"
-                                >
-                                    GitHub URL
-                                </label>
-                                <input
+                                <FormInput
+                                    label="GitHub URL"
                                     id="githubLink"
-                                    type="url"
-                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                     placeholder="https://github.com/..."
+                                    error={errors.githubLink?.message}
                                     {...register('githubLink')}
                                 />
-                                {errors.githubLink && (
-                                    <p className="mt-1 text-sm text-red-500">
-                                        {errors.githubLink.message}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Project Images</label>
-                            <div className="flex items-center gap-4">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => document.getElementById('file-upload')?.click()}
-                                    disabled={isUploading}
-                                >
-                                    {isUploading ? (
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <Upload className="mr-2 h-4 w-4" />
-                                    )}
-                                    Upload Image
-                                </Button>
-                                <input
-                                    id="file-upload"
-                                    type="file"
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={handleFileUpload}
-                                />
-                                <span className="text-xs text-muted-foreground">
-                                    {mediaUrls?.length || 0} images uploaded
-                                </span>
                             </div>
 
-                            {mediaUrls && mediaUrls.length > 0 && (
-                                <div className="mt-4 grid grid-cols-3 gap-2">
-                                    {mediaUrls.map((url, index) => (
-                                        <div
-                                            key={index}
-                                            className="relative aspect-video rounded-md overflow-hidden border"
-                                        >
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-700 ml-1">Project Images</label>
+                                <div className="grid grid-cols-4 gap-3">
+                                    {mediaUrls?.map((url, index) => (
+                                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-slate-200 group">
                                             <Image
                                                 src={url}
                                                 alt="Project"
@@ -251,146 +204,237 @@ export default function ProjectsPage() {
                                                 className="object-cover"
                                                 unoptimized
                                             />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeImage(index)}
+                                                className="absolute top-1 right-1 p-1 bg-white/90 rounded-full text-slate-500 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X className="h-3 w-3" />
+                                            </button>
                                         </div>
                                     ))}
-                                </div>
-                            )}
-                        </div>
-
-                        <Button type="submit" disabled={isLoading} className="w-full">
-                            {isLoading ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Saving Project...
-                                </>
-                            ) : (
-                                <>
-                                    <Plus className="mr-2 h-4 w-4" />
-                                    Add Project
-                                </>
-                            )}
-                        </Button>
-                    </form>
-
-                    {/* Projects List */}
-                    <div className="space-y-6">
-                        <h3 className="text-lg font-semibold">Your Projects ({projects.length})</h3>
-                        {projects.length === 0 ? (
-                            <div className="text-center p-8 border-2 border-dashed rounded-lg text-muted-foreground">
-                                No projects added yet.
-                            </div>
-                        ) : (
-                            <div className="grid gap-4">
-                                {projects.map(project => (
-                                    <div
-                                        key={project._id}
-                                        className="flex flex-col sm:flex-row gap-4 p-4 bg-card border rounded-lg shadow-sm"
+                                    <button
+                                        type="button"
+                                        onClick={() => document.getElementById('file-upload')?.click()}
+                                        disabled={isUploading}
+                                        className="aspect-square rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-slate-400 hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-600 transition-all"
                                     >
-                                        {project.mediaUrls && project.mediaUrls.length > 0 && (
-                                            <div className="w-full sm:w-32 h-20 rounded-md overflow-hidden bg-muted flex-shrink-0 relative">
-                                                <Image
-                                                    src={project.mediaUrls[0]}
-                                                    alt={project.name}
-                                                    fill
-                                                    className="object-cover"
-                                                    unoptimized
-                                                />
-                                            </div>
+                                        {isUploading ? (
+                                            <Loader2 className="h-5 w-5 animate-spin" />
+                                        ) : (
+                                            <>
+                                                <Upload className="h-5 w-5 mb-1" />
+                                                <span className="text-[10px] font-medium">Upload</span>
+                                            </>
                                         )}
-                                        <div className="flex-1">
-                                            <div className="flex justify-between items-start">
-                                                <h4 className="font-semibold text-lg">
-                                                    {project.name}
-                                                </h4>
-                                                <button
-                                                    onClick={() => handleDelete(project._id)}
-                                                    className="text-muted-foreground hover:text-red-500 transition-colors"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </button>
-                                            </div>
-                                            <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
-                                                {project.description}
-                                            </p>
-                                            <div className="flex gap-3 mt-3">
-                                                {project.demoLink && (
-                                                    <a
-                                                        href={project.demoLink}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="text-xs flex items-center text-primary hover:underline"
-                                                    >
-                                                        <ExternalLink className="h-3 w-3 mr-1" />{' '}
-                                                        Live Demo
-                                                    </a>
-                                                )}
-                                                {project.githubLink && (
-                                                    <a
-                                                        href={project.githubLink}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                        className="text-xs flex items-center text-primary hover:underline"
-                                                    >
-                                                        <Github className="h-3 w-3 mr-1" /> Code
-                                                    </a>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                    </button>
+                                    <input
+                                        id="file-upload"
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleFileUpload}
+                                    />
+                                </div>
                             </div>
-                        )}
+
+                            <Button
+                                type="submit"
+                                disabled={isLoading}
+                                variant="secondary"
+                                className="w-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200 hover:border-emerald-300 transition-all font-medium"
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        Add Project
+                                    </>
+                                )}
+                            </Button>
+                        </form>
                     </div>
 
-                    <div className="mt-10 pt-6 border-t flex justify-end">
-                        <Button onClick={handleContinue} size="lg">
-                            Continue to Experience
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-semibold text-slate-800">Added Projects</h3>
+                            <span className="text-sm text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{projects.length} added</span>
+                        </div>
+
+                        <div className="space-y-3 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+                            <AnimatePresence mode="popLayout">
+                                {projects.length === 0 ? (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="p-6 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50"
+                                    >
+                                        Projects you add will appear here.
+                                    </motion.div>
+                                ) : (
+                                    projects.map(project => (
+                                        <motion.div
+                                            key={project._id}
+                                            layout
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, x: -10 }}
+                                            className="flex items-start gap-3 p-3 bg-white rounded-xl border border-slate-100 shadow-sm group"
+                                        >
+                                            <div className="h-12 w-16 rounded-md bg-slate-100 flex-shrink-0 relative overflow-hidden">
+                                                {project.mediaUrls && project.mediaUrls.length > 0 ? (
+                                                    <Image
+                                                        src={project.mediaUrls[0]}
+                                                        alt={project.name}
+                                                        fill
+                                                        className="object-cover"
+                                                        unoptimized
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-slate-300">
+                                                        <Layers className="h-5 w-5" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-semibold text-slate-800 text-sm">{project.name}</h4>
+                                                <p className="text-xs text-slate-500 line-clamp-1">{project.description}</p>
+                                                <div className="flex gap-2 mt-1.5">
+                                                    {project.demoLink && (
+                                                        <a href={project.demoLink} target="_blank" rel="noreferrer" className="text-[10px] text-emerald-600 flex items-center hover:underline">
+                                                            <ExternalLink className="h-2.5 w-2.5 mr-0.5" /> Demo
+                                                        </a>
+                                                    )}
+                                                    {project.githubLink && (
+                                                        <a href={project.githubLink} target="_blank" rel="noreferrer" className="text-[10px] text-slate-600 flex items-center hover:underline">
+                                                            <Github className="h-2.5 w-2.5 mr-0.5" /> Code
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <button
+                                                onClick={() => handleDelete(project._id)}
+                                                className="h-7 w-7 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                            >
+                                                <Trash2 className="h-3.5 w-3.5" />
+                                            </button>
+                                        </motion.div>
+                                    ))
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 pt-6">
+                        <Button
+                            onClick={handleContinue}
+                            className="w-full h-12 rounded-xl text-base bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.01]"
+                        >
+                            <div className="flex items-center justify-center gap-2">
+                                <span>Continue to Experience</span>
+                                <ArrowRight className="h-4 w-4" />
+                            </div>
                         </Button>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
             {/* Right Side: Preview */}
-            <div className="hidden lg:block w-1/2 bg-muted/30 p-12 overflow-hidden relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full max-w-md bg-card rounded-2xl shadow-2xl overflow-hidden border p-8 h-[600px] overflow-y-auto">
-                        <h2 className="text-2xl font-bold mb-6">Projects</h2>
-                        <div className="grid gap-6">
-                            {projects.length === 0 ? (
-                                <p className="text-muted-foreground text-center py-10">
-                                    Add projects to see them here...
-                                </p>
-                            ) : (
-                                projects.map(project => (
-                                    <div key={project._id} className="group cursor-pointer">
-                                        <div className="aspect-video w-full bg-muted rounded-lg overflow-hidden mb-3 border relative">
-                                            {project.mediaUrls && project.mediaUrls.length > 0 ? (
-                                                <Image
-                                                    src={project.mediaUrls[0]}
-                                                    alt={project.name}
-                                                    fill
-                                                    className="object-cover transition-transform group-hover:scale-105"
-                                                    unoptimized
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                                                    No Image
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="hidden lg:flex w-1/2 p-12 items-center justify-center relative z-10"
+            >
+                <div className="relative w-full max-w-lg aspect-[4/5]">
+                    {/* Floating Orbs */}
+                    <div className="absolute top-20 right-10 w-20 h-20 bg-emerald-400/20 rounded-full blur-2xl animate-pulse" />
+                    <div className="absolute bottom-20 left-10 w-32 h-32 bg-teal-400/20 rounded-full blur-2xl animate-pulse delay-1000" />
+
+                    <div className="w-full h-full bg-white/40 backdrop-blur-xl rounded-[2.5rem] border border-white/50 shadow-2xl relative p-8 flex flex-col overflow-hidden">
+                        <div className="flex items-center gap-4 mb-6 relative z-10">
+                            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg">
+                                <Sparkles className="h-5 w-5 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-800">My Portfolio</h3>
+                                <p className="text-xs text-slate-600">Selected Work</p>
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-hidden relative z-10">
+                            {/* Masonry-style Grid Preview */}
+                            <div className="columns-2 gap-4 space-y-4">
+                                <AnimatePresence>
+                                    {projects.map((project, index) => (
+                                        <motion.div
+                                            key={project._id}
+                                            layout
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.1 }}
+                                            className="break-inside-avoid bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-slate-100"
+                                        >
+                                            <div className="aspect-video w-full bg-slate-50 relative">
+                                                {project.mediaUrls && project.mediaUrls.length > 0 ? (
+                                                    <Image
+                                                        src={project.mediaUrls[0]}
+                                                        alt={project.name}
+                                                        fill
+                                                        className="object-cover"
+                                                        unoptimized
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center">
+                                                        <Layers className="text-slate-200 h-8 w-8" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="p-3">
+                                                <h4 className="font-semibold text-slate-800 text-xs mb-1">{project.name}</h4>
+                                                <div className="flex gap-1.5 mt-2">
+                                                    <div className="h-5 px-2 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-medium flex items-center">
+                                                        Project
+                                                    </div>
                                                 </div>
-                                            )}
-                                        </div>
-                                        <h3 className="font-semibold group-hover:text-primary transition-colors">
-                                            {project.name}
-                                        </h3>
-                                        <p className="text-sm text-muted-foreground line-clamp-2">
-                                            {project.description}
-                                        </p>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+
+                                <div className="break-inside-avoid bg-white/50 border-2 border-dashed border-slate-200 rounded-xl aspect-square flex items-center justify-center p-4 text-center">
+                                    <div>
+                                        <Plus className="h-6 w-6 text-slate-300 mx-auto mb-2" />
+                                        <p className="text-[10px] text-slate-400 font-medium">Add more projects</p>
                                     </div>
-                                ))
-                            )}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
+        </div>
+    );
+}
+
+function FormInput({ label, id, error, className, ...props }: any) {
+    return (
+        <div className="space-y-2">
+            <label htmlFor={id} className="text-sm font-medium text-slate-700 ml-1">
+                {label}
+            </label>
+            <input
+                id={id}
+                className={`flex h-11 w-full rounded-xl border-slate-200 bg-white/70 px-4 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+                {...props}
+            />
+            {error && (
+                <p className="text-sm text-red-500 ml-1">{error}</p>
+            )}
         </div>
     );
 }

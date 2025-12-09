@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { AiPolishButton } from '@/components/ai/AiPolishButton';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
     Dialog,
@@ -31,8 +31,10 @@ import {
 } from '@/features/onboarding/schema';
 import api from '@/lib/api';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { motion } from 'framer-motion';
 import {
     Briefcase,
+    Calendar,
     GraduationCap,
     Loader2,
     MoreVertical,
@@ -219,74 +221,110 @@ export default function DashboardExperiencePage() {
         );
     }
 
+    const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+            },
+        },
+    };
+
+    const item = {
+        hidden: { opacity: 0, y: 20 },
+        show: { opacity: 1, y: 0 },
+    };
+
     return (
-        <div className="space-y-8">
-            <div>
-                <h1 className="text-3xl font-bold tracking-tight">Experience & Education</h1>
+        <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
+            <div className="flex flex-col gap-2">
+                <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent">
+                    Experience & Education
+                </h1>
                 <p className="text-muted-foreground">
-                    Manage your professional background and academic history.
+                    Showcase your professional journey and academic achievements.
                 </p>
             </div>
 
             <Tabs defaultValue="experience" className="space-y-6">
-                <TabsList>
-                    <TabsTrigger value="experience" className="flex items-center gap-2">
-                        <Briefcase className="h-4 w-4" /> Work Experience
+                <TabsList className="grid w-full grid-cols-2 bg-muted/50 p-1">
+                    <TabsTrigger
+                        value="experience"
+                        className="data-[state=active]:bg-white data-[state=active]:text-pink-600 data-[state=active]:shadow-sm"
+                    >
+                        <Briefcase className="mr-2 h-4 w-4" /> Work Experience
                     </TabsTrigger>
-                    <TabsTrigger value="education" className="flex items-center gap-2">
-                        <GraduationCap className="h-4 w-4" /> Education
+                    <TabsTrigger
+                        value="education"
+                        className="data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm"
+                    >
+                        <GraduationCap className="mr-2 h-4 w-4" /> Education
                     </TabsTrigger>
                 </TabsList>
 
                 {/* Experience Tab */}
                 <TabsContent value="experience" className="space-y-4">
                     <div className="flex justify-end">
-                        <Button onClick={() => handleOpenExpDialog()}>
+                        <Button
+                            onClick={() => handleOpenExpDialog()}
+                            className="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 shadow-md"
+                        >
                             <Plus className="mr-2 h-4 w-4" /> Add Experience
                         </Button>
                     </div>
                     <div className="grid gap-4">
-                        {experiences.map(exp => (
-                            <Card key={exp._id}>
-                                <CardContent className="p-6 flex justify-between items-start">
-                                    <div>
-                                        <h3 className="font-semibold text-lg">{exp.title}</h3>
-                                        <p className="text-primary font-medium">{exp.company}</p>
-                                        <p className="text-sm text-muted-foreground mt-1">
-                                            {formatDate(exp.startDate)} — {exp.endDate ? formatDate(exp.endDate) : 'Present'}
-                                        </p>
-                                        {exp.description && (
-                                            <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
-                                                {exp.description}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                <MoreVertical className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem
-                                                onClick={() => handleOpenExpDialog(exp)}
-                                            >
-                                                <Pencil className="mr-2 h-4 w-4" /> Edit
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                className="text-red-600"
-                                                onClick={() => handleDeleteExp(exp._id)}
-                                            >
-                                                <Trash2 className="mr-2 h-4 w-4" /> Delete
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </CardContent>
-                            </Card>
+                        {experiences.map((exp, index) => (
+                            <motion.div key={exp._id} variants={item} layoutId={exp._id}>
+                                <Card className="border-l-4 border-l-pink-500 shadow-sm hover:shadow-md transition-shadow group">
+                                    <CardContent className="p-6 flex justify-between items-start">
+                                        <div className="space-y-1">
+                                            <h3 className="font-bold text-xl text-foreground group-hover:text-pink-600 transition-colors">
+                                                {exp.title}
+                                            </h3>
+                                            <div className="flex items-center gap-2 text-primary font-medium">
+                                                <Briefcase className="h-4 w-4" />
+                                                {exp.company}
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                <Calendar className="h-3 w-3" />
+                                                {formatDate(exp.startDate)} — {exp.endDate ? formatDate(exp.endDate) : 'Present'}
+                                            </div>
+                                            {exp.description && (
+                                                <p className="text-sm text-foreground/80 mt-3 max-w-2xl leading-relaxed">
+                                                    {exp.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onClick={() => handleOpenExpDialog(exp)}>
+                                                    <Pencil className="mr-2 h-4 w-4" /> Edit
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    className="text-red-600 focus:text-red-600"
+                                                    onClick={() => handleDeleteExp(exp._id)}
+                                                >
+                                                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
                         ))}
                         {experiences.length === 0 && (
-                            <div className="text-center py-12 border-2 border-dashed rounded-lg text-muted-foreground">
-                                <p>No work experience added yet.</p>
+                            <div className="text-center py-16 border-2 border-dashed border-pink-200 bg-pink-50/50 rounded-xl">
+                                <div className="h-12 w-12 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Briefcase className="h-6 w-6" />
+                                </div>
+                                <h3 className="font-semibold text-lg text-foreground">No experience yet</h3>
+                                <p className="text-muted-foreground">Add your work history to impress recruiters.</p>
                             </div>
                         )}
                     </div>
@@ -295,47 +333,60 @@ export default function DashboardExperiencePage() {
                 {/* Education Tab */}
                 <TabsContent value="education" className="space-y-4">
                     <div className="flex justify-end">
-                        <Button onClick={() => handleOpenEduDialog()}>
+                        <Button
+                            onClick={() => handleOpenEduDialog()}
+                            className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-md"
+                        >
                             <Plus className="mr-2 h-4 w-4" /> Add Education
                         </Button>
                     </div>
                     <div className="grid gap-4">
-                        {educations.map(edu => (
-                            <Card key={edu._id}>
-                                <CardContent className="p-6 flex justify-between items-start">
-                                    <div>
-                                        <h3 className="font-semibold text-lg">{edu.institution}</h3>
-                                        <p className="text-primary font-medium">{edu.degree}</p>
-                                        <p className="text-sm text-muted-foreground mt-1">
-                                            {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : 'Present'}
-                                        </p>
-                                    </div>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                                                <MoreVertical className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuItem
-                                                onClick={() => handleOpenEduDialog(edu)}
-                                            >
-                                                <Pencil className="mr-2 h-4 w-4" /> Edit
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                className="text-red-600"
-                                                onClick={() => handleDeleteEdu(edu._id)}
-                                            >
-                                                <Trash2 className="mr-2 h-4 w-4" /> Delete
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </CardContent>
-                            </Card>
+                        {educations.map((edu, index) => (
+                            <motion.div key={edu._id} variants={item} layoutId={edu._id}>
+                                <Card className="border-l-4 border-l-blue-500 shadow-sm hover:shadow-md transition-shadow group">
+                                    <CardContent className="p-6 flex justify-between items-start">
+                                        <div className="space-y-1">
+                                            <h3 className="font-bold text-xl text-foreground group-hover:text-blue-600 transition-colors">
+                                                {edu.institution}
+                                            </h3>
+                                            <div className="flex items-center gap-2 text-primary font-medium">
+                                                <GraduationCap className="h-4 w-4" />
+                                                {edu.degree}
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                                <Calendar className="h-3 w-3" />
+                                                {formatDate(edu.startDate)} — {edu.endDate ? formatDate(edu.endDate) : 'Present'}
+                                            </div>
+                                        </div>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem onClick={() => handleOpenEduDialog(edu)}>
+                                                    <Pencil className="mr-2 h-4 w-4" /> Edit
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    className="text-red-600 focus:text-red-600"
+                                                    onClick={() => handleDeleteEdu(edu._id)}
+                                                >
+                                                    <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
                         ))}
                         {educations.length === 0 && (
-                            <div className="text-center py-12 border-2 border-dashed rounded-lg text-muted-foreground">
-                                <p>No education added yet.</p>
+                            <div className="text-center py-16 border-2 border-dashed border-blue-200 bg-blue-50/50 rounded-xl">
+                                <div className="h-12 w-12 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <GraduationCap className="h-6 w-6" />
+                                </div>
+                                <h3 className="font-semibold text-lg text-foreground">No education yet</h3>
+                                <p className="text-muted-foreground">Add your academic background here.</p>
                             </div>
                         )}
                     </div>
@@ -344,63 +395,68 @@ export default function DashboardExperiencePage() {
 
             {/* Experience Dialog */}
             <Dialog open={isExpDialogOpen} onOpenChange={setIsExpDialogOpen}>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="max-w-lg border-2 border-pink-100/20 bg-background/95 backdrop-blur-xl">
                     <DialogHeader>
-                        <DialogTitle>
+                        <div className="mb-4 h-12 w-12 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center">
+                            <Briefcase className="h-6 w-6" />
+                        </div>
+                        <DialogTitle className="text-xl">
                             {editingExp ? 'Edit Experience' : 'Add Experience'}
                         </DialogTitle>
                         <DialogDescription>
-                            {editingExp
-                                ? 'Update your work history.'
-                                : 'Add a new work experience.'}
+                            {editingExp ? 'Update your work history details.' : 'Share where you have worked.'}
                         </DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={handleSubmitExp(onSubmitExp)} className="space-y-4 py-4">
+                    <form onSubmit={handleSubmitExp(onSubmitExp)} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="title">Job Title</Label>
                                 <Input
                                     id="title"
-                                    placeholder="Senior Developer"
+                                    placeholder="e.g. Senior Developer"
+                                    className="bg-background/50 focus:border-pink-500 transition-colors"
                                     {...registerExp('title')}
                                 />
                                 {errorsExp.title && (
-                                    <p className="text-xs text-red-500">
-                                        {errorsExp.title.message}
-                                    </p>
+                                    <p className="text-xs text-red-500">{errorsExp.title.message}</p>
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="company">Company</Label>
                                 <Input
                                     id="company"
-                                    placeholder="Acme Corp"
+                                    placeholder="e.g. Acme Corp"
+                                    className="bg-background/50 focus:border-pink-500 transition-colors"
                                     {...registerExp('company')}
                                 />
                                 {errorsExp.company && (
-                                    <p className="text-xs text-red-500">
-                                        {errorsExp.company.message}
-                                    </p>
+                                    <p className="text-xs text-red-500">{errorsExp.company.message}</p>
                                 )}
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="startDate">Start Date</Label>
-                                <Input id="startDate" type="month" {...registerExp('startDate')} />
+                                <Input
+                                    id="startDate"
+                                    type="month"
+                                    className="bg-background/50 focus:border-pink-500 transition-colors"
+                                    {...registerExp('startDate')}
+                                />
                                 {errorsExp.startDate && (
-                                    <p className="text-xs text-red-500">
-                                        {errorsExp.startDate.message}
-                                    </p>
+                                    <p className="text-xs text-red-500">{errorsExp.startDate.message}</p>
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="endDate">End Date</Label>
-                                <Input id="endDate" type="month" {...registerExp('endDate')} />
+                                <Input
+                                    id="endDate"
+                                    type="month"
+                                    className="bg-background/50 focus:border-pink-500 transition-colors"
+                                    {...registerExp('endDate')}
+                                />
                                 {errorsExp.endDate && (
-                                    <p className="text-xs text-red-500">
-                                        {errorsExp.endDate.message}
-                                    </p>
+                                    <p className="text-xs text-red-500">{errorsExp.endDate.message}</p>
                                 )}
                             </div>
                         </div>
@@ -414,11 +470,12 @@ export default function DashboardExperiencePage() {
                             </div>
                             <Textarea
                                 id="description"
-                                placeholder="Describe your role..."
+                                placeholder="Describe your key responsibilities and achievements..."
+                                className="min-h-[100px] bg-background/50 focus:border-pink-500 transition-colors resize-none"
                                 {...registerExp('description')}
                             />
                         </div>
-                        <DialogFooter>
+                        <DialogFooter className="gap-2">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -426,7 +483,11 @@ export default function DashboardExperiencePage() {
                             >
                                 Cancel
                             </Button>
-                            <Button type="submit" disabled={isLoading}>
+                            <Button
+                                type="submit"
+                                disabled={isLoading}
+                                className="bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700"
+                            >
                                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 {editingExp ? 'Save Changes' : 'Add Experience'}
                             </Button>
@@ -437,41 +498,44 @@ export default function DashboardExperiencePage() {
 
             {/* Education Dialog */}
             <Dialog open={isEduDialogOpen} onOpenChange={setIsEduDialogOpen}>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="max-w-lg border-2 border-blue-100/20 bg-background/95 backdrop-blur-xl">
                     <DialogHeader>
-                        <DialogTitle>{editingEdu ? 'Edit Education' : 'Add Education'}</DialogTitle>
+                        <div className="mb-4 h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                            <GraduationCap className="h-6 w-6" />
+                        </div>
+                        <DialogTitle className="text-xl">
+                            {editingEdu ? 'Edit Education' : 'Add Education'}
+                        </DialogTitle>
                         <DialogDescription>
                             {editingEdu
                                 ? 'Update your academic history.'
                                 : 'Add a new education entry.'}
                         </DialogDescription>
                     </DialogHeader>
-                    <form onSubmit={handleSubmitEdu(onSubmitEdu)} className="space-y-4 py-4">
+                    <form onSubmit={handleSubmitEdu(onSubmitEdu)} className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="institution">Institution</Label>
                                 <Input
                                     id="institution"
-                                    placeholder="University of Tech"
+                                    placeholder="e.g. University of Tech"
+                                    className="bg-background/50 focus:border-blue-500 transition-colors"
                                     {...registerEdu('institution')}
                                 />
                                 {errorsEdu.institution && (
-                                    <p className="text-xs text-red-500">
-                                        {errorsEdu.institution.message}
-                                    </p>
+                                    <p className="text-xs text-red-500">{errorsEdu.institution.message}</p>
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="degree">Degree</Label>
                                 <Input
                                     id="degree"
-                                    placeholder="B.S. Computer Science"
+                                    placeholder="e.g. B.S. Computer Science"
+                                    className="bg-background/50 focus:border-blue-500 transition-colors"
                                     {...registerEdu('degree')}
                                 />
                                 {errorsEdu.degree && (
-                                    <p className="text-xs text-red-500">
-                                        {errorsEdu.degree.message}
-                                    </p>
+                                    <p className="text-xs text-red-500">{errorsEdu.degree.message}</p>
                                 )}
                             </div>
                         </div>
@@ -481,25 +545,27 @@ export default function DashboardExperiencePage() {
                                 <Input
                                     id="eduStartDate"
                                     type="month"
+                                    className="bg-background/50 focus:border-blue-500 transition-colors"
                                     {...registerEdu('startDate')}
                                 />
                                 {errorsEdu.startDate && (
-                                    <p className="text-xs text-red-500">
-                                        {errorsEdu.startDate.message}
-                                    </p>
+                                    <p className="text-xs text-red-500">{errorsEdu.startDate.message}</p>
                                 )}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="eduEndDate">End Date</Label>
-                                <Input id="eduEndDate" type="month" {...registerEdu('endDate')} />
+                                <Input
+                                    id="eduEndDate"
+                                    type="month"
+                                    className="bg-background/50 focus:border-blue-500 transition-colors"
+                                    {...registerEdu('endDate')}
+                                />
                                 {errorsEdu.endDate && (
-                                    <p className="text-xs text-red-500">
-                                        {errorsEdu.endDate.message}
-                                    </p>
+                                    <p className="text-xs text-red-500">{errorsEdu.endDate.message}</p>
                                 )}
                             </div>
                         </div>
-                        <DialogFooter>
+                        <DialogFooter className="gap-2">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -507,7 +573,11 @@ export default function DashboardExperiencePage() {
                             >
                                 Cancel
                             </Button>
-                            <Button type="submit" disabled={isLoading}>
+                            <Button
+                                type="submit"
+                                disabled={isLoading}
+                                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                            >
                                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                 {editingEdu ? 'Save Changes' : 'Add Education'}
                             </Button>
@@ -515,6 +585,6 @@ export default function DashboardExperiencePage() {
                     </form>
                 </DialogContent>
             </Dialog>
-        </div>
+        </motion.div>
     );
 }

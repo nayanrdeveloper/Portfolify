@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { AiPolishButton } from '@/components/ai/AiPolishButton';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import {
     Dialog,
     DialogContent,
@@ -11,31 +11,35 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Project, ProjectFormData, projectSchema } from '@/features/onboarding/schema';
 import api from '@/lib/api';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { motion } from 'framer-motion';
 import {
     ExternalLink,
     Github,
+    Globe,
+    ImageIcon,
     Loader2,
     MoreVertical,
     Pencil,
     Plus,
     Trash2,
     Upload,
+    X,
 } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
 
 export default function DashboardProjectsPage() {
     const [projects, setProjects] = useState<Project[]>([]);
@@ -168,132 +172,168 @@ export default function DashboardProjectsPage() {
         );
     }
 
+    const container = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+            },
+        },
+    };
+
+    const item = {
+        hidden: { opacity: 0, y: 30 },
+        show: { opacity: 1, y: 0 },
+    };
+
     return (
-        <div className="space-y-8">
+        <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
             <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
+                <div className="flex flex-col gap-2">
+                    <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
+                        Projects
+                    </h1>
                     <p className="text-muted-foreground">
-                        Manage and showcase your portfolio projects.
+                        Showcase your best work and creative experiments.
                     </p>
                 </div>
-                <Button onClick={() => handleOpenDialog()}>
+                <Button
+                    onClick={() => handleOpenDialog()}
+                    className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-md transition-all hover:scale-105"
+                >
                     <Plus className="mr-2 h-4 w-4" />
-                    Add Project
+                    New Project
                 </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {projects.map(project => (
-                    <Card key={project._id} className="overflow-hidden group">
-                        <div className="aspect-video relative bg-muted">
-                            {project.mediaUrls && project.mediaUrls.length > 0 ? (
-                                <Image
-                                    src={project.mediaUrls[0]}
-                                    alt={project.name}
-                                    fill
-                                    className="object-cover transition-transform group-hover:scale-105"
-                                    unoptimized
-                                />
-                            ) : (
-                                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                                    No Image
+                    <motion.div key={project._id} variants={item} layoutId={project._id}>
+                        <Card className="overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-300 group flex flex-col h-full bg-card/50 backdrop-blur-sm">
+                            <div className="aspect-video relative bg-muted overflow-hidden">
+                                {project.mediaUrls && project.mediaUrls.length > 0 ? (
+                                    <>
+                                        <Image
+                                            src={project.mediaUrls[0]}
+                                            alt={project.name}
+                                            fill
+                                            className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                            unoptimized
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    </>
+                                ) : (
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground bg-gradient-to-br from-muted to-muted/50">
+                                        <ImageIcon className="h-10 w-10 mb-2 opacity-20" />
+                                        <span className="text-xs opacity-50">No preview</span>
+                                    </div>
+                                )}
+
+                                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="secondary" size="icon" className="h-8 w-8 bg-black/50 hover:bg-black/70 text-white border-0 backdrop-blur-md">
+                                                <MoreVertical className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem onClick={() => handleOpenDialog(project)}>
+                                                <Pencil className="mr-2 h-4 w-4" /> Edit
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                className="text-red-600 focus:text-red-600"
+                                                onClick={() => handleDelete(project._id)}
+                                            >
+                                                <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </div>
-                            )}
-                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="secondary" size="icon" className="h-8 w-8">
-                                            <MoreVertical className="h-4 w-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => handleOpenDialog(project)}>
-                                            <Pencil className="mr-2 h-4 w-4" /> Edit
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            className="text-red-600"
-                                            onClick={() => handleDelete(project._id)}
-                                        >
-                                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
                             </div>
-                        </div>
-                        <CardHeader>
-                            <CardTitle className="line-clamp-1">{project.name}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-sm text-muted-foreground line-clamp-2 mb-4 h-10">
-                                {project.description}
-                            </p>
-                            <div className="flex gap-3">
+
+                            <CardContent className="flex-1 p-5">
+                                <h3 className="font-bold text-lg mb-2 line-clamp-1 group-hover:text-emerald-500 transition-colors">
+                                    {project.name}
+                                </h3>
+                                <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                                    {project.description}
+                                </p>
+                            </CardContent>
+
+                            <CardFooter className="p-5 pt-0 flex gap-3">
                                 {project.demoLink && (
-                                    <a
-                                        href={project.demoLink}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-xs flex items-center text-primary hover:underline"
-                                    >
-                                        <ExternalLink className="h-3 w-3 mr-1" /> Live Demo
-                                    </a>
+                                    <Button size="sm" variant="outline" className="flex-1 border-emerald-200 hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-300 h-8 text-xs font-medium" asChild>
+                                        <a href={project.demoLink} target="_blank" rel="noreferrer">
+                                            <Globe className="h-3 w-3 mr-2" /> Live Demo
+                                        </a>
+                                    </Button>
                                 )}
                                 {project.githubLink && (
-                                    <a
-                                        href={project.githubLink}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-xs flex items-center text-primary hover:underline"
-                                    >
-                                        <Github className="h-3 w-3 mr-1" /> Code
-                                    </a>
+                                    <Button size="sm" variant="outline" className="flex-1 border-slate-200 hover:bg-slate-50 hover:text-slate-700 h-8 text-xs font-medium" asChild>
+                                        <a href={project.githubLink} target="_blank" rel="noreferrer">
+                                            <Github className="h-3 w-3 mr-2" /> Code
+                                        </a>
+                                    </Button>
                                 )}
-                            </div>
-                        </CardContent>
-                    </Card>
+                            </CardFooter>
+                        </Card>
+                    </motion.div>
                 ))}
+
                 {projects.length === 0 && (
-                    <div className="col-span-full text-center py-12 border-2 border-dashed rounded-lg text-muted-foreground">
-                        <p>No projects found. Create your first project to get started!</p>
-                    </div>
+                    <motion.div
+                        variants={item}
+                        className="col-span-full py-16 text-center border-2 border-dashed border-emerald-200 bg-emerald-50/30 rounded-2xl flex flex-col items-center justify-center"
+                    >
+                        <div className="h-16 w-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                            <Plus className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-semibold mb-2">Create your first project</h3>
+                        <p className="text-muted-foreground max-w-sm mb-6">
+                            Start building your portfolio by adding the projects you are most proud of.
+                        </p>
+                        <Button onClick={() => handleOpenDialog()} className="bg-emerald-500 hover:bg-emerald-600">
+                            Get Started
+                        </Button>
+                    </motion.div>
                 )}
             </div>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto border-2 border-emerald-100/20 bg-background/95 backdrop-blur-xl">
                     <DialogHeader>
-                        <DialogTitle>
-                            {editingProject ? 'Edit Project' : 'Add New Project'}
+                        <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+                            {editingProject ? 'Edit Project' : 'New Project'}
+                            <span className="text-emerald-500">•</span>
                         </DialogTitle>
                         <DialogDescription>
                             {editingProject
-                                ? 'Make changes to your project details.'
-                                : 'Add a new project to your portfolio.'}
+                                ? 'Update the details of your masterpiece.'
+                                : 'Showcase a new project to the world.'}
                         </DialogDescription>
                     </DialogHeader>
 
                     <form
-                        onSubmit={handleSubmit(onSubmit, errors =>
-                            console.error('Form Validation Errors:', errors),
-                        )}
+                        onSubmit={handleSubmit(onSubmit)}
                         className="space-y-6 py-4"
                     >
-                        <div className="space-y-2">
-                            <Label htmlFor="name">Project Name</Label>
+                        <div className="space-y-3">
+                            <Label htmlFor="name" className="text-sm font-semibold">Project Name</Label>
                             <Input
                                 id="name"
-                                placeholder="e.g. E-commerce Dashboard"
+                                placeholder="e.g. AI-Powered Analytics Dashboard"
+                                className="bg-background/50 focus:border-emerald-500 transition-colors h-10"
                                 {...register('name')}
                             />
                             {errors.name && (
-                                <p className="text-sm text-red-500">{errors.name.message}</p>
+                                <p className="text-xs font-medium text-red-500">{errors.name.message}</p>
                             )}
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             <div className="flex justify-between items-center">
-                                <Label htmlFor="description">Description</Label>
+                                <Label htmlFor="description" className="text-sm font-semibold">Description</Label>
                                 <AiPolishButton
                                     initialText={watch('description') || ''}
                                     onPolished={text => setValue('description', text)}
@@ -301,105 +341,103 @@ export default function DashboardProjectsPage() {
                             </div>
                             <Textarea
                                 id="description"
-                                placeholder="Briefly describe what you built..."
+                                placeholder="Describe the problem you solved, technologies used, and key features..."
+                                className="min-h-[120px] bg-background/50 focus:border-emerald-500 transition-colors resize-none leading-relaxed"
                                 {...register('description')}
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="demoLink">Live Demo URL</Label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div className="space-y-3">
+                                <Label htmlFor="demoLink" className="flex items-center gap-2 text-sm font-semibold">
+                                    <ExternalLink className="h-3 w-3" /> Live Demo URL
+                                </Label>
                                 <Input
                                     id="demoLink"
                                     type="url"
-                                    placeholder="https://..."
+                                    placeholder="https://myproject.com"
+                                    className="bg-background/50 focus:border-emerald-500 transition-colors"
                                     {...register('demoLink')}
                                 />
                                 {errors.demoLink && (
-                                    <p className="text-sm text-red-500">
+                                    <p className="text-xs font-medium text-red-500">
                                         {errors.demoLink.message}
                                     </p>
                                 )}
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="githubLink">GitHub URL</Label>
+                            <div className="space-y-3">
+                                <Label htmlFor="githubLink" className="flex items-center gap-2 text-sm font-semibold">
+                                    <Github className="h-3 w-3" /> GitHub URL
+                                </Label>
                                 <Input
                                     id="githubLink"
                                     type="url"
-                                    placeholder="https://github.com/..."
+                                    placeholder="https://github.com/username/repo"
+                                    className="bg-background/50 focus:border-emerald-500 transition-colors"
                                     {...register('githubLink')}
                                 />
                                 {errors.githubLink && (
-                                    <p className="text-sm text-red-500">
+                                    <p className="text-xs font-medium text-red-500">
                                         {errors.githubLink.message}
                                     </p>
                                 )}
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <Label>Project Images</Label>
-                            <div className="flex items-center gap-4">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => document.getElementById('file-upload')?.click()}
-                                    disabled={isUploading}
-                                >
-                                    {isUploading ? (
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <Upload className="mr-2 h-4 w-4" />
-                                    )}
-                                    Upload Image
-                                </Button>
-                                <input
-                                    id="file-upload"
-                                    type="file"
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={handleFileUpload}
-                                />
-                                <span className="text-xs text-muted-foreground">
-                                    {mediaUrls?.length || 0} images uploaded
-                                </span>
+                        <div className="space-y-3 p-4 bg-muted/20 rounded-xl border border-dashed border-emerald-200/50">
+                            <div className="flex justify-between items-center mb-2">
+                                <Label className="text-sm font-semibold">Project Gallery</Label>
+                                <span className="text-xs text-muted-foreground">{mediaUrls?.length || 0} / 3 images</span>
                             </div>
 
-                            {mediaUrls && mediaUrls.length > 0 && (
-                                <div className="mt-4 grid grid-cols-3 gap-2">
-                                    {mediaUrls.map((url, index) =>
-                                        url ? (
-                                            <div
-                                                key={index}
-                                                className="relative aspect-video rounded-md overflow-hidden border group"
-                                            >
-                                                <Image
-                                                    src={url}
-                                                    alt="Project"
-                                                    fill
-                                                    className="object-cover"
-                                                    unoptimized
-                                                />
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        setValue(
-                                                            'mediaUrls',
-                                                            mediaUrls.filter((_, i) => i !== index),
-                                                        )
-                                                    }
-                                                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                                                >
-                                                    <Trash2 className="h-3 w-3" />
-                                                </button>
-                                            </div>
-                                        ) : null,
-                                    )}
-                                </div>
-                            )}
+                            <div className="grid grid-cols-3 gap-3">
+                                {mediaUrls?.map((url, index) => (
+                                    <div key={index} className="relative aspect-video rounded-lg overflow-hidden group shadow-sm">
+                                        <Image
+                                            src={url}
+                                            alt={`Preview ${index + 1}`}
+                                            fill
+                                            className="object-cover"
+                                            unoptimized
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setValue(
+                                                    'mediaUrls',
+                                                    mediaUrls.filter((_, i) => i !== index),
+                                                )
+                                            }
+                                            className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-600 text-white p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm"
+                                        >
+                                            <X className="h-3 w-3" />
+                                        </button>
+                                    </div>
+                                ))}
+
+                                {(!mediaUrls || mediaUrls.length < 3) && (
+                                    <div className="relative aspect-video rounded-lg border-2 border-dashed border-muted hover:border-emerald-400 hover:bg-emerald-50/50 transition-colors flex flex-col items-center justify-center cursor-pointer group">
+                                        {isUploading ? (
+                                            <Loader2 className="h-6 w-6 animate-spin text-emerald-500" />
+                                        ) : (
+                                            <>
+                                                <Upload className="h-6 w-6 text-muted-foreground group-hover:text-emerald-500 mb-2 transition-colors" />
+                                                <span className="text-xs text-muted-foreground font-medium group-hover:text-emerald-600">Upload</span>
+                                            </>
+                                        )}
+                                        <input
+                                            type="file"
+                                            className="absolute inset-0 opacity-0 cursor-pointer"
+                                            accept="image/*"
+                                            onChange={handleFileUpload}
+                                            disabled={isUploading}
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        <DialogFooter>
+                        <DialogFooter className="gap-2 pt-2">
                             <Button
                                 type="button"
                                 variant="outline"
@@ -407,14 +445,18 @@ export default function DashboardProjectsPage() {
                             >
                                 Cancel
                             </Button>
-                            <Button type="submit" disabled={isLoading}>
+                            <Button
+                                type="submit"
+                                disabled={isLoading}
+                                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+                            >
                                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                {editingProject ? 'Save Changes' : 'Add Project'}
+                                {editingProject ? 'Save Changes' : 'Create Project'}
                             </Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>
             </Dialog>
-        </div>
+        </motion.div>
     );
 }
