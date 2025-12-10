@@ -1,5 +1,11 @@
 'use client';
 
+import CreativeTemplate from '@/components/templates/CreativeTemplate';
+import EditorialTemplate from '@/components/templates/EditorialTemplate';
+import ModernTemplate from '@/components/templates/ModernTemplate';
+import ProfessionalTemplate from '@/components/templates/ProfessionalTemplate';
+import StandardTemplate from '@/components/templates/StandardTemplate';
+import TechTemplate from '@/components/templates/TechTemplate';
 import { Button } from '@/components/ui/button';
 import {
     fetchThemeSettings,
@@ -36,6 +42,10 @@ export default function ThemesPage() {
     const [activeTab, setActiveTab] = useState<'templates' | 'customize'>('templates');
     const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
 
+    // Portfolio Data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [previewData, setPreviewData] = useState<any>(null);
+
     useEffect(() => {
         dispatch(fetchThemeSettings());
     }, [dispatch]);
@@ -47,6 +57,40 @@ export default function ThemesPage() {
             setActiveTab('templates');
         }
     }, [currentThemeId]);
+
+    // Fetch Preview Data
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!user?.slug) return;
+            try {
+                const [projectsRes, skillsRes, expRes, eduRes, userRes, blogsRes] = await Promise.all([
+                    api.get('/projects'),
+                    api.get(`/skills/user/${user.slug}`),
+                    api.get('/experiences'),
+                    api.get('/educations'),
+                    api.get('/user-details/me'),
+                    api.get('/blogs', { params: { userId: user._id } }).catch(() => ({ data: { data: [] } })),
+                ]);
+
+                setPreviewData({
+                    userDetails: userRes.data.data,
+                    projects: projectsRes.data.data,
+                    skills: skillsRes.data.data,
+                    experience: expRes.data.data,
+                    education: eduRes.data.data,
+                    blogs: blogsRes.data.data,
+                    socialMedia: userRes.data.data?.socialMedia || {},
+                    resumeTemplate: 'modern' // Default for preview
+                });
+            } catch (error) {
+                console.error('Failed to fetch preview data', error);
+            }
+        };
+
+        if (user) {
+            fetchData();
+        }
+    }, [user]);
 
     const handleThemeSelect = (themeId: string) => {
         dispatch(setTheme(themeId));
@@ -95,6 +139,32 @@ export default function ThemesPage() {
     const item = {
         hidden: { opacity: 0, y: 20 },
         show: { opacity: 1, y: 0 }
+    };
+
+    const renderPreviewContent = () => {
+        if (!previewData) return (
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="h-8 w-8 animate-spin text-indigo-500" />
+            </div>
+        );
+
+        // Inject customization if on Standard
+        const dataWithCustomization = {
+            ...previewData,
+            // For other templates, backend handles it, but for preview we force the current customization state
+            // ONLY if Standard is selected or if we want to allow cross-theme customization (which we restrict in UI)
+        };
+
+        switch (currentThemeId) {
+            case 'modern': return <ModernTemplate data={dataWithCustomization} />;
+            case 'creative': return <CreativeTemplate data={dataWithCustomization} />;
+            case 'professional': return <ProfessionalTemplate data={dataWithCustomization} />;
+            case 'editorial': return <EditorialTemplate data={dataWithCustomization} />;
+            case 'tech': return <TechTemplate data={dataWithCustomization} />;
+            case 'standard':
+            default:
+                return <StandardTemplate data={dataWithCustomization} customization={customizations} />;
+        }
     };
 
     return (
@@ -172,26 +242,24 @@ export default function ThemesPage() {
                                         )}
                                     >
                                         <div className="aspect-[2/1] relative bg-slate-100 overflow-hidden">
-                                            {/* Mock Preview - In real app use actual screenshots */}
+                                            {/* We could render a mini-preview here but images are better for performance */}
                                             <div className={`w-full h-full bg-gradient-to-br ${theme.id === 'modern' ? 'from-slate-800 to-slate-900' :
-                                                    theme.id === 'creative' ? 'from-purple-100 to-pink-100' :
-                                                        'from-slate-100 to-white'
-                                                } flex items-center justify-center`}>
-                                                <div className="text-center">
-                                                    <div className="font-bold text-lg opacity-50 mb-1">{theme.name}</div>
-                                                    <div className="text-xs opacity-40 uppercase tracking-widest">Template</div>
+                                                theme.id === 'creative' ? 'from-purple-100 to-pink-100' :
+                                                    theme.id === 'editorial' ? 'from-yellow-200 to-yellow-100' :
+                                                        theme.id === 'tech' ? 'from-green-900 to-black' :
+                                                            'from-slate-100 to-white'
+                                                } flex items-center justify-center relative`}>
+
+                                                <div className="text-center z-10">
+                                                    <div className="font-bold text-lg opacity-80 mb-1">{theme.name}</div>
                                                 </div>
                                             </div>
 
                                             {currentThemeId === theme.id && (
-                                                <div className="absolute top-3 right-3 bg-indigo-500 text-white p-1.5 rounded-full shadow-lg">
+                                                <div className="absolute top-3 right-3 bg-indigo-500 text-white p-1.5 rounded-full shadow-lg z-20">
                                                     <Check className="h-4 w-4" />
                                                 </div>
                                             )}
-                                        </div>
-                                        <div className="p-4 bg-white">
-                                            <h3 className="font-semibold text-slate-800">{theme.name}</h3>
-                                            <p className="text-sm text-slate-500 mt-1">{theme.description}</p>
                                         </div>
                                     </motion.div>
                                 ))}
@@ -301,8 +369,8 @@ export default function ThemesPage() {
                 </div>
 
                 {/* Right Panel: Live Preview */}
-                <div className="lg:col-span-7 bg-slate-100 rounded-3xl border border-slate-200 overflow-hidden flex flex-col relative">
-                    <div className="bg-white border-b border-slate-200 p-3 flex items-center justify-between">
+                <div className="lg:col-span-7 bg-slate-100 rounded-3xl border border-slate-200 overflow-hidden flex flex-col relative h-[calc(100vh-8rem)]">
+                    <div className="bg-white border-b border-slate-200 p-3 flex items-center justify-between shrink-0">
                         <div className="flex gap-1.5">
                             <div className="h-3 w-3 rounded-full bg-red-400" />
                             <div className="h-3 w-3 rounded-full bg-amber-400" />
@@ -330,69 +398,21 @@ export default function ThemesPage() {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto bg-slate-100 p-8 flex justify-center items-start">
+                    <div className="flex-1 overflow-hidden bg-slate-200/50 flex justify-center items-center relative overflow-y-auto">
                         <div
                             className={cn(
-                                "bg-white shadow-2xl transition-all duration-300 overflow-hidden origin-top",
-                                previewDevice === 'desktop' ? "w-full h-full rounded-b-xl" :
-                                    previewDevice === 'tablet' ? "w-[768px] h-[1024px] rounded-2xl my-4" :
-                                        "w-[375px] h-[812px] rounded-[3rem] border-[8px] border-slate-800 my-4"
+                                "bg-white shadow-2xl transition-all duration-300 overflow-hidden relative",
+                                previewDevice === 'desktop' ? "w-full h-full" :
+                                    previewDevice === 'tablet' ? "w-[768px] h-[1024px] rounded-2xl my-8 shrink-0" :
+                                        "w-[375px] h-[812px] rounded-[3rem] border-[8px] border-slate-800 my-8 shrink-0"
                             )}
                             style={{
-                                fontFamily: customizations.fontFamily || currentTheme?.fontFamily
+                                transform: previewDevice === 'desktop' ? 'scale(1)' : 'scale(0.85)',
+                                transformOrigin: 'top center'
                             }}
                         >
-                            {/* LIVE PREVIEW CONTENT */}
-                            <div className="flex flex-col h-full">
-                                {/* Header */}
-                                <header className="p-6 flex items-center justify-between border-b border-slate-50">
-                                    <div className="font-bold text-xl tracking-tighter">Portfolify.</div>
-                                    <nav className="hidden sm:flex gap-6 text-sm font-medium text-slate-600">
-                                        <span>Work</span>
-                                        <span>About</span>
-                                        <span>Contact</span>
-                                    </nav>
-                                </header>
-
-                                <main className="flex-1 p-8 md:p-12 overflow-y-auto">
-                                    <div className="max-w-2xl mx-auto text-center space-y-6 py-12">
-                                        <div
-                                            className="inline-block p-1 rounded-full mb-4"
-                                            style={{ backgroundColor: customizations.primaryColor || currentTheme?.colors.primary }}
-                                        >
-                                            <div className="h-24 w-24 rounded-full bg-slate-200 border-4 border-white" />
-                                        </div>
-                                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900">
-                                            Building digital <br />
-                                            <span
-                                                className="text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600"
-                                                style={{ color: customizations.primaryColor || currentTheme?.colors.primary }}
-                                            >
-                                                experiences.
-                                            </span>
-                                        </h1>
-                                        <p className="text-lg text-slate-500 leading-relaxed">
-                                            I'm a multidisciplinary developer focused on crafting accessible, human-centered products.
-                                        </p>
-                                        <div className="flex justify-center gap-4 pt-4">
-                                            <Button
-                                                size="lg"
-                                                className="rounded-full px-8"
-                                                style={{ backgroundColor: customizations.primaryColor || currentTheme?.colors.primary }}
-                                            >
-                                                Get in Touch
-                                            </Button>
-                                            <Button size="lg" variant="outline" className="rounded-full px-8">
-                                                My Work
-                                            </Button>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-20 grid grid-cols-2 gap-4 opacity-50 pointer-events-none grayscale-[0.5]">
-                                        <div className="aspect-video bg-slate-100 rounded-xl" />
-                                        <div className="aspect-video bg-slate-100 rounded-xl" />
-                                    </div>
-                                </main>
+                            <div className="w-full h-full overflow-y-auto custom-scrollbar">
+                                {renderPreviewContent()}
                             </div>
                         </div>
                     </div>

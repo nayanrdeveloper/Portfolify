@@ -117,13 +117,8 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex gap-2">
                     <Button variant="outline" className="hover:bg-primary/5" asChild>
-                        <Link href={`/p/${user?.slug}`} target="_blank">
+                        <Link href={`/${user?.slug}`} target="_blank">
                             <Eye className="mr-2 h-4 w-4" /> View Portfolio
-                        </Link>
-                    </Button>
-                    <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-md" asChild>
-                        <Link href="/dashboard/publish">
-                            <ExternalLink className="mr-2 h-4 w-4" /> Publish Changes
                         </Link>
                     </Button>
                 </div>
